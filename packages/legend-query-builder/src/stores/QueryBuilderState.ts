@@ -146,6 +146,7 @@ export abstract class QueryBuilderState implements CommandRegistrar {
   isCalendarEnabled = false;
   isQueryChatOpened = false;
   isLocalModeEnabled = false;
+  INTERNAL__enableInitializingDefaultSimpleExpressionValue = false;
 
   class?: Class | undefined;
   getAllFunction: QUERY_BUILDER_SUPPORTED_GET_ALL_FUNCTIONS =
@@ -193,6 +194,7 @@ export abstract class QueryBuilderState implements CommandRegistrar {
       isQueryChatOpened: observable,
       isLocalModeEnabled: observable,
       getAllFunction: observable,
+      INTERNAL__enableInitializingDefaultSimpleExpressionValue: observable,
 
       sideBarClassName: computed,
       isQuerySupported: computed,
@@ -207,6 +209,7 @@ export abstract class QueryBuilderState implements CommandRegistrar {
       setIsQueryChatOpened: action,
       setIsLocalModeEnabled: action,
       setGetAllFunction: action,
+      setINTERNAL__enableInitializingDefaultSimpleExpressionValue: action,
 
       resetQueryResult: action,
       resetQueryContent: action,
@@ -354,6 +357,12 @@ export abstract class QueryBuilderState implements CommandRegistrar {
 
   setGetAllFunction(val: QUERY_BUILDER_SUPPORTED_GET_ALL_FUNCTIONS): void {
     this.getAllFunction = val;
+  }
+
+  setINTERNAL__enableInitializingDefaultSimpleExpressionValue(
+    val: boolean,
+  ): void {
+    this.INTERNAL__enableInitializingDefaultSimpleExpressionValue = val;
   }
 
   get isQuerySupported(): boolean {
@@ -755,7 +764,9 @@ export abstract class QueryBuilderState implements CommandRegistrar {
   }
 
   get allValidationIssues(): string[] {
-    return this.fetchStructureState.implementation.allValidationIssues;
+    return this.fetchStructureState.implementation.allValidationIssues.concat(
+      this.filterState.allValidationIssues,
+    );
   }
 
   /**

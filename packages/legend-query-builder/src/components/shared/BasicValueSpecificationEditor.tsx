@@ -33,6 +33,7 @@ import {
   BasePopover,
   PanelFormSection,
   CalculateIcon,
+  InputWithInlineValidation,
 } from '@finos/legend-art';
 import {
   type Enum,
@@ -77,7 +78,10 @@ import {
 } from '../../stores/shared/ValueSpecificationModifierHelper.js';
 import { CustomDatePicker } from './CustomDatePicker.js';
 import { QUERY_BUILDER_SUPPORTED_FUNCTIONS } from '../../graph/QueryBuilderMetaModelConst.js';
-import { simplifyValueExpression } from '../../stores/QueryBuilderValueSpecificationHelper.js';
+import {
+  isValidInstanceValue,
+  simplifyValueExpression,
+} from '../../stores/QueryBuilderValueSpecificationHelper.js';
 import { evaluate } from 'mathjs';
 import { isUsedDateFunctionSupportedInFormMode } from '../../stores/QueryBuilderStateBuilder.js';
 
@@ -301,12 +305,17 @@ const StringPrimitiveInstanceValueEditor = observer(
             }}
           />
         ) : (
-          <input
-            className="panel__content__form__section__input value-spec-editor__input"
+          <InputWithInlineValidation
+            className="panel__content__form__section__input value-spec-editor__input input-group__input"
             spellCheck={false}
             value={value}
             placeholder={value === '' ? '(empty)' : undefined}
             onChange={changeInputValue}
+            error={
+              !isValidInstanceValue(valueSpecification)
+                ? 'Invalid String value'
+                : undefined
+            }
           />
         )}
         <button
