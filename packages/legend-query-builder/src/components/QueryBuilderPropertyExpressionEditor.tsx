@@ -206,6 +206,8 @@ const DerivedPropertyParameterValueEditor = observer(
             variable,
             derivedPropertyExpressionState.queryBuilderState.graphManagerState
               .graph,
+            derivedPropertyExpressionState.queryBuilderState
+              .INTERNAL__enableInitializingDefaultSimpleExpressionValue,
             derivedPropertyExpressionState.queryBuilderState.observerContext,
           ),
         idx + 1,
