@@ -89,6 +89,7 @@ import { V1_CByteArray } from '../../../model/valueSpecification/raw/V1_CByteArr
 import { V1_ColSpecArray } from '../../../model/valueSpecification/raw/V1_ColSpecArray.js';
 import { V1_ColSpec } from '../../../model/valueSpecification/raw/V1_ColSpec.js';
 import { V1_RelationStoreAccessor } from '../../../model/valueSpecification/raw/V1_RelationStoreAccessor.js';
+import type { V1_NullValueSpecification } from '../../../model/valueSpecification/V1_NullValueSpecification.js';
 
 enum V1_ExecutionContextType {
   BASE_EXECUTION_CONTEXT = 'BaseExecutionContext',
@@ -868,6 +869,12 @@ class V1_ValueSpecificationSerializer
     valueSpecification: V1_INTERNAL__UnknownValueSpecification,
   ): PlainObject<V1_ValueSpecification> {
     return valueSpecification.content;
+  }
+
+  visit_NullValueSpecification(
+    _: V1_NullValueSpecification,
+  ): PlainObject<V1_ValueSpecification> {
+    return {};
   }
 
   visit_Variable(

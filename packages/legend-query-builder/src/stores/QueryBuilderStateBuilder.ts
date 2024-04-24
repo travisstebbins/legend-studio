@@ -37,6 +37,7 @@ import {
   type ValueSpecification,
   type CollectionInstanceValue,
   type LambdaFunctionInstanceValue,
+  type NullValueSpecification,
   InstanceValue,
   INTERNAL__UnknownValueSpecification,
   matchFunctionName,
@@ -495,6 +496,10 @@ export class QueryBuilderValueSpecificationProcessor
   visit_INTERNAL__PropagatedValue(
     valueSpecification: INTERNAL__PropagatedValue,
   ): void {
+    throw new UnsupportedOperationError();
+  }
+
+  visit_NullValueSpecification(_: NullValueSpecification): void {
     throw new UnsupportedOperationError();
   }
 

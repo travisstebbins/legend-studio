@@ -74,6 +74,7 @@ import type { V1_GenericTypeInstance } from '../../../../model/valueSpecificatio
 import type { V1_ClassInstance } from '../../../../model/valueSpecification/raw/V1_ClassInstance.js';
 import type { V1_GraphFetchTree } from '../../../../model/valueSpecification/raw/classInstance/graph/V1_GraphFetchTree.js';
 import type { V1_CByteArray } from '../../../../model/valueSpecification/raw/V1_CByteArray.js';
+import type { V1_NullValueSpecification } from '../../../../model/valueSpecification/V1_NullValueSpecification.js';
 
 class V1_ValueSpecificationPathResolver
   implements V1_ValueSpecificationVisitor<V1_ValueSpecification>
@@ -91,6 +92,12 @@ class V1_ValueSpecificationPathResolver
 
   visit_INTERNAL__UnknownValueSpecfication(
     spec: V1_INTERNAL__UnknownValueSpecification,
+  ): V1_ValueSpecification {
+    return spec;
+  }
+
+  visit_NullValueSpecification(
+    spec: V1_NullValueSpecification,
   ): V1_ValueSpecification {
     return spec;
   }

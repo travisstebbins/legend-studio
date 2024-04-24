@@ -95,6 +95,7 @@ export { HostedServiceDeploymentConfiguration } from './graph/metamodel/pure/fun
 export { RawLambda } from './graph/metamodel/pure/rawValueSpecification/RawLambda.js';
 export { RawVariableExpression } from './graph/metamodel/pure/rawValueSpecification/RawVariableExpression.js';
 export { INTERNAL__UnknownValueSpecification } from './graph/metamodel/pure/valueSpecification/INTERNAL__UnknownValueSpecification.js';
+export { NullValueSpecification } from './graph/metamodel/pure/valueSpecification/NullValueSpecification.js';
 export { VariableExpression } from './graph/metamodel/pure/valueSpecification/VariableExpression.js';
 export {
   KeyExpression,

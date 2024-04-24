@@ -60,6 +60,7 @@ import type {
   KeyExpression,
   KeyExpressionInstanceValue,
 } from '../../../graph/metamodel/pure/valueSpecification/KeyExpressionInstanceValue.js';
+import type { NullValueSpecification } from '../../../graph/metamodel/pure/valueSpecification/NullValueSpecification.js';
 
 const observe_Abstract_ValueSpecification = (
   metamodel: ValueSpecification,
@@ -226,6 +227,14 @@ const observe_INTERNAL__UnknownValueSpecification = skipObserved(
   },
 );
 
+const observe_NullValueSpecification = skipObserved(
+  (metamodel: NullValueSpecification): NullValueSpecification => {
+    observe_Abstract_ValueSpecification(metamodel);
+
+    return metamodel;
+  },
+);
+
 const observe_InstanceValue = skipObservedWithContext(
   (metamodel: InstanceValue, context): InstanceValue => {
     observe_Abstract_InstanceValue(metamodel, context);
@@ -256,6 +265,12 @@ class ValueSpecificationObserver implements ValueSpecificationVisitor<void> {
     valueSpecification: INTERNAL__PropagatedValue,
   ): void {
     observe_Abstract_ValueSpecification(valueSpecification);
+  }
+
+  visit_NullValueSpecification(
+    valueSpecification: NullValueSpecification,
+  ): void {
+    observe_NullValueSpecification(valueSpecification);
   }
 
   visit_FunctionExpression(valueSpecification: FunctionExpression): void {

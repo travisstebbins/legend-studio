@@ -107,6 +107,8 @@ import {
 } from '../../../../../../../../graph/metamodel/pure/valueSpecification/KeyExpressionInstanceValue.js';
 import { V1_SubTypeGraphFetchTree } from '../../../../model/valueSpecification/raw/classInstance/graph/V1_SubTypeGraphFetchTree.js';
 import { findMappingLocalProperty } from '../../../../../../../../graph/helpers/DSL_Mapping_Helper.js';
+import type { V1_NullValueSpecification } from '../../../../model/valueSpecification/V1_NullValueSpecification.js';
+import { NullValueSpecification } from '../../../../../../../../graph/metamodel/pure/valueSpecification/NullValueSpecification.js';
 
 const buildPrimtiveInstanceValue = (
   type: PRIMITIVE_TYPE,
@@ -146,6 +148,12 @@ export class V1_ValueSpecificationBuilder
       valueSpecification.content,
     );
     return metamodel;
+  }
+
+  visit_NullValueSpecification(
+    _: V1_NullValueSpecification,
+  ): ValueSpecification {
+    return new NullValueSpecification(Multiplicity.ONE);
   }
 
   visit_Variable(variable: V1_Variable): ValueSpecification {
