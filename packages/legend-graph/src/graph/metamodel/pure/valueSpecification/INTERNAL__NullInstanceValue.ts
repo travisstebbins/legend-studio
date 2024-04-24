@@ -14,27 +14,32 @@
  * limitations under the License.
  */
 
-import { type Hashable, hashArray } from '@finos/legend-shared';
+import { type ValueSpecificationVisitor } from './ValueSpecification.js';
+import { InstanceValue } from './InstanceValue.js';
+import type { GenericTypeReference } from '../packageableElements/domain/GenericTypeReference.js';
+import { Multiplicity } from '../packageableElements/domain/Multiplicity.js';
+import { hashArray } from '@finos/legend-shared';
 import { CORE_HASH_STRUCTURE } from '../../../Core_HashUtils.js';
-import {
-  type ValueSpecificationVisitor,
-  ValueSpecification,
-} from './ValueSpecification.js';
 
-export class NullValueSpecification
-  extends ValueSpecification
-  implements Hashable
-{
-  get hashCode(): string {
+export class INTERNAL__NullInstanceValue extends InstanceValue {
+  override genericType: GenericTypeReference;
+
+  constructor(genericType: GenericTypeReference) {
+    super(Multiplicity.ONE, genericType);
+    this.genericType = genericType;
+  }
+
+  override get hashCode(): string {
     return hashArray([
-      CORE_HASH_STRUCTURE.NULL_VALUE,
+      CORE_HASH_STRUCTURE.INTERNAL__NULL_INSTANCE_VALUE,
       this.genericType?.ownerReference.valueForSerialization ?? '',
+      this.multiplicity,
     ]);
   }
 
-  accept_ValueSpecificationVisitor<T>(
+  override accept_ValueSpecificationVisitor<T>(
     visitor: ValueSpecificationVisitor<T>,
   ): T {
-    return visitor.visit_NullValueSpecification(this);
+    return visitor.visit_INTERNAL__NullInstanceValue(this);
   }
 }

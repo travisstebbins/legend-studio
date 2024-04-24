@@ -57,6 +57,7 @@ import {
   type ObserverContext,
   matchFunctionName,
   isSubType,
+  INTERNAL__NullInstanceValue,
 } from '@finos/legend-graph';
 import {
   type DebouncedFunc,
@@ -992,7 +993,10 @@ export const BasicValueSpecificationEditor: React.FC<{
     selectorConfig,
     isConstant,
   } = props;
-  if (valueSpecification instanceof PrimitiveInstanceValue) {
+  if (
+    valueSpecification instanceof PrimitiveInstanceValue ||
+    valueSpecification instanceof INTERNAL__NullInstanceValue
+  ) {
     const _type = valueSpecification.genericType.value.rawType;
     switch (_type.path) {
       case PRIMITIVE_TYPE.STRING:

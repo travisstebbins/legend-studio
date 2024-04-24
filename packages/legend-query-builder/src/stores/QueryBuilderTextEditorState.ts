@@ -27,6 +27,7 @@ import {
   assertErrorThrown,
   LogEvent,
   ActionState,
+  IllegalStateError,
 } from '@finos/legend-shared';
 import { observable, action, flow, makeObservable, flowResult } from 'mobx';
 import type { QueryBuilderState } from './QueryBuilderState.js';
@@ -172,6 +173,11 @@ export class QueryBuilderTextEditorState extends LambdaEditorState {
 
   openModal(mode: QueryBuilderTextEditorMode): void {
     try {
+      if (this.queryBuilderState.filterState.hasNullFilterValues) {
+        throw new IllegalStateError(
+          'Can not open text editor while filters have null values',
+        );
+      }
       const rawLambda = this.queryBuilderState.buildQuery();
       if (mode === QueryBuilderTextEditorMode.TEXT) {
         this.setQueryRawLambdaState(new QueryBuilderRawLambdaState(rawLambda));

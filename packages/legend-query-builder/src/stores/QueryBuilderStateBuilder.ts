@@ -34,10 +34,10 @@ import {
   type LambdaFunction,
   type KeyExpressionInstanceValue,
   type INTERNAL__PropagatedValue,
+  type INTERNAL__NullInstanceValue,
   type ValueSpecification,
   type CollectionInstanceValue,
   type LambdaFunctionInstanceValue,
-  type NullValueSpecification,
   InstanceValue,
   INTERNAL__UnknownValueSpecification,
   matchFunctionName,
@@ -499,7 +499,7 @@ export class QueryBuilderValueSpecificationProcessor
     throw new UnsupportedOperationError();
   }
 
-  visit_NullValueSpecification(_: NullValueSpecification): void {
+  visit_INTERNAL__NullInstanceValue(_: INTERNAL__NullInstanceValue): void {
     throw new UnsupportedOperationError();
   }
 

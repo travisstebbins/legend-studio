@@ -86,8 +86,7 @@ import { V1_ClassInstance } from '../../../model/valueSpecification/raw/V1_Class
 import { V1_ClassInstanceType } from '../../pureProtocol/serializationHelpers/V1_ValueSpecificationSerializer.js';
 import type { KeyExpressionInstanceValue } from '../../../../../../../graph/metamodel/pure/valueSpecification/KeyExpressionInstanceValue.js';
 import { V1_CByteArray } from '../../../model/valueSpecification/raw/V1_CByteArray.js';
-import { V1_NullValueSpecification } from '../../../model/valueSpecification/V1_NullValueSpecification.js';
-import type { NullValueSpecification } from '../../../../../../../graph/metamodel/pure/valueSpecification/NullValueSpecification.js';
+import type { INTERNAL__NullInstanceValue } from '../../../../../../../graph/metamodel/pure/valueSpecification/INTERNAL__NullInstanceValue.js';
 
 class V1_ValueSpecificationTransformer
   implements ValueSpecificationVisitor<V1_ValueSpecification>
@@ -127,10 +126,14 @@ class V1_ValueSpecificationTransformer
     );
   }
 
-  visit_NullValueSpecification(
-    _: NullValueSpecification,
+  visit_INTERNAL__NullInstanceValue(
+    _: INTERNAL__NullInstanceValue,
   ): V1_ValueSpecification {
-    return new V1_NullValueSpecification();
+    // NOTE: this is a synthetic construct which is to be created ad-hoc in the application.
+    // This MUST NOT be transformed, serialized, and stored at all.
+    throw new UnsupportedOperationError(
+      `Can't transform nullable value: nullable value leakage detected`,
+    );
   }
 
   visit_FunctionExpression(
@@ -272,9 +275,6 @@ class V1_ValueSpecificationTransformer
     valueSpecification: PrimitiveInstanceValue,
   ): V1_ValueSpecification {
     const type = valueSpecification.genericType.value.rawType;
-    if (valueSpecification.values.length === 0) {
-      return new V1_NullValueSpecification();
-    }
     switch (type.name) {
       case PRIMITIVE_TYPE.INTEGER: {
         const cInteger = new V1_CInteger();

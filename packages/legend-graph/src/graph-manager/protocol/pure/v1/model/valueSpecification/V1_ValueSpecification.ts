@@ -35,13 +35,11 @@ import type { V1_INTERNAL__UnknownValueSpecification } from './V1_INTERNAL__Unkn
 import type { V1_GenericTypeInstance } from './raw/V1_GenericTypeInstance.js';
 import type { V1_ClassInstance } from './raw/V1_ClassInstance.js';
 import type { V1_CByteArray } from './raw/V1_CByteArray.js';
-import type { V1_NullValueSpecification } from './V1_NullValueSpecification.js';
 
 export interface V1_ValueSpecificationVisitor<T> {
   visit_INTERNAL__UnknownValueSpecfication(
     valueSpecification: V1_INTERNAL__UnknownValueSpecification,
   ): T;
-  visit_NullValueSpecification(valueSpeciciation: V1_NullValueSpecification): T;
 
   visit_Variable(valueSpecification: V1_Variable): T;
   visit_Lambda(valueSpecification: V1_Lambda): T;

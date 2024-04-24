@@ -44,6 +44,7 @@ import {
   observe_ValueSpecification,
   CollectionInstanceValue,
   InstanceValue,
+  INTERNAL__NullInstanceValue,
 } from '@finos/legend-graph';
 import { DEFAULT_LAMBDA_VARIABLE_NAME } from '../QueryBuilderConfig.js';
 import type { QueryBuilderProjectionColumnDragSource } from '../fetch-structure/tds/projection/QueryBuilderProjectionColumnState.js';
@@ -499,6 +500,7 @@ export class QueryBuilderFilterState
       expandTree: action,
       allValidationIssues: computed,
       hashCode: computed,
+      hasNullFilterValues: computed,
     });
 
     this.queryBuilderState = queryBuilderState;
@@ -977,6 +979,14 @@ export class QueryBuilderFilterState
       }
     });
     return validationIssues;
+  }
+
+  get hasNullFilterValues(): boolean {
+    return Array.from(this.nodes.values()).some(
+      (node) =>
+        node instanceof QueryBuilderFilterTreeConditionNodeData &&
+        node.condition.value instanceof INTERNAL__NullInstanceValue,
+    );
   }
 
   get hashCode(): string {
