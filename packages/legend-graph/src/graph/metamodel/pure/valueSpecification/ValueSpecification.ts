@@ -34,7 +34,11 @@ import type { VariableExpression } from './VariableExpression.js';
 import type { INTERNAL__PropagatedValue } from './INTERNAL__PropagatedValue.js';
 import type { Hashable } from '@finos/legend-shared';
 import type { KeyExpressionInstanceValue } from './KeyExpressionInstanceValue.js';
-import type { INTERNAL__NullInstanceValue } from './INTERNAL__NullInstanceValue.js';
+import type {
+  INTERNAL__NullPrimitiveInstanceValue,
+  INTERNAL__NullEnumValueInstanceValue,
+  INTERNAL__NullCollectionInstanceValue,
+} from './INTERNAL__NullInstanceValue.js';
 
 export interface ValueSpecificationVisitor<T> {
   visit_INTERNAL__UnknownValueSpecification(
@@ -43,8 +47,14 @@ export interface ValueSpecificationVisitor<T> {
   visit_INTERNAL__PropagatedValue(
     valueSpecification: INTERNAL__PropagatedValue,
   ): T;
-  visit_INTERNAL__NullInstanceValue(
-    valueSpecification: INTERNAL__NullInstanceValue,
+  visit_INTERNAL__NullPrimitiveInstanceValue(
+    valueSpecification: INTERNAL__NullPrimitiveInstanceValue,
+  ): T;
+  visit_INTERNAL__NullEnumValueInstanceValue(
+    valueSpecification: INTERNAL__NullEnumValueInstanceValue,
+  ): T;
+  visit_INTERNAL__NullCollectionInstanceValue(
+    valueSpecification: INTERNAL__NullCollectionInstanceValue,
   ): T;
 
   visit_FunctionExpression(valueSpecification: FunctionExpression): T;

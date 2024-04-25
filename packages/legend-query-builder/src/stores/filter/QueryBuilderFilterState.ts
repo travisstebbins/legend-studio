@@ -44,7 +44,9 @@ import {
   observe_ValueSpecification,
   CollectionInstanceValue,
   InstanceValue,
-  INTERNAL__NullInstanceValue,
+  INTERNAL__NullPrimitiveInstanceValue,
+  INTERNAL__NullEnumValueInstanceValue,
+  INTERNAL__NullCollectionInstanceValue,
 } from '@finos/legend-graph';
 import { DEFAULT_LAMBDA_VARIABLE_NAME } from '../QueryBuilderConfig.js';
 import type { QueryBuilderProjectionColumnDragSource } from '../fetch-structure/tds/projection/QueryBuilderProjectionColumnState.js';
@@ -985,7 +987,11 @@ export class QueryBuilderFilterState
     return Array.from(this.nodes.values()).some(
       (node) =>
         node instanceof QueryBuilderFilterTreeConditionNodeData &&
-        node.condition.value instanceof INTERNAL__NullInstanceValue,
+        (node.condition.value instanceof INTERNAL__NullPrimitiveInstanceValue ||
+          node.condition.value instanceof
+            INTERNAL__NullEnumValueInstanceValue ||
+          node.condition.value instanceof
+            INTERNAL__NullCollectionInstanceValue),
     );
   }
 

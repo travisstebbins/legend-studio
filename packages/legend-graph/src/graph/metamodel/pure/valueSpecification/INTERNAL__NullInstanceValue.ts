@@ -15,31 +15,32 @@
  */
 
 import { type ValueSpecificationVisitor } from './ValueSpecification.js';
-import { InstanceValue } from './InstanceValue.js';
-import type { GenericTypeReference } from '../packageableElements/domain/GenericTypeReference.js';
-import { Multiplicity } from '../packageableElements/domain/Multiplicity.js';
-import { hashArray } from '@finos/legend-shared';
-import { CORE_HASH_STRUCTURE } from '../../../Core_HashUtils.js';
+import {
+  CollectionInstanceValue,
+  EnumValueInstanceValue,
+  PrimitiveInstanceValue,
+} from './InstanceValue.js';
 
-export class INTERNAL__NullInstanceValue extends InstanceValue {
-  override genericType: GenericTypeReference;
-
-  constructor(genericType: GenericTypeReference) {
-    super(Multiplicity.ONE, genericType);
-    this.genericType = genericType;
-  }
-
-  override get hashCode(): string {
-    return hashArray([
-      CORE_HASH_STRUCTURE.INTERNAL__NULL_INSTANCE_VALUE,
-      this.genericType?.ownerReference.valueForSerialization ?? '',
-      this.multiplicity,
-    ]);
-  }
-
+export class INTERNAL__NullPrimitiveInstanceValue extends PrimitiveInstanceValue {
   override accept_ValueSpecificationVisitor<T>(
     visitor: ValueSpecificationVisitor<T>,
   ): T {
-    return visitor.visit_INTERNAL__NullInstanceValue(this);
+    return visitor.visit_INTERNAL__NullPrimitiveInstanceValue(this);
+  }
+}
+
+export class INTERNAL__NullEnumValueInstanceValue extends EnumValueInstanceValue {
+  override accept_ValueSpecificationVisitor<T>(
+    visitor: ValueSpecificationVisitor<T>,
+  ): T {
+    return visitor.visit_INTERNAL__NullEnumValueInstanceValue(this);
+  }
+}
+
+export class INTERNAL__NullCollectionInstanceValue extends CollectionInstanceValue {
+  override accept_ValueSpecificationVisitor<T>(
+    visitor: ValueSpecificationVisitor<T>,
+  ): T {
+    return visitor.visit_INTERNAL__NullCollectionInstanceValue(this);
   }
 }

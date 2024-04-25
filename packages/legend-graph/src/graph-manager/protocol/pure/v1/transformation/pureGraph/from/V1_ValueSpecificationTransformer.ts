@@ -86,7 +86,11 @@ import { V1_ClassInstance } from '../../../model/valueSpecification/raw/V1_Class
 import { V1_ClassInstanceType } from '../../pureProtocol/serializationHelpers/V1_ValueSpecificationSerializer.js';
 import type { KeyExpressionInstanceValue } from '../../../../../../../graph/metamodel/pure/valueSpecification/KeyExpressionInstanceValue.js';
 import { V1_CByteArray } from '../../../model/valueSpecification/raw/V1_CByteArray.js';
-import type { INTERNAL__NullInstanceValue } from '../../../../../../../graph/metamodel/pure/valueSpecification/INTERNAL__NullInstanceValue.js';
+import type {
+  INTERNAL__NullCollectionInstanceValue,
+  INTERNAL__NullEnumValueInstanceValue,
+  INTERNAL__NullPrimitiveInstanceValue,
+} from '../../../../../../../graph/metamodel/pure/valueSpecification/INTERNAL__NullInstanceValue.js';
 
 class V1_ValueSpecificationTransformer
   implements ValueSpecificationVisitor<V1_ValueSpecification>
@@ -126,13 +130,33 @@ class V1_ValueSpecificationTransformer
     );
   }
 
-  visit_INTERNAL__NullInstanceValue(
-    _: INTERNAL__NullInstanceValue,
+  visit_INTERNAL__NullPrimitiveInstanceValue(
+    _: INTERNAL__NullPrimitiveInstanceValue,
   ): V1_ValueSpecification {
     // NOTE: this is a synthetic construct which is to be created ad-hoc in the application.
     // This MUST NOT be transformed, serialized, and stored at all.
     throw new UnsupportedOperationError(
-      `Can't transform nullable value: nullable value leakage detected`,
+      `Can't transform null value: null value leakage detected`,
+    );
+  }
+
+  visit_INTERNAL__NullEnumValueInstanceValue(
+    _: INTERNAL__NullEnumValueInstanceValue,
+  ): V1_ValueSpecification {
+    // NOTE: this is a synthetic construct which is to be created ad-hoc in the application.
+    // This MUST NOT be transformed, serialized, and stored at all.
+    throw new UnsupportedOperationError(
+      `Can't transform null value: null value leakage detected`,
+    );
+  }
+
+  visit_INTERNAL__NullCollectionInstanceValue(
+    _: INTERNAL__NullCollectionInstanceValue,
+  ): V1_ValueSpecification {
+    // NOTE: this is a synthetic construct which is to be created ad-hoc in the application.
+    // This MUST NOT be transformed, serialized, and stored at all.
+    throw new UnsupportedOperationError(
+      `Can't transform null value: null value leakage detected`,
     );
   }
 

@@ -34,7 +34,9 @@ import {
   type LambdaFunction,
   type KeyExpressionInstanceValue,
   type INTERNAL__PropagatedValue,
-  type INTERNAL__NullInstanceValue,
+  type INTERNAL__NullPrimitiveInstanceValue,
+  type INTERNAL__NullEnumValueInstanceValue,
+  type INTERNAL__NullCollectionInstanceValue,
   type ValueSpecification,
   type CollectionInstanceValue,
   type LambdaFunctionInstanceValue,
@@ -499,7 +501,21 @@ export class QueryBuilderValueSpecificationProcessor
     throw new UnsupportedOperationError();
   }
 
-  visit_INTERNAL__NullInstanceValue(_: INTERNAL__NullInstanceValue): void {
+  visit_INTERNAL__NullPrimitiveInstanceValue(
+    _: INTERNAL__NullPrimitiveInstanceValue,
+  ): void {
+    throw new UnsupportedOperationError();
+  }
+
+  visit_INTERNAL__NullEnumValueInstanceValue(
+    _: INTERNAL__NullEnumValueInstanceValue,
+  ): void {
+    throw new UnsupportedOperationError();
+  }
+
+  visit_INTERNAL__NullCollectionInstanceValue(
+    _: INTERNAL__NullCollectionInstanceValue,
+  ): void {
     throw new UnsupportedOperationError();
   }
 

@@ -117,7 +117,11 @@ export {
   PrimitiveInstanceValue,
 } from './graph/metamodel/pure/valueSpecification/InstanceValue.js';
 export { INTERNAL__PropagatedValue } from './graph/metamodel/pure/valueSpecification/INTERNAL__PropagatedValue.js';
-export { INTERNAL__NullInstanceValue } from './graph/metamodel/pure/valueSpecification/INTERNAL__NullInstanceValue.js';
+export {
+  INTERNAL__NullPrimitiveInstanceValue,
+  INTERNAL__NullEnumValueInstanceValue,
+  INTERNAL__NullCollectionInstanceValue,
+} from './graph/metamodel/pure/valueSpecification/INTERNAL__NullInstanceValue.js';
 export {
   ValueSpecification,
   type ValueSpecificationVisitor,

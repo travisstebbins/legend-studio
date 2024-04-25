@@ -42,7 +42,9 @@ import {
   CORE_PURE_PATH,
   buildRawLambdaFromLambdaFunction,
   getValueSpecificationReturnType,
-  INTERNAL__NullInstanceValue,
+  INTERNAL__NullPrimitiveInstanceValue,
+  INTERNAL__NullEnumValueInstanceValue,
+  INTERNAL__NullCollectionInstanceValue,
 } from '@finos/legend-graph';
 import {
   Randomizer,
@@ -87,10 +89,29 @@ export const buildPrimitiveInstanceValue = (
   return instance;
 };
 
-export const buildInternalNullInstanceValue = (
+export const buildInternalNullPrimitiveInstanceValue = (
   rawType: Type,
-): INTERNAL__NullInstanceValue => {
-  const instance = new INTERNAL__NullInstanceValue(
+): INTERNAL__NullPrimitiveInstanceValue => {
+  const instance = new INTERNAL__NullPrimitiveInstanceValue(
+    GenericTypeExplicitReference.create(new GenericType(rawType)),
+  );
+  return instance;
+};
+
+export const buildInternalNullEnumValueInstanceValue = (
+  rawType: Type,
+): INTERNAL__NullEnumValueInstanceValue => {
+  const instance = new INTERNAL__NullEnumValueInstanceValue(
+    GenericTypeExplicitReference.create(new GenericType(rawType)),
+  );
+  return instance;
+};
+
+export const buildInternalNullCollectionInstanceValue = (
+  rawType: Type,
+): INTERNAL__NullCollectionInstanceValue => {
+  const instance = new INTERNAL__NullCollectionInstanceValue(
+    Multiplicity.ONE,
     GenericTypeExplicitReference.create(new GenericType(rawType)),
   );
   return instance;

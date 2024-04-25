@@ -43,7 +43,10 @@ import {
   unwrapNotExpression,
 } from '../../QueryBuilderValueSpecificationHelper.js';
 import { QUERY_BUILDER_STATE_HASH_STRUCTURE } from '../../QueryBuilderStateHashUtils.js';
-import { buildInternalNullInstanceValue } from '../../shared/ValueSpecificationEditorHelper.js';
+import {
+  buildInternalNullEnumValueInstanceValue,
+  buildInternalNullPrimitiveInstanceValue,
+} from '../../shared/ValueSpecificationEditorHelper.js';
 
 export class QueryBuilderFilterOperator_Equal
   extends QueryBuilderFilterOperator
@@ -108,19 +111,19 @@ export class QueryBuilderFilterOperator_Equal
       case PRIMITIVE_TYPE.DECIMAL:
       case PRIMITIVE_TYPE.FLOAT:
       case PRIMITIVE_TYPE.INTEGER: {
-        return buildInternalNullInstanceValue(
+        return buildInternalNullPrimitiveInstanceValue(
           graph.getPrimitiveType(propertyType.path),
         );
       }
       case PRIMITIVE_TYPE.DATE: {
-        return buildInternalNullInstanceValue(
+        return buildInternalNullPrimitiveInstanceValue(
           graph.getPrimitiveType(PRIMITIVE_TYPE.STRICTDATE),
         );
       }
       default:
         if (propertyType instanceof Enumeration) {
           if (propertyType.values.length > 0) {
-            return buildInternalNullInstanceValue(propertyType);
+            return buildInternalNullEnumValueInstanceValue(propertyType);
           }
         }
         throw new UnsupportedOperationError(

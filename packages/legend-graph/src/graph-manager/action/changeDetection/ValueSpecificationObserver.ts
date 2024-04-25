@@ -60,7 +60,11 @@ import type {
   KeyExpression,
   KeyExpressionInstanceValue,
 } from '../../../graph/metamodel/pure/valueSpecification/KeyExpressionInstanceValue.js';
-import type { INTERNAL__NullInstanceValue } from '../../../graph/metamodel/pure/valueSpecification/INTERNAL__NullInstanceValue.js';
+import type {
+  INTERNAL__NullCollectionInstanceValue,
+  INTERNAL__NullEnumValueInstanceValue,
+  INTERNAL__NullPrimitiveInstanceValue,
+} from '../../../graph/metamodel/pure/valueSpecification/INTERNAL__NullInstanceValue.js';
 
 const observe_Abstract_ValueSpecification = (
   metamodel: ValueSpecification,
@@ -259,8 +263,20 @@ class ValueSpecificationObserver implements ValueSpecificationVisitor<void> {
     observe_Abstract_ValueSpecification(valueSpecification);
   }
 
-  visit_INTERNAL__NullInstanceValue(
-    valueSpecification: INTERNAL__NullInstanceValue,
+  visit_INTERNAL__NullPrimitiveInstanceValue(
+    valueSpecification: INTERNAL__NullPrimitiveInstanceValue,
+  ): void {
+    observe_InstanceValue(valueSpecification, this.observerContext);
+  }
+
+  visit_INTERNAL__NullEnumValueInstanceValue(
+    valueSpecification: INTERNAL__NullEnumValueInstanceValue,
+  ): void {
+    observe_InstanceValue(valueSpecification, this.observerContext);
+  }
+
+  visit_INTERNAL__NullCollectionInstanceValue(
+    valueSpecification: INTERNAL__NullCollectionInstanceValue,
   ): void {
     observe_InstanceValue(valueSpecification, this.observerContext);
   }

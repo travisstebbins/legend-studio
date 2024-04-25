@@ -57,7 +57,9 @@ import {
   type ObserverContext,
   matchFunctionName,
   isSubType,
-  INTERNAL__NullInstanceValue,
+  INTERNAL__NullPrimitiveInstanceValue,
+  INTERNAL__NullEnumValueInstanceValue,
+  INTERNAL__NullCollectionInstanceValue,
 } from '@finos/legend-graph';
 import {
   type DebouncedFunc,
@@ -995,7 +997,7 @@ export const BasicValueSpecificationEditor: React.FC<{
   } = props;
   if (
     valueSpecification instanceof PrimitiveInstanceValue ||
-    valueSpecification instanceof INTERNAL__NullInstanceValue
+    valueSpecification instanceof INTERNAL__NullPrimitiveInstanceValue
   ) {
     const _type = valueSpecification.genericType.value.rawType;
     switch (_type.path) {
@@ -1054,7 +1056,10 @@ export const BasicValueSpecificationEditor: React.FC<{
       default:
         return <UnsupportedValueSpecificationEditor />;
     }
-  } else if (valueSpecification instanceof EnumValueInstanceValue) {
+  } else if (
+    valueSpecification instanceof EnumValueInstanceValue ||
+    valueSpecification instanceof INTERNAL__NullEnumValueInstanceValue
+  ) {
     return (
       <EnumValueInstanceValueEditor
         valueSpecification={valueSpecification}
@@ -1065,7 +1070,8 @@ export const BasicValueSpecificationEditor: React.FC<{
       />
     );
   } else if (
-    valueSpecification instanceof CollectionInstanceValue &&
+    (valueSpecification instanceof CollectionInstanceValue ||
+      valueSpecification instanceof INTERNAL__NullCollectionInstanceValue) &&
     valueSpecification.genericType
   ) {
     // NOTE: since when we fill in the arguments, `[]` (or `nullish` value in Pure)
