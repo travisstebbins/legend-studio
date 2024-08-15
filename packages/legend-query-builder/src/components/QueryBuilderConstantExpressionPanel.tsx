@@ -37,8 +37,8 @@ import {
   SquareIcon,
 } from '@finos/legend-art';
 import {
-  type Type,
   type ValueSpecification,
+  type Type,
   PrimitiveType,
   VariableExpression,
   Multiplicity,
@@ -47,6 +47,7 @@ import {
   CollectionInstanceValue,
   GenericTypeExplicitReference,
   GenericType,
+  Enumeration,
 } from '@finos/legend-graph';
 import { observer } from 'mobx-react-lite';
 import type { QueryBuilderState } from '../stores/QueryBuilderState.js';
@@ -113,13 +114,16 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
       PrimitiveType.STRICTDATE,
       PrimitiveType.DATETIME,
     ];
-    const SUPPORTED_LIST_TYPES: PrimitiveType[] = [
-      PrimitiveType.STRING,
-      PrimitiveType.NUMBER,
-      PrimitiveType.INTEGER,
-      PrimitiveType.FLOAT,
-      PrimitiveType.DECIMAL,
-    ];
+    const doesTypeSupportList = (type: Type): boolean => {
+      const SUPPORTED_LIST_TYPES: PrimitiveType[] = [
+        PrimitiveType.STRING,
+        PrimitiveType.NUMBER,
+        PrimitiveType.INTEGER,
+        PrimitiveType.FLOAT,
+        PrimitiveType.DECIMAL,
+      ];
+      return SUPPORTED_LIST_TYPES.includes(type) || type instanceof Enumeration;
+    };
 
     // Name state
     const stateName = varExpression.name;
@@ -131,7 +135,7 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
     const stateType =
       constantState.value.genericType?.value.rawType ?? PrimitiveType.STRING;
     const [selectedType, setSelectedType] = useState(
-      buildElementOption(stateType),
+      buildElementOption<Type>(stateType),
     );
 
     // Multiplicity state
@@ -166,7 +170,7 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
           queryBuilderState.INTERNAL__enableInitializingDefaultSimpleExpressionValue,
         );
         setSelectedValue(newValSpec);
-        if (!SUPPORTED_LIST_TYPES.includes(val.value)) {
+        if (!doesTypeSupportList(val.value)) {
           setAllowList(false);
         }
       }
@@ -341,16 +345,16 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
               <div
                 className={clsx('panel__content__form__section__toggler', {
                   'panel__content__form__section__toggler--disabled':
-                    !SUPPORTED_LIST_TYPES.includes(selectedType.value),
+                    !doesTypeSupportList(selectedType.value),
                 })}
                 onClick={() => {
-                  if (SUPPORTED_LIST_TYPES.includes(selectedType.value)) {
+                  if (doesTypeSupportList(selectedType.value)) {
                     setAllowList(!allowList);
                   }
                 }}
               >
                 <button
-                  disabled={!SUPPORTED_LIST_TYPES.includes(selectedType.value)}
+                  disabled={!doesTypeSupportList(selectedType.value)}
                   className={clsx(
                     'panel__content__form__section__toggler__btn',
                     {
