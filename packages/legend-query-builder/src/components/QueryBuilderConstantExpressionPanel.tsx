@@ -21,6 +21,7 @@ import {
 } from '@finos/legend-lego/graph-editor';
 import {
   BlankPanelPlaceholder,
+  CheckSquareIcon,
   clsx,
   CustomSelectorInput,
   Dialog,
@@ -33,6 +34,7 @@ import {
   PanelFormSection,
   PanelFormValidatedTextField,
   PlusIcon,
+  SquareIcon,
 } from '@finos/legend-art';
 import {
   type Type,
@@ -254,6 +256,41 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
                       .TEMPORARY__isLightColorThemeEnabled,
                 })}
               />
+            </PanelFormSection>
+            <PanelFormSection>
+              <div className="panel__content__form__section__header__label">
+                Multiplicity
+              </div>
+              <div className="panel__content__form__section__header__prompt">
+                The multiplicity of the constant determines how many values the
+                constant can have. The default is a mandatory single value.
+              </div>
+              <div
+                className="panel__content__form__section__toggler"
+                onClick={() =>
+                  constantState.setAllowList(!constantState.allowList)
+                }
+              >
+                <button
+                  className={clsx(
+                    'panel__content__form__section__toggler__btn',
+                    {
+                      'panel__content__form__section__toggler__btn--toggled':
+                        constantState.allowList,
+                    },
+                  )}
+                  tabIndex={-1}
+                >
+                  {constantState.allowList ? (
+                    <CheckSquareIcon />
+                  ) : (
+                    <SquareIcon />
+                  )}
+                </button>
+                <div className="panel__content__form__section__toggler__prompt">
+                  Allow a list of values to be specified
+                </div>
+              </div>
             </PanelFormSection>
             <PanelFormSection>
               <div className="panel__content__form__section__header__label">
