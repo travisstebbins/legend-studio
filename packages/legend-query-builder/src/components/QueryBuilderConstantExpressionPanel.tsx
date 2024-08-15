@@ -100,57 +100,9 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
     const allVariableNames = queryBuilderState.allVariableNames;
     const isCreating = !variableState.constants.includes(constantState);
 
-    // Name
-    const stateName = varExpression.name;
-    const [selectedName, setSelectedName] = useState(stateName);
-    const [isNameValid, setIsNameValid] = useState<boolean>(true);
-    const [hasEditedName, setHasEditedName] = useState<boolean>(false);
-    const handleNameInputRef = useCallback(
-      (ref: HTMLInputElement | null): void => {
-        ref?.focus();
-      },
-      [],
-    );
-
-    // Value
-    const stateValue = constantState.value;
-    const [selectedValue, setSelectedValue] = useState(
-      cloneValueSpecification(stateValue, queryBuilderState.observerContext),
-    );
-    const [shouldFocusOnValue, setShouldFocusOnValue] =
-      useState<boolean>(!isCreating);
-    const handleValueInputRef = useCallback(
-      (ref: HTMLInputElement | null): void => {
-        if (shouldFocusOnValue) {
-          ref?.focus();
-          setShouldFocusOnValue(false);
-        }
-      },
-      [shouldFocusOnValue],
-    );
-
-    // Type
-    const stateType =
-      constantState.value.genericType?.value.rawType ?? PrimitiveType.STRING;
-    const [selectedType, setSelectedType] = useState(
-      buildElementOption(stateType),
-    );
-    const changeType = (val: PackageableElementOption<Type>): void => {
-      if (val.value !== selectedType.value) {
-        setSelectedType(val);
-        const newValSpec = buildDefaultInstanceValue(
-          queryBuilderState.graphManagerState.graph,
-          val.value,
-          queryBuilderState.observerContext,
-          queryBuilderState.INTERNAL__enableInitializingDefaultSimpleExpressionValue,
-        );
-        setSelectedValue(newValSpec);
-      }
-      setShouldFocusOnValue(true);
-    };
     // Disabling binary, strict time, latest date, and byte as we
     // don't support these constant types
-    const supportedPrimitiveTypes: PrimitiveType[] = [
+    const SUPPORTED_PRIMITIVE_TYPES: PrimitiveType[] = [
       PrimitiveType.STRING,
       PrimitiveType.BOOLEAN,
       PrimitiveType.NUMBER,
@@ -161,9 +113,68 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
       PrimitiveType.STRICTDATE,
       PrimitiveType.DATETIME,
     ];
+    const SUPPORTED_LIST_TYPES: PrimitiveType[] = [
+      PrimitiveType.STRING,
+      PrimitiveType.NUMBER,
+      PrimitiveType.INTEGER,
+      PrimitiveType.FLOAT,
+      PrimitiveType.DECIMAL,
+    ];
+
+    // Name state
+    const stateName = varExpression.name;
+    const [selectedName, setSelectedName] = useState(stateName);
+    const [isNameValid, setIsNameValid] = useState<boolean>(true);
+    const [hasEditedName, setHasEditedName] = useState<boolean>(false);
+
+    // Type state
+    const stateType =
+      constantState.value.genericType?.value.rawType ?? PrimitiveType.STRING;
+    const [selectedType, setSelectedType] = useState(
+      buildElementOption(stateType),
+    );
+
+    // Multiplicity state
+    const [allowList, setAllowList] = useState(constantState.allowList);
+
+    // Value state
+    const [selectedValue, setSelectedValue] = useState(
+      cloneValueSpecification(
+        constantState.value,
+        queryBuilderState.observerContext,
+      ),
+    );
+    const [shouldFocusOnValue, setShouldFocusOnValue] =
+      useState<boolean>(!isCreating);
+
+    // Name handlers
+    const handleNameInputRef = useCallback(
+      (ref: HTMLInputElement | null): void => {
+        ref?.focus();
+      },
+      [],
+    );
+
+    // Type handlers
+    const changeType = (val: PackageableElementOption<Type>): void => {
+      if (val.value !== selectedType.value) {
+        setSelectedType(val);
+        const newValSpec = buildDefaultInstanceValue(
+          queryBuilderState.graphManagerState.graph,
+          val.value,
+          queryBuilderState.observerContext,
+          queryBuilderState.INTERNAL__enableInitializingDefaultSimpleExpressionValue,
+        );
+        setSelectedValue(newValSpec);
+        if (!SUPPORTED_LIST_TYPES.includes(val.value)) {
+          setAllowList(false);
+        }
+      }
+      setShouldFocusOnValue(true);
+    };
     const typeOptions: PackageableElementOption<Type>[] =
       queryBuilderState.graphManagerState.graph.primitiveTypes
-        .filter((type) => supportedPrimitiveTypes.includes(type))
+        .filter((type) => SUPPORTED_PRIMITIVE_TYPES.includes(type))
         .map(buildElementOption)
         .concat(
           queryBuilderState.graphManagerState.graph.enumerations.map(
@@ -171,9 +182,7 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
           ),
         );
 
-    // Multiplicity
-    const [allowList, setAllowList] = useState(constantState.allowList);
-
+    // Multiplicity handlers
     useEffect(() => {
       if (allowList && !(selectedValue instanceof CollectionInstanceValue)) {
         const newValueSpec = new CollectionInstanceValue(
@@ -216,6 +225,17 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
       selectedType.value,
       selectedValue,
     ]);
+
+    // Value handlers
+    const handleValueInputRef = useCallback(
+      (ref: HTMLInputElement | null): void => {
+        if (shouldFocusOnValue) {
+          ref?.focus();
+          setShouldFocusOnValue(false);
+        }
+      },
+      [shouldFocusOnValue],
+    );
 
     // Modal lifecycle actions
     const handleCancel = (): void => {
@@ -323,6 +343,7 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
                 onClick={() => setAllowList(!allowList)}
               >
                 <button
+                  disabled={!SUPPORTED_LIST_TYPES.includes(selectedType.value)}
                   className={clsx(
                     'panel__content__form__section__toggler__btn',
                     {
