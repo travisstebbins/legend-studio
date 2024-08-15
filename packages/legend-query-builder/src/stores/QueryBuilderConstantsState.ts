@@ -100,6 +100,7 @@ export class QueryBuilderSimpleConstantExpressionState
   implements Hashable
 {
   value: ValueSpecification;
+  allowList = false;
 
   constructor(
     queryBuilderState: QueryBuilderState,
@@ -110,8 +111,10 @@ export class QueryBuilderSimpleConstantExpressionState
     makeObservable(this, {
       variable: observable,
       value: observable,
+      allowList: observable,
       setValueSpec: action,
       changeValSpecType: action,
+      setAllowList: action,
     });
     this.value = observe_ValueSpecification(
       value,
@@ -164,6 +167,10 @@ export class QueryBuilderSimpleConstantExpressionState
         GenericTypeExplicitReference.create(new GenericType(valueSpecType)),
       );
     }
+  }
+
+  setAllowList(value: boolean): void {
+    this.allowList = value;
   }
 
   override buildLetAssignmentValue(): ValueSpecification {
