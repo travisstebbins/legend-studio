@@ -435,7 +435,16 @@
   &__section__toggler {
     @include flexVCenter;
 
+    width: fit-content;
     cursor: pointer;
+
+    &--disabled {
+      cursor: not-allowed;
+
+      .panel__content__form__section__toggler__prompt {
+        cursor: not-allowed;
+      }
+    }
   }
 
   &__section__toggler__btn {

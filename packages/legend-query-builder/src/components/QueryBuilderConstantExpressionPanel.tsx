@@ -339,8 +339,15 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
                 constant can have. The default is a mandatory single value.
               </div>
               <div
-                className="panel__content__form__section__toggler"
-                onClick={() => setAllowList(!allowList)}
+                className={clsx('panel__content__form__section__toggler', {
+                  'panel__content__form__section__toggler--disabled':
+                    !SUPPORTED_LIST_TYPES.includes(selectedType.value),
+                })}
+                onClick={() => {
+                  if (SUPPORTED_LIST_TYPES.includes(selectedType.value)) {
+                    setAllowList(!allowList);
+                  }
+                }}
               >
                 <button
                   disabled={!SUPPORTED_LIST_TYPES.includes(selectedType.value)}
