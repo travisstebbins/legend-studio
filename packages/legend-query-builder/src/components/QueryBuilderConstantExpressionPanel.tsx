@@ -44,6 +44,9 @@ import {
   Multiplicity,
   isValidIdentifier,
   InstanceValue,
+  CollectionInstanceValue,
+  GenericTypeExplicitReference,
+  GenericType,
 } from '@finos/legend-graph';
 import { observer } from 'mobx-react-lite';
 import type { QueryBuilderState } from '../stores/QueryBuilderState.js';
@@ -61,7 +64,10 @@ import { BasicValueSpecificationEditor } from './shared/BasicValueSpecificationE
 import { QUERY_BUILDER_TEST_ID } from '../__lib__/QueryBuilderTesting.js';
 import { QUERY_BUILDER_DOCUMENTATION_KEY } from '../__lib__/QueryBuilderDocumentation.js';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { variableExpression_setName } from '../stores/shared/ValueSpecificationModifierHelper.js';
+import {
+  instanceValue_setValues,
+  variableExpression_setName,
+} from '../stores/shared/ValueSpecificationModifierHelper.js';
 import { LambdaEditor } from './shared/LambdaEditor.js';
 import { VariableViewer } from './shared/QueryBuilderVariableSelector.js';
 import { flowResult } from 'mobx';
@@ -165,6 +171,52 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
           ),
         );
 
+    // Multiplicity
+    const [allowList, setAllowList] = useState(constantState.allowList);
+
+    useEffect(() => {
+      if (allowList && !(selectedValue instanceof CollectionInstanceValue)) {
+        const newValueSpec = new CollectionInstanceValue(
+          Multiplicity.ONE,
+          GenericTypeExplicitReference.create(
+            new GenericType(selectedType.value),
+          ),
+        );
+        if (
+          selectedValue instanceof InstanceValue &&
+          isValidInstanceValue(selectedValue) &&
+          selectedValue.values[0] !== ''
+        ) {
+          instanceValue_setValues(
+            newValueSpec,
+            [selectedValue],
+            queryBuilderState.observerContext,
+          );
+        }
+        setSelectedValue(newValueSpec);
+      } else if (
+        !allowList &&
+        selectedValue instanceof CollectionInstanceValue
+      ) {
+        setSelectedValue(
+          selectedValue.values[0] ??
+            buildDefaultInstanceValue(
+              queryBuilderState.graphManagerState.graph,
+              selectedType.value,
+              queryBuilderState.observerContext,
+              queryBuilderState.INTERNAL__enableInitializingDefaultSimpleExpressionValue,
+            ),
+        );
+      }
+    }, [
+      allowList,
+      queryBuilderState.INTERNAL__enableInitializingDefaultSimpleExpressionValue,
+      queryBuilderState.graphManagerState.graph,
+      queryBuilderState.observerContext,
+      selectedType.value,
+      selectedValue,
+    ]);
+
     // Modal lifecycle actions
     const handleCancel = (): void => {
       variableState.setSelectedConstant(undefined);
@@ -174,6 +226,7 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
       variableExpression_setName(varExpression, selectedName);
       constantState.changeValSpecType(selectedType.value);
       constantState.setValueSpec(selectedValue);
+      constantState.setAllowList(allowList);
       if (isCreating) {
         variableState.addConstant(constantState);
       }
@@ -267,25 +320,19 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
               </div>
               <div
                 className="panel__content__form__section__toggler"
-                onClick={() =>
-                  constantState.setAllowList(!constantState.allowList)
-                }
+                onClick={() => setAllowList(!allowList)}
               >
                 <button
                   className={clsx(
                     'panel__content__form__section__toggler__btn',
                     {
                       'panel__content__form__section__toggler__btn--toggled':
-                        constantState.allowList,
+                        allowList,
                     },
                   )}
                   tabIndex={-1}
                 >
-                  {constantState.allowList ? (
-                    <CheckSquareIcon />
-                  ) : (
-                    <SquareIcon />
-                  )}
+                  {allowList ? <CheckSquareIcon /> : <SquareIcon />}
                 </button>
                 <div className="panel__content__form__section__toggler__prompt">
                   Allow a list of values to be specified
