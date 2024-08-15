@@ -32,6 +32,7 @@ import {
   type VariableExpression,
   type ValueSpecification,
   SimpleFunctionExpression,
+  CollectionInstanceValue,
 } from '@finos/legend-graph';
 import { observer } from 'mobx-react-lite';
 import { useDrag } from 'react-dnd';
@@ -61,10 +62,19 @@ export const getNameOfValueSpecification = (
       return possibleDateLabel;
     }
   }
-  return getValueSpecificationStringValue(
+  return `${
+    value instanceof CollectionInstanceValue
+      ? `List(${
+          value.values.length === 0 ? 'empty' : value.values.length
+        })${value.values.length === 0 ? '' : ': '}`
+      : ''
+  }${getValueSpecificationStringValue(
     value,
     queryBuilderState.applicationStore,
-  );
+    {
+      omitEnumOwnerName: true,
+    },
+  )}`;
 };
 
 const QueryBuilderVariableContextMenu = observer(
