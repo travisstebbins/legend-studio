@@ -170,6 +170,10 @@ export class QueryBuilderFilterOperator_In
     );
   }
 
+  override get isListOperator(): boolean {
+    return true;
+  }
+
   get hashCode(): string {
     return hashArray([QUERY_BUILDER_STATE_HASH_STRUCTURE.FILTER_OPERATOR_IN]);
   }

@@ -107,6 +107,12 @@ export const variableExpression_setName = action(
   },
 );
 
+export const variableExpression_setMultiplicity = action(
+  (target: VariableExpression, val: Multiplicity): void => {
+    target.multiplicity = val;
+  },
+);
+
 export const collectionInstanceValue_setValues = action(
   (
     target: CollectionInstanceValue,

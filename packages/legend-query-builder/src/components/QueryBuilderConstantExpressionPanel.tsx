@@ -67,6 +67,7 @@ import { QUERY_BUILDER_DOCUMENTATION_KEY } from '../__lib__/QueryBuilderDocument
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   instanceValue_setValues,
+  variableExpression_setMultiplicity,
   variableExpression_setName,
 } from '../stores/shared/ValueSpecificationModifierHelper.js';
 import { LambdaEditor } from './shared/LambdaEditor.js';
@@ -248,6 +249,13 @@ const QueryBuilderSimpleConstantExpressionEditor = observer(
 
     const handleApply = (): void => {
       variableExpression_setName(varExpression, selectedName);
+      variableExpression_setMultiplicity(
+        varExpression,
+        new Multiplicity(
+          selectedValue.multiplicity.lowerBound,
+          selectedValue.multiplicity.upperBound,
+        ),
+      );
       constantState.changeValSpecType(selectedType.value);
       constantState.setValueSpec(selectedValue);
       constantState.setAllowList(allowList);

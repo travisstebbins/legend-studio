@@ -187,13 +187,14 @@ export const VariableViewer = observer(
       actions?.deleteVariable();
     };
 
-    const [, dragConnector, dragPreviewConnector] = useDrag(
-      () => ({
-        type: QUERY_BUILDER_VARIABLE_DND_TYPE,
-        item: { variable: variable },
-      }),
-      [variable],
-    );
+    const [, dragConnector, dragPreviewConnector] =
+      useDrag<QueryBuilderVariableDragSource>(
+        () => ({
+          type: QUERY_BUILDER_VARIABLE_DND_TYPE,
+          item: { variable: variable, value: value?.val },
+        }),
+        [variable],
+      );
     useDragPreviewLayer(dragPreviewConnector);
 
     return (

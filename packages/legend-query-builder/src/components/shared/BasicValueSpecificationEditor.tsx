@@ -172,6 +172,7 @@ export const QUERY_BUILDER_VARIABLE_DND_TYPE = 'VARIABLE';
 
 export interface QueryBuilderVariableDragSource {
   variable: VariableExpression;
+  value: ValueSpecification | undefined;
 }
 
 const VariableExpressionParameterEditor = observer(

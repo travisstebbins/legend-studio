@@ -51,5 +51,9 @@ export abstract class QueryBuilderFilterOperator implements Hashable {
     expression: SimpleFunctionExpression,
   ): FilterConditionState | undefined;
 
+  get isListOperator(): boolean {
+    return false;
+  }
+
   abstract get hashCode(): string;
 }

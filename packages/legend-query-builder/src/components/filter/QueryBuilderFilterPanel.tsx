@@ -108,6 +108,7 @@ import {
   PrimitiveType,
   Class,
   Enumeration,
+  CollectionInstanceValue,
 } from '@finos/legend-graph';
 import {
   type QueryBuilderProjectionColumnDragSource,
@@ -908,8 +909,26 @@ const QueryBuilderFilterConditionEditor = observer(
                 );
               }
             } else if (type === QUERY_BUILDER_VARIABLE_DND_TYPE) {
-              const variable = (item as QueryBuilderVariableDragSource)
-                .variable;
+              const { variable, value } =
+                item as QueryBuilderVariableDragSource;
+              if (
+                value instanceof CollectionInstanceValue &&
+                !(
+                  node.condition.operator instanceof
+                  QueryBuilderFilterOperator_In
+                ) &&
+                !(
+                  node.condition.operator instanceof
+                  QueryBuilderFilterOperator_NotIn
+                )
+              ) {
+                const listOperator = node.condition.operators.find(
+                  (operator) => operator.isListOperator,
+                );
+                if (listOperator) {
+                  node.condition.setOperator(listOperator);
+                }
+              }
               node.condition.buildRightConditionValueFromValueSpec(variable);
             } else {
               applicationStore.notificationService.notifyWarning(
