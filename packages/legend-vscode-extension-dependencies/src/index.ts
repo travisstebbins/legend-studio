@@ -98,11 +98,14 @@ export {
   PureExecution,
   RawLambda,
   RawVariableExpression,
+  RelationalExecutionActivities,
   RelationTypeMetadata,
   resolvePackagePathAndElementName,
   Service,
   ServiceExecution,
   ServiceExecutionMode,
+  SUPPORTED_FUNCTIONS,
+  TDSExecutionResult,
   TEMPORARY__AbstractEngineConfig,
   V1_AppliedFunction,
   V1_ArtifactGenerationExtensionInput,
@@ -270,3 +273,14 @@ export {
   pureExecution_setFunction,
   service_setExecution,
 } from '@finos/legend-application-studio';
+
+export {
+  type CompletionItem,
+  type DataCubeEngineConfiguration,
+  type DataCubeInitialInput,
+  type RelationType,
+  DataCube,
+  DataCubeEngine,
+  DataCubeQuery,
+  DataCubeSource,
+} from '@finos/legend-data-cube';
