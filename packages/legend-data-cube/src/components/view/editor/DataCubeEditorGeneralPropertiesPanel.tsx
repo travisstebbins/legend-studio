@@ -22,13 +22,20 @@ import {
   DataCubeFontFormatUnderlineVariant,
   DataCubeFontTextAlignment,
   DataCubeQuerySortDirection,
-  DEFAULT_BACKGROUND_COLOR,
-  DEFAULT_ERROR_FOREGROUND_COLOR,
-  DEFAULT_FOREGROUND_COLOR,
-  DEFAULT_GRID_LINE_COLOR,
-  DEFAULT_NEGATIVE_FOREGROUND_COLOR,
-  DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR,
-  DEFAULT_ZERO_FOREGROUND_COLOR,
+  DEFAULT_BACKGROUND_COLOR_DARK,
+  DEFAULT_ERROR_FOREGROUND_COLOR_DARK,
+  DEFAULT_FOREGROUND_COLOR_DARK,
+  DEFAULT_GRID_LINE_COLOR_DARK,
+  DEFAULT_NEGATIVE_FOREGROUND_COLOR_DARK,
+  DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR_DARK,
+  DEFAULT_ZERO_FOREGROUND_COLOR_DARK,
+  DEFAULT_BACKGROUND_COLOR_LIGHT,
+  DEFAULT_ERROR_FOREGROUND_COLOR_LIGHT,
+  DEFAULT_FOREGROUND_COLOR_LIGHT,
+  DEFAULT_GRID_LINE_COLOR_LIGHT,
+  DEFAULT_NEGATIVE_FOREGROUND_COLOR_LIGHT,
+  DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR_LIGHT,
+  DEFAULT_ZERO_FOREGROUND_COLOR_LIGHT,
   EMPTY_VALUE_PLACEHOLDER,
 } from '../../../stores/core/DataCubeQueryEngine.js';
 import {
@@ -51,6 +58,7 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
     const { view } = props;
     const panel = view.editor.generalProperties;
     const configuration = panel.configuration;
+    const darkMode = configuration.darkMode;
     const [
       openTreeColumnSortOperatorDropdown,
       closeTreeColumnSortOperatorDropdown,
@@ -275,7 +283,11 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
               </div>
               <FormColorPickerButton
                 color={configuration.gridLineColor}
-                defaultColor={DEFAULT_GRID_LINE_COLOR}
+                defaultColor={
+                  darkMode
+                    ? DEFAULT_GRID_LINE_COLOR_DARK
+                    : DEFAULT_GRID_LINE_COLOR_LIGHT
+                }
                 onChange={(value) => configuration.setGridLineColor(value)}
               />
             </div>
@@ -314,7 +326,11 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
               <FormColorPickerButton
                 disabled={!configuration.alternateRows}
                 color={configuration.alternateRowsColor}
-                defaultColor={DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR}
+                defaultColor={
+                  darkMode
+                    ? DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR_DARK
+                    : DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR_LIGHT
+                }
                 onChange={(value) => configuration.setAlternateRowsColor(value)}
               />
               <div className="ml-1 flex h-full flex-shrink-0 items-center text-sm">
@@ -691,7 +707,11 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
                   <div className="flex h-full w-12 flex-shrink-0 items-center justify-center">
                     <FormColorPickerButton
                       color={configuration.normalForegroundColor}
-                      defaultColor={DEFAULT_FOREGROUND_COLOR}
+                      defaultColor={
+                        darkMode
+                          ? DEFAULT_FOREGROUND_COLOR_DARK
+                          : DEFAULT_FOREGROUND_COLOR_LIGHT
+                      }
                       onChange={(value) =>
                         configuration.setNormalForegroundColor(value)
                       }
@@ -700,7 +720,11 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
                   <div className="flex h-full w-12 flex-shrink-0 items-center justify-center">
                     <FormColorPickerButton
                       color={configuration.negativeForegroundColor}
-                      defaultColor={DEFAULT_NEGATIVE_FOREGROUND_COLOR}
+                      defaultColor={
+                        darkMode
+                          ? DEFAULT_NEGATIVE_FOREGROUND_COLOR_DARK
+                          : DEFAULT_NEGATIVE_FOREGROUND_COLOR_LIGHT
+                      }
                       onChange={(value) =>
                         configuration.setNegativeForegroundColor(value)
                       }
@@ -709,7 +733,11 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
                   <div className="flex h-full w-12 flex-shrink-0 items-center justify-center">
                     <FormColorPickerButton
                       color={configuration.zeroForegroundColor}
-                      defaultColor={DEFAULT_ZERO_FOREGROUND_COLOR}
+                      defaultColor={
+                        darkMode
+                          ? DEFAULT_ZERO_FOREGROUND_COLOR_DARK
+                          : DEFAULT_ZERO_FOREGROUND_COLOR_LIGHT
+                      }
                       onChange={(value) =>
                         configuration.setZeroForegroundColor(value)
                       }
@@ -718,7 +746,11 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
                   <div className="flex h-full w-12 flex-shrink-0 items-center justify-center">
                     <FormColorPickerButton
                       color={configuration.errorForegroundColor}
-                      defaultColor={DEFAULT_ERROR_FOREGROUND_COLOR}
+                      defaultColor={
+                        darkMode
+                          ? DEFAULT_ERROR_FOREGROUND_COLOR_DARK
+                          : DEFAULT_ERROR_FOREGROUND_COLOR_LIGHT
+                      }
                       onChange={(value) =>
                         configuration.setErrorForegroundColor(value)
                       }
@@ -732,7 +764,11 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
                   <div className="flex h-full w-12 flex-shrink-0 items-center justify-center">
                     <FormColorPickerButton
                       color={configuration.normalBackgroundColor}
-                      defaultColor={DEFAULT_BACKGROUND_COLOR}
+                      defaultColor={
+                        darkMode
+                          ? DEFAULT_BACKGROUND_COLOR_DARK
+                          : DEFAULT_BACKGROUND_COLOR_LIGHT
+                      }
                       onChange={(value) =>
                         configuration.setNormalBackgroundColor(value)
                       }
@@ -741,7 +777,11 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
                   <div className="flex h-full w-12 flex-shrink-0 items-center justify-center">
                     <FormColorPickerButton
                       color={configuration.negativeBackgroundColor}
-                      defaultColor={DEFAULT_BACKGROUND_COLOR}
+                      defaultColor={
+                        darkMode
+                          ? DEFAULT_BACKGROUND_COLOR_DARK
+                          : DEFAULT_BACKGROUND_COLOR_LIGHT
+                      }
                       onChange={(value) =>
                         configuration.setNegativeBackgroundColor(value)
                       }
@@ -750,7 +790,11 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
                   <div className="flex h-full w-12 flex-shrink-0 items-center justify-center">
                     <FormColorPickerButton
                       color={configuration.zeroBackgroundColor}
-                      defaultColor={DEFAULT_BACKGROUND_COLOR}
+                      defaultColor={
+                        darkMode
+                          ? DEFAULT_BACKGROUND_COLOR_DARK
+                          : DEFAULT_BACKGROUND_COLOR_LIGHT
+                      }
                       onChange={(value) =>
                         configuration.setZeroBackgroundColor(value)
                       }
@@ -759,7 +803,11 @@ export const DataCubeEditorGeneralPropertiesPanel = observer(
                   <div className="flex h-full w-12 flex-shrink-0 items-center justify-center">
                     <FormColorPickerButton
                       color={configuration.errorBackgroundColor}
-                      defaultColor={DEFAULT_BACKGROUND_COLOR}
+                      defaultColor={
+                        darkMode
+                          ? DEFAULT_BACKGROUND_COLOR_DARK
+                          : DEFAULT_BACKGROUND_COLOR_LIGHT
+                      }
                       onChange={(value) =>
                         configuration.setErrorBackgroundColor(value)
                       }

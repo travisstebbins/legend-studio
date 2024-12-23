@@ -102,6 +102,10 @@ export class DataCubeState implements DataCubeAPI {
     this.onSettingChanged = options?.onSettingChanged;
     this.innerHeaderComponent = options?.innerHeaderComponent;
 
+    this.settings.darkMode =
+      options?.darkMode !== undefined
+        ? options.darkMode
+        : this.settings.darkMode;
     this.settings.enableDebugMode =
       options?.enableDebugMode !== undefined
         ? options.enableDebugMode

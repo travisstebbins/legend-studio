@@ -18,7 +18,7 @@ import { observer } from 'mobx-react-lite';
 import { AllCommunityModule } from 'ag-grid-community';
 import { AllEnterpriseModule } from 'ag-grid-enterprise';
 import { AgGridReact } from 'ag-grid-react';
-import { DataCubeIcon, Switch, cn, Global, css } from '@finos/legend-art';
+import { DataCubeIcon, Switch, cn, Global, css, clsx } from '@finos/legend-art';
 import {
   generateBackgroundColorUtilityClassName,
   generateFontCaseUtilityClassName,
@@ -34,8 +34,10 @@ import {
   DataCubeFontCase,
   DataCubeFontFormatUnderlineVariant,
   DataCubeFontTextAlignment,
-  DEFAULT_ROW_BACKGROUND_COLOR,
-  DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR,
+  DEFAULT_ROW_BACKGROUND_COLOR_LIGHT,
+  DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR_LIGHT,
+  DEFAULT_ROW_BACKGROUND_COLOR_DARK,
+  DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR_DARK,
 } from '../../../stores/core/DataCubeQueryEngine.js';
 import { isNonNullable } from '@finos/legend-shared';
 import type {
@@ -61,6 +63,7 @@ if (process.env.NODE_ENV === 'development') {
 function textColorStyle(
   key: DataCubeConfigurationColorKey,
   configuration: DataCubeConfiguration,
+  darkMode: boolean,
 ) {
   return `${Array.from(
     new Set([
@@ -72,7 +75,7 @@ function textColorStyle(
   )
     .map(
       (color) =>
-        `.${INTERNAL__GridClientUtilityCssClassName.ROOT} .${generateTextColorUtilityClassName(color, key)}{color:${color};}`,
+        `.${darkMode ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT} .${generateTextColorUtilityClassName(color, key)}{color:${color};}`,
     )
     .join('\n')}`;
 }
@@ -80,6 +83,7 @@ function textColorStyle(
 function backgroundColorStyle(
   key: DataCubeConfigurationColorKey,
   configuration: DataCubeConfiguration,
+  darkMode: boolean,
 ) {
   return `${Array.from(
     new Set([
@@ -91,7 +95,7 @@ function backgroundColorStyle(
   )
     .map(
       (color) =>
-        `.${INTERNAL__GridClientUtilityCssClassName.ROOT} .${generateBackgroundColorUtilityClassName(color, key)}{background-color:${color};}`,
+        `.${darkMode ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT} .${generateBackgroundColorUtilityClassName(color, key)}{background-color:${color};}`,
     )
     .join('\n')};`;
 }
@@ -101,16 +105,23 @@ export const DataCubeGridStyleController = observer(
     const { view } = props;
     const grid = view.grid;
     const configuration = grid.queryConfiguration;
+    const darkMode = configuration.darkMode;
 
     return (
       <Global
         styles={css`
-          .${INTERNAL__GridClientUtilityCssClassName.ROOT} {
+          .${darkMode
+              ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+              : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT} {
             --ag-odd-row-background-color: ${grid.queryConfiguration
               .alternateRowsStandardMode &&
             !grid.queryConfiguration.alternateRows
-              ? DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR
-              : DEFAULT_ROW_BACKGROUND_COLOR};
+              ? darkMode
+                ? DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR_DARK
+                : DEFAULT_ROW_HIGHLIGHT_BACKGROUND_COLOR_LIGHT
+              : darkMode
+                ? DEFAULT_ROW_BACKGROUND_COLOR_DARK
+                : DEFAULT_ROW_BACKGROUND_COLOR_LIGHT};
             --ag-cell-horizontal-border: ${grid.queryConfiguration
               .showVerticalGridLines
               ? `1px solid
@@ -121,11 +132,15 @@ export const DataCubeGridStyleController = observer(
               ? grid.queryConfiguration.gridLineColor
               : 'transparent'};
           }
-          .${INTERNAL__GridClientUtilityCssClassName.ROOT}
+          .${darkMode
+              ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+              : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT}
             .${INTERNAL__GridClientUtilityCssClassName.HIGHLIGHT_ROW} {
             background-color: ${grid.queryConfiguration.alternateRows
               ? grid.queryConfiguration.alternateRowsColor
-              : DEFAULT_ROW_BACKGROUND_COLOR};
+              : darkMode
+                ? DEFAULT_ROW_BACKGROUND_COLOR_DARK
+                : DEFAULT_ROW_BACKGROUND_COLOR_LIGHT};
           }
           ${[
             DataCubeFont.ARIAL,
@@ -134,7 +149,11 @@ export const DataCubeGridStyleController = observer(
           ]
             .map(
               (fontFamily) =>
-                `.${INTERNAL__GridClientUtilityCssClassName.ROOT} .${generateFontFamilyUtilityClassName(fontFamily)}{font-family:${fontFamily},sans-serif;}`,
+                `.${
+                  darkMode
+                    ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+                    : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT
+                } .${generateFontFamilyUtilityClassName(fontFamily)}{font-family:${fontFamily},sans-serif;}`,
             )
             .join('\n')}
           ${[
@@ -144,7 +163,11 @@ export const DataCubeGridStyleController = observer(
           ]
             .map(
               (fontFamily) =>
-                `.${INTERNAL__GridClientUtilityCssClassName.ROOT} .${generateFontFamilyUtilityClassName(fontFamily)}{font-family:${fontFamily},serif;}`,
+                `.${
+                  darkMode
+                    ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+                    : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT
+                } .${generateFontFamilyUtilityClassName(fontFamily)}{font-family:${fontFamily},serif;}`,
             )
             .join('\n')}
         ${[
@@ -154,7 +177,11 @@ export const DataCubeGridStyleController = observer(
           ]
             .map(
               (fontFamily) =>
-                `.${INTERNAL__GridClientUtilityCssClassName.ROOT} .${generateFontFamilyUtilityClassName(fontFamily)}{font-family:${fontFamily},monospace;}`,
+                `.${
+                  darkMode
+                    ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+                    : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT
+                } .${generateFontFamilyUtilityClassName(fontFamily)}{font-family:${fontFamily},monospace;}`,
             )
             .join('\n')}
           .${INTERNAL__GridClientUtilityCssClassName.FONT_BOLD} {
@@ -166,10 +193,16 @@ export const DataCubeGridStyleController = observer(
           ]
             .map(
               (fontSize) =>
-                `.${INTERNAL__GridClientUtilityCssClassName.ROOT} .${generateFontSizeUtilityClassName(fontSize)}{font-size:${fontSize}px;}`,
+                `.${
+                  darkMode
+                    ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+                    : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT
+                } .${generateFontSizeUtilityClassName(fontSize)}{font-size:${fontSize}px;}`,
             )
             .join('\n')}
-          .${INTERNAL__GridClientUtilityCssClassName.ROOT}
+          .${darkMode
+            ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+            : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT}
           .${INTERNAL__GridClientUtilityCssClassName.FONT_ITALIC} {
             font-style: italic;
           }
@@ -182,10 +215,16 @@ export const DataCubeGridStyleController = observer(
           ]
             .map(
               (variant) =>
-                `.${INTERNAL__GridClientUtilityCssClassName.ROOT} .${generateFontUnderlineUtilityClassName(variant)}{text-decoration:underline ${variant};}`,
+                `.${
+                  darkMode
+                    ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+                    : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT
+                } .${generateFontUnderlineUtilityClassName(variant)}{text-decoration:underline ${variant};}`,
             )
             .join('\n')}
-          .${INTERNAL__GridClientUtilityCssClassName.ROOT} .${INTERNAL__GridClientUtilityCssClassName.FONT_STRIKETHROUGH} {
+          .${darkMode
+            ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+            : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT} .${INTERNAL__GridClientUtilityCssClassName.FONT_STRIKETHROUGH} {
             text-decoration: line-through;
           }
           ${[
@@ -195,7 +234,11 @@ export const DataCubeGridStyleController = observer(
           ]
             .map(
               (fontCase) =>
-                `.${INTERNAL__GridClientUtilityCssClassName.ROOT} .${generateFontCaseUtilityClassName(fontCase)}{text-transform:${fontCase};}`,
+                `.${
+                  darkMode
+                    ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+                    : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT
+                } .${generateFontCaseUtilityClassName(fontCase)}{text-transform:${fontCase};}`,
             )
             .join('\n')}
           ${[
@@ -205,22 +248,30 @@ export const DataCubeGridStyleController = observer(
           ]
             .map(
               (alignment) =>
-                `.${INTERNAL__GridClientUtilityCssClassName.ROOT} .${generateTextAlignUtilityClassName(alignment)}{text-align:${alignment};}`,
+                `.${
+                  darkMode
+                    ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+                    : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT
+                } .${generateTextAlignUtilityClassName(alignment)}{text-align:${alignment};}`,
             )
             .join('\n')};
-          ${backgroundColorStyle('normal', configuration)}
-          ${backgroundColorStyle('zero', configuration)}
-        ${backgroundColorStyle('negative', configuration)}
-        ${backgroundColorStyle('error', configuration)}
-        ${textColorStyle('normal', configuration)}
-        ${textColorStyle('zero', configuration)}
-        ${textColorStyle('negative', configuration)}
-        ${textColorStyle('error', configuration)}
-        .${INTERNAL__GridClientUtilityCssClassName.ROOT}
+          ${backgroundColorStyle('normal', configuration, darkMode)}
+          ${backgroundColorStyle('zero', configuration, darkMode)}
+        ${backgroundColorStyle('negative', configuration, darkMode)}
+        ${backgroundColorStyle('error', configuration, darkMode)}
+        ${textColorStyle('normal', configuration, darkMode)}
+        ${textColorStyle('zero', configuration, darkMode)}
+        ${textColorStyle('negative', configuration, darkMode)}
+        ${textColorStyle('error', configuration, darkMode)}
+        .${darkMode
+            ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+            : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT}
           .${INTERNAL__GridClientUtilityCssClassName.BLUR} {
             filter: blur(3px);
           }
-          .${INTERNAL__GridClientUtilityCssClassName.ROOT}
+          .${darkMode
+              ? INTERNAL__GridClientUtilityCssClassName.ROOT_DARK
+              : INTERNAL__GridClientUtilityCssClassName.ROOT_LIGHT}
             .${INTERNAL__GridClientUtilityCssClassName.BLUR}:hover {
             filter: none;
           }
@@ -331,12 +382,16 @@ const DataCubeGridStatusBar = observer((props: { view: DataCubeViewState }) => {
 const DataCubeGridClient = observer((props: { view: DataCubeViewState }) => {
   const { view } = props;
   const grid = view.grid;
+  const darkMode = view.dataCube.settings.darkMode;
 
   return (
     <div className="relative h-[calc(100%_-_20px)] w-full">
       <AgGridReact
         theme="legacy"
-        className="data-cube-grid ag-theme-quartz"
+        className={clsx('data-cube-grid', {
+          'ag-theme-quartz': !darkMode,
+          'ag-theme-quartz-dark': darkMode,
+        })}
         rowModelType="serverSide"
         serverSideDatasource={grid.clientDataSource}
         context={{

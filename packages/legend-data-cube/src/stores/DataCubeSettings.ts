@@ -18,6 +18,7 @@ import { makeObservable, observable, action } from 'mobx';
 import type { DataCubeState } from './DataCubeState.js';
 
 export enum DataCubeSettingKey {
+  DARK_MODE = 'engine.gried-client.darkMode',
   ENABLE_DEBUG_MODE = 'engine.enableDebugMode',
   GRID_CLIENT_ROW_BUFFER = 'engine.grid-client.rowBuffer',
   GRID_CLIENT_PURGE_CLOSED_ROW_NODES = 'engine.grid-client.purgeClosedRowNodes',
@@ -25,6 +26,7 @@ export enum DataCubeSettingKey {
 }
 
 export const DEFAULT_SETTINGS = {
+  [DataCubeSettingKey.DARK_MODE]: false,
   [DataCubeSettingKey.ENABLE_DEBUG_MODE]: false,
   [DataCubeSettingKey.GRID_CLIENT_ROW_BUFFER]: 50,
   [DataCubeSettingKey.GRID_CLIENT_PURGE_CLOSED_ROW_NODES]: false,
@@ -36,6 +38,9 @@ export class DataCubeSettings {
 
   constructor(dataCube: DataCubeState) {
     makeObservable(this, {
+      darkMode: observable,
+      setDarkMode: action,
+
       enableDebugMode: observable,
       setEnableDebugMode: action,
 
@@ -52,6 +57,7 @@ export class DataCubeSettings {
     this.dataCube = dataCube;
   }
 
+  darkMode = DEFAULT_SETTINGS[DataCubeSettingKey.DARK_MODE];
   enableDebugMode = DEFAULT_SETTINGS[DataCubeSettingKey.ENABLE_DEBUG_MODE];
   gridClientRowBuffer =
     DEFAULT_SETTINGS[DataCubeSettingKey.GRID_CLIENT_ROW_BUFFER];
@@ -61,6 +67,11 @@ export class DataCubeSettings {
     DEFAULT_SETTINGS[
       DataCubeSettingKey.GRID_CLIENT_SUPPRESS_LARGE_DATASET_WARNING
     ];
+
+  setDarkMode(value: boolean) {
+    this.darkMode = value;
+    this.dataCube.onSettingChanged?.(DataCubeSettingKey.DARK_MODE, value);
+  }
 
   setEnableDebugMode(value: boolean) {
     this.enableDebugMode = value;

@@ -18,6 +18,7 @@ import type { DataCubeSource } from './core/models/DataCubeSource.js';
 import type { DataCubeState } from './DataCubeState.js';
 
 export type DataCubeOptions = {
+  darkMode?: boolean | undefined;
   enableDebugMode?: boolean | undefined;
   gridClientRowBuffer?: number | undefined;
   gridClientPurgeClosedRowNodes?: boolean | undefined;
