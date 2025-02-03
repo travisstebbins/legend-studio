@@ -28,7 +28,13 @@ const extensions = ['.js', '.ts', '.jsx', '.tsx'];
 
 export default {
   input: 'src/index.ts',
-  external: ['@jest/globals', 'react-dom/server', 'react', 're-resizable'],
+  external: [
+    '@jest/globals',
+    'react-dom/server',
+    'react',
+    '@finos/legend-graph',
+    '@finos/legend-shared',
+  ],
   output: [
     {
       file: 'lib/bundles/bundle.cjs.js',
@@ -74,8 +80,8 @@ export default {
           '@babel/plugin-syntax-import-attributes',
           { deprecatedAssertSyntax: true },
         ],
-        // ['@babel/plugin-transform-class-properties'],
-        // ['@babel/plugin-transform-classes'],
+        ['@babel/plugin-transform-class-properties'],
+        ['@babel/plugin-transform-classes'],
       ],
       presets: [
         [
