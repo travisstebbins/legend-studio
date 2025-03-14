@@ -23,23 +23,31 @@ import {
   PanelFormListItems,
   PanelFormSection,
   PanelFormTextField,
+  PanelFormValidatedTextField,
   PlusIcon,
   TrashIcon,
 } from '@finos/legend-art';
 import { observer } from 'mobx-react-lite';
 import { DataSpaceEditorState } from '../stores/DataSpaceEditorState.js';
+import { guaranteeNonNullable } from '@finos/legend-shared';
 import {
   dataSpace_addDiagram,
   dataSpace_addElement,
   dataSpace_addExecutable,
+  dataSpace_addSupportCombinedInfoEmail,
   dataSpace_removeDiagram,
   dataSpace_removeElement,
   dataSpace_removeExecutable,
+  dataSpace_removeSupportCombinedInfoEmail,
   dataSpace_setDefaultExecutionContext,
   dataSpace_setDescription,
   dataSpace_setDiagramDescription,
   dataSpace_setDiagramTitle,
   dataSpace_setElementExclude,
+  dataSpace_setSupportCombinedInfoFaqUrl,
+  dataSpace_setSupportCombinedInfoSupportUrl,
+  dataSpace_setSupportCombinedInfoWebsite,
+  dataSpace_setSupportEmailAddress,
   dataSpace_setSupportInfo,
   dataSpace_setTitle,
 } from '../stores/studio/DSL_DataSpace_GraphModifierHelper.js';
@@ -54,6 +62,7 @@ import {
 } from '@finos/legend-extension-dsl-data-space/graph';
 import { type Diagram } from '@finos/legend-extension-dsl-diagram/graph';
 import { PackageableElementExplicitReference } from '@finos/legend-graph';
+import { validateEmail, validateUrl } from '../utils/ValidationUtils.js';
 
 export const DataSpaceGeneralEditor = observer(() => {
   const editorStore = useEditorStore();
@@ -159,12 +168,78 @@ export const DataSpaceGeneralEditor = observer(() => {
     const type = option.value as string;
     if (type === 'email') {
       const supportInfo = new DataSpaceSupportEmail();
+
+      // Transfer email from combined info if available
+      if (
+        dataSpace.supportInfo instanceof DataSpaceSupportCombinedInfo &&
+        dataSpace.supportInfo.emails?.length
+      ) {
+        supportInfo.address = dataSpace.supportInfo.emails[0] ?? '';
+      }
+
       dataSpace_setSupportInfo(dataSpace, supportInfo);
     } else if (type === 'combined') {
       const supportInfo = new DataSpaceSupportCombinedInfo();
+
+      // Transfer email from email info if available
+      if (
+        dataSpace.supportInfo instanceof DataSpaceSupportEmail &&
+        dataSpace.supportInfo.address
+      ) {
+        supportInfo.emails = [dataSpace.supportInfo.address];
+      }
+
       dataSpace_setSupportInfo(dataSpace, supportInfo);
     } else {
       dataSpace_setSupportInfo(dataSpace, undefined);
+    }
+  };
+
+  const handleSupportEmailAddressChange = (value: string | undefined): void => {
+    if (
+      dataSpace.supportInfo instanceof DataSpaceSupportEmail &&
+      value !== undefined
+    ) {
+      dataSpace_setSupportEmailAddress(dataSpace.supportInfo, value);
+    }
+  };
+
+  const handleSupportCombinedInfoWebsiteChange = (
+    value: string | undefined,
+  ): void => {
+    if (dataSpace.supportInfo instanceof DataSpaceSupportCombinedInfo) {
+      dataSpace_setSupportCombinedInfoWebsite(dataSpace.supportInfo, value);
+    }
+  };
+
+  const handleSupportCombinedInfoFaqUrlChange = (
+    value: string | undefined,
+  ): void => {
+    if (dataSpace.supportInfo instanceof DataSpaceSupportCombinedInfo) {
+      dataSpace_setSupportCombinedInfoFaqUrl(dataSpace.supportInfo, value);
+    }
+  };
+
+  const handleSupportCombinedInfoSupportUrlChange = (
+    value: string | undefined,
+  ): void => {
+    if (dataSpace.supportInfo instanceof DataSpaceSupportCombinedInfo) {
+      dataSpace_setSupportCombinedInfoSupportUrl(dataSpace.supportInfo, value);
+    }
+  };
+
+  const handleAddSupportCombinedInfoEmail = (email: string): void => {
+    if (
+      dataSpace.supportInfo instanceof DataSpaceSupportCombinedInfo &&
+      email
+    ) {
+      dataSpace_addSupportCombinedInfoEmail(dataSpace.supportInfo, email);
+    }
+  };
+
+  const handleRemoveSupportCombinedInfoEmail = (email: string): void => {
+    if (dataSpace.supportInfo instanceof DataSpaceSupportCombinedInfo) {
+      dataSpace_removeSupportCombinedInfoEmail(dataSpace.supportInfo, email);
     }
   };
 
@@ -410,136 +485,151 @@ export const DataSpaceGeneralEditor = observer(() => {
         </PanelFormSection>
 
         {/* Support Info Section */}
-        {/* <PanelFormListItems title="Support Information">
-            <div className="panel__content__form__section__header__prompt">
-              Configure support information for this Data Space.
-            </div>
-            <CustomSelectorInput
-              options={[
-                { label: 'None', value: 'none' },
-                { label: 'Email', value: 'email' },
-                { label: 'Combined', value: 'combined' },
-              ]}
-              onChange={(option: { label: string; value: unknown }) =>
-                handleSupportInfoTypeChange(option)
-              }
-              value={{
-                label: formElement.supportInfo
-                  ? dataSpaceState.dataSpaceElementBuilder.isDataSpaceSupportEmail(
-                      formElement.supportInfo,
-                    )
-                    ? 'Email'
-                    : 'Combined'
-                  : 'None',
-                value: formElement.supportInfo
-                  ? dataSpaceState.dataSpaceElementBuilder.isDataSpaceSupportEmail(
-                      formElement.supportInfo,
-                    )
-                    ? 'email'
-                    : 'combined'
-                  : 'none',
-              }}
-              darkMode={true}
-            />
-            {formElement.supportInfo && (
-              <div className="panel__content__form__section__list__item">
-                {dataSpaceState.dataSpaceElementBuilder.isDataSpaceSupportEmail(
-                  formElement.supportInfo,
-                ) ? (
-                  <PanelFormTextField
-                    name="Email Address"
-                    value={formElement.supportInfo.address}
-                    update={(value) => {
-                      if (
-                        dataSpaceState.dataSpaceElementBuilder.isDataSpaceSupportEmail(
-                          formElement.supportInfo,
-                        )
-                      ) {
-                        formElement.supportInfo.address = value ?? '';
-                      }
-                    }}
-                    placeholder="Enter email address"
+        <PanelFormSection className="dataSpace-editor__general__support-info">
+          <div className="panel__content__form__section__header__label">
+            Support Information
+          </div>
+          <div className="panel__content__form__section__header__prompt">
+            Configure support information for this Data Space.
+          </div>
+          <CustomSelectorInput
+            options={[
+              { label: 'None', value: 'none' },
+              { label: 'Email', value: 'email' },
+              { label: 'Combined', value: 'combined' },
+            ]}
+            onChange={(option: { label: string; value: unknown }) =>
+              handleSupportInfoTypeChange(option)
+            }
+            value={{
+              label: dataSpace.supportInfo
+                ? dataSpace.supportInfo instanceof DataSpaceSupportEmail
+                  ? 'Email'
+                  : 'Combined'
+                : 'None',
+              value: dataSpace.supportInfo
+                ? dataSpace.supportInfo instanceof DataSpaceSupportEmail
+                  ? 'email'
+                  : 'combined'
+                : 'none',
+            }}
+            darkMode={true}
+          />
+          {dataSpace.supportInfo && (
+            <div className="panel__content__form__section__list__item">
+              {dataSpace.supportInfo instanceof DataSpaceSupportEmail ? (
+                <PanelFormValidatedTextField
+                  name="Email Address"
+                  value={dataSpace.supportInfo.address}
+                  update={handleSupportEmailAddressChange}
+                  validate={validateEmail}
+                  placeholder="Enter email address"
+                  darkMode={true}
+                />
+              ) : (
+                <div className="dataSpace-editor__general__support-info__combined">
+                  {/* Multiple Email Addresses */}
+                  <PanelFormListItems
+                    title="Email Addresses"
+                    prompt="Add email addresses for support contacts."
+                  >
+                    {dataSpace.supportInfo instanceof
+                      DataSpaceSupportCombinedInfo &&
+                      dataSpace.supportInfo.emails?.map((email, idx) => (
+                        <div
+                          key={`email-${guaranteeNonNullable(idx)}`}
+                          className="panel__content__form__section__list__item"
+                        >
+                          <div className="panel__content__form__section__list__item__content">
+                            <div className="panel__content__form__section__list__item__content__label">
+                              {email}
+                            </div>
+                            {!dataSpaceState.isReadOnly && (
+                              <div className="panel__content__form__section__list__item__content__actions">
+                                <button
+                                  className="panel__content__form__section__list__item__content__actions__btn"
+                                  onClick={() =>
+                                    handleRemoveSupportCombinedInfoEmail(email)
+                                  }
+                                  tabIndex={-1}
+                                  title="Remove email"
+                                >
+                                  <TrashIcon />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    {!dataSpaceState.isReadOnly && (
+                      <div className="panel__content__form__section__list__add">
+                        <div className="panel__content__form__section__list__add__input">
+                          <PanelFormValidatedTextField
+                            name="New Email"
+                            value=""
+                            update={(value) => {
+                              if (value) {
+                                handleAddSupportCombinedInfoEmail(value);
+                              }
+                            }}
+                            validate={validateEmail}
+                            placeholder="Enter new email address"
+                            darkMode={true}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </PanelFormListItems>
+
+                  {/* Website URL */}
+                  <PanelFormValidatedTextField
+                    name="Website"
+                    value={
+                      dataSpace.supportInfo instanceof
+                      DataSpaceSupportCombinedInfo
+                        ? (dataSpace.supportInfo.website ?? '')
+                        : ''
+                    }
+                    update={handleSupportCombinedInfoWebsiteChange}
+                    validate={validateUrl}
+                    placeholder="Enter website URL"
+                    darkMode={true}
                   />
-                ) : (
-                  <div>
-                    <PanelFormTextField
-                      name="Website"
-                      value={
-                        dataSpaceState.dataSpaceElementBuilder.isDataSpaceSupportCombinedInfo(
-                          formElement.supportInfo,
-                        )
-                          ? (formElement.supportInfo.website ?? '')
-                          : ''
-                      }
-                      update={(value) => {
-                        if (
-                          formElement.supportInfo &&
-                          dataSpaceState.dataSpaceElementBuilder.isDataSpaceSupportCombinedInfo(
-                            formElement.supportInfo,
-                          )
-                        ) {
-                          formElement.supportInfo.website = value;
-                        }
-                      }}
-                      placeholder="Enter website URL"
-                    />
-                    <PanelFormTextField
-                      name="FAQ URL"
-                      value={
-                        dataSpaceState.dataSpaceElementBuilder.isDataSpaceSupportCombinedInfo(
-                          formElement.supportInfo,
-                        )
-                          ? (formElement.supportInfo.faqUrl ?? '')
-                          : ''
-                      }
-                      update={(value) => {
-                        if (
-                          formElement.supportInfo &&
-                          dataSpaceState.dataSpaceElementBuilder.isDataSpaceSupportCombinedInfo(
-                            formElement.supportInfo,
-                          )
-                        ) {
-                          formElement.supportInfo.faqUrl = value;
-                        }
-                      }}
-                      placeholder="Enter FAQ URL"
-                    />
-                    <PanelFormTextField
-                      name="Support URL"
-                      value={
-                        dataSpaceState.dataSpaceElementBuilder.isDataSpaceSupportCombinedInfo(
-                          formElement.supportInfo,
-                        )
-                          ? (formElement.supportInfo.supportUrl ?? '')
-                          : ''
-                      }
-                      update={(value) => {
-                        if (
-                          formElement.supportInfo &&
-                          dataSpaceState.dataSpaceElementBuilder.isDataSpaceSupportCombinedInfo(
-                            formElement.supportInfo,
-                          )
-                        ) {
-                          formElement.supportInfo.supportUrl = value;
-                        }
-                      }}
-                      placeholder="Enter support URL"
-                    />
-                    <PanelFormTextField
-                      name="Documentation URL"
-                      value={formElement.supportInfo.documentationUrl ?? ''}
-                      update={(value) => {
-                        if (formElement.supportInfo) {
-                          formElement.supportInfo.documentationUrl = value;
-                        }
-                      }}
-                      placeholder="Enter documentation URL"
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-          </PanelFormListItems> */}
+
+                  {/* FAQ URL */}
+                  <PanelFormValidatedTextField
+                    name="FAQ URL"
+                    value={
+                      dataSpace.supportInfo instanceof
+                      DataSpaceSupportCombinedInfo
+                        ? (dataSpace.supportInfo.faqUrl ?? '')
+                        : ''
+                    }
+                    update={handleSupportCombinedInfoFaqUrlChange}
+                    validate={validateUrl}
+                    placeholder="Enter FAQ URL"
+                    darkMode={true}
+                  />
+
+                  {/* Support URL */}
+                  <PanelFormValidatedTextField
+                    name="Support URL"
+                    value={
+                      dataSpace.supportInfo instanceof
+                      DataSpaceSupportCombinedInfo
+                        ? (dataSpace.supportInfo.supportUrl ?? '')
+                        : ''
+                    }
+                    update={handleSupportCombinedInfoSupportUrlChange}
+                    validate={validateUrl}
+                    placeholder="Enter support URL"
+                    darkMode={true}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        </PanelFormSection>
       </PanelForm>
     </PanelContentLists>
   );
