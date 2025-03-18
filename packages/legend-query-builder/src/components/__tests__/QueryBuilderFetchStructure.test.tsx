@@ -1008,6 +1008,103 @@ test(
 
 test(
   integrationTest(
+    'Query builder derivation column lambdas persist when switching between views',
+  ),
+  async () => {
+    // Set up the test environment with the Address class
+    const { renderResult, queryBuilderState } = await TEST__setUpQueryBuilder(
+      TEST_DATA__ComplexRelationalModel,
+      stub_RawLambda(),
+      'model::relational::tests::simpleRelationalMapping',
+      'model::MyRuntime',
+      TEST_DATA__ModelCoverageAnalysisResult_ComplexRelational,
+    );
+
+    // Initialize with a simple query
+    await act(async () => {
+      queryBuilderState.initializeWithQuery(
+        create_RawLambda(undefined, TEST_DATA__simpleProjection.body),
+      );
+    });
+
+    // Wait for the query builder to initialize
+    await waitFor(() =>
+      renderResult.getByTestId(QUERY_BUILDER_TEST_ID.QUERY_BUILDER),
+    );
+
+    // Get the TDS state
+    const tdsState = guaranteeType(
+      queryBuilderState.fetchStructureState.implementation,
+      QueryBuilderTDSState,
+    );
+
+    // Add a derivation column
+    const derivationColumn = new QueryBuilderDerivationProjectionColumnState(
+      'derivedColumn',
+      tdsState,
+    );
+    tdsState.addColumn(derivationColumn);
+
+    // Set the lambda expression
+    derivationColumn.derivationLambdaEditorState.setLambdaString('x|$x.name');
+
+    // Verify the lambda is set correctly
+    expect(derivationColumn.derivationLambdaEditorState.lambdaString).toBe(
+      'x|$x.name',
+    );
+
+    // Mock the monaco editor
+    MockedMonacoEditorInstance.getRawOptions.mockReturnValue({
+      readOnly: true,
+    });
+    MockedMonacoEditorInstance.onDidFocusEditorWidget.mockReturnValue({
+      dispose: jest.fn(),
+    });
+
+    // Mock the graphManager methods for switching to text mode and back
+    const MOCK__pureCodeToLambda = createMock();
+    const MOCK__lambdaToPureCode = createMock();
+    queryBuilderState.graphManagerState.graphManager.pureCodeToLambda =
+      MOCK__pureCodeToLambda;
+    queryBuilderState.graphManagerState.graphManager.lambdasToPureCode =
+      MOCK__lambdaToPureCode;
+
+    // Mock the lambda conversion to preserve the original lambda
+    MOCK__pureCodeToLambda.mockResolvedValue(
+      create_RawLambda(undefined, TEST_DATA__simpleProjection.body),
+    );
+    const mockValue = new Map<string, string>();
+    mockValue.set('query-builder', 'test');
+    MOCK__lambdaToPureCode.mockResolvedValue(mockValue);
+
+    // Navigate to Advanced -> Edit Pure
+    await act(async () => {
+      fireEvent.click(renderResult.getByTitle('Show Advanced Menu...'));
+    });
+    await act(async () => {
+      fireEvent.click(renderResult.getByText('Edit Pure'));
+    });
+
+    // Wait for the lambda editor dialog to appear
+    const lambdaEditor = await waitFor(() => renderResult.getByRole('dialog'));
+
+    // Click the Proceed button
+    fireEvent.click(getByText(lambdaEditor, 'Proceed'));
+
+    // Wait for the query builder to re-render
+    await waitFor(() =>
+      renderResult.getByTestId(QUERY_BUILDER_TEST_ID.QUERY_BUILDER),
+    );
+
+    // Verify the derivation lambda persists
+    expect(derivationColumn.derivationLambdaEditorState.lambdaString).toBe(
+      'x|$x.name',
+    );
+  },
+);
+
+test(
+  integrationTest(
     'Query builder property info tooltip highlights property in explorer when path button is clicked',
   ),
   async () => {
