@@ -183,6 +183,7 @@ export { V1_RawSQLExecuteInput } from './graph-manager/protocol/pure/v1/engine/e
 export * from './graph-manager/protocol/pure/v1/engine/execution/V1_ExecutionResult.js';
 export { V1_CString } from './graph-manager/protocol/pure/v1/model/valueSpecification/raw/V1_CString.js';
 export { V1_CBoolean } from './graph-manager/protocol/pure/v1/model/valueSpecification/raw/V1_CBoolean.js';
+export { V1_CByteArray } from './graph-manager/protocol/pure/v1/model/valueSpecification/raw/V1_CByteArray.js';
 export { V1_CDecimal } from './graph-manager/protocol/pure/v1/model/valueSpecification/raw/V1_CDecimal.js';
 export { V1_CInteger } from './graph-manager/protocol/pure/v1/model/valueSpecification/raw/V1_CInteger.js';
 export { V1_CFloat } from './graph-manager/protocol/pure/v1/model/valueSpecification/raw/V1_CFloat.js';
