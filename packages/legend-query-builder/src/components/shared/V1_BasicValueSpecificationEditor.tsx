@@ -449,6 +449,7 @@ export const V1_BasicValueSpecificationEditor = forwardRef<
         convertTextToValueSpecification={convertTextToValueSpecification}
         enumOptions={enumOptions}
         errorChecker={errorChecker}
+        className={className}
       />
     );
   }
