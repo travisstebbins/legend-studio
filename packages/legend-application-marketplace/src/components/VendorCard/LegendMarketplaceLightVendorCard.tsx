@@ -19,36 +19,36 @@ import { Card, CardActionArea, CardContent, Chip } from '@mui/material';
 import { clsx } from '@finos/legend-art';
 import type { DataAsset } from '@finos/legend-server-marketplace';
 
-export const LegendMarketplaceVendorCard = (props: {
+export const LegendMarketplaceLightVendorCard = (props: {
   dataAsset: DataAsset;
   onClick: (dataAsset: DataAsset) => void;
 }): JSX.Element => {
   const { dataAsset, onClick } = props;
   return (
-    <Card variant="outlined" className="legend-marketplace-vendor-card">
+    <Card variant="outlined" className="legend-marketplace-light-vendor-card">
       <CardActionArea
         onClick={() => onClick(dataAsset)}
         sx={{ height: '100%' }}
       >
-        <CardContent className="legend-marketplace-vendor-card__content">
+        <CardContent className="legend-marketplace-light-vendor-card__content">
           <Chip
             label={dataAsset.type}
-            className={clsx('legend-marketplace-vendor-card__type', {
-              'legend-marketplace-vendor-card__type--vendor':
+            className={clsx('legend-marketplace-light-vendor-card__type', {
+              'legend-marketplace-light-vendor-card__type--vendor':
                 dataAsset.type === 'vendor',
-              'legend-marketplace-vendor-card__type--curated':
+              'legend-marketplace-light-vendor-card__type--curated':
                 dataAsset.type === 'curated',
             })}
           />
-          <div className="legend-marketplace-vendor-card__name">
+          <div className="legend-marketplace-light-vendor-card__name">
             {dataAsset.provider}
           </div>
-          <div className="legend-marketplace-vendor-card__description">
+          <div className="legend-marketplace-light-vendor-card__description">
             {dataAsset.description}
           </div>
         </CardContent>
         {dataAsset.moreInfo.length > 0 && (
-          <CardContent className="legend-marketplace-vendor-card__more-info">
+          <CardContent className="legend-marketplace-light-vendor-card__more-info">
             <div>{dataAsset.moreInfo}</div>
           </CardContent>
         )}

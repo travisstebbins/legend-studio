@@ -16,7 +16,7 @@
 
 @use 'mixins' as *;
 
-.legend-marketplace-vendor-card {
+.legend-marketplace-light-vendor-card {
   width: 100%;
   height: 100%;
   background: var(--color-light-grey-0);
@@ -31,7 +31,7 @@
     transform: scale(1.05);
     box-shadow: 5px 5px 5px rgb(0 0 0 / 30%);
 
-    .legend-marketplace-vendor-card__more-info {
+    .legend-marketplace-light-vendor-card__more-info {
       transform: translateY(0);
     }
   }
