@@ -26,8 +26,8 @@ import {
 } from '@finos/legend-art';
 import { LegendMarketplaceHeader } from '../Header/LegendMarketplaceHeader.js';
 import { Grid2 as Grid } from '@mui/material';
-import { LegendMarketplaceVendorCard } from '../VendorCard/LegendMarketplaceVendorCard.js';
-import type { DataAsset } from '@finos/legend-server-marketplace';
+import { LegendMarketplaceLightDataProductCard } from '../DataProductCard/LegendMarketplaceLightDataProductCard.js';
+import type { LightDataProduct } from '@finos/legend-server-marketplace';
 
 export const LakehouseMarketplace = withMarketplaceLakehouseStore(
   observer(() => {
@@ -63,9 +63,9 @@ export const LakehouseMarketplace = withMarketplaceLakehouseStore(
                           key={`${asset.provider}.${asset.type}.${asset.description}`}
                           size={1}
                         >
-                          <LegendMarketplaceVendorCard
+                          <LegendMarketplaceLightDataProductCard
                             dataAsset={asset}
-                            onClick={(dataAsset: DataAsset) => {
+                            onClick={(dataAsset: LightDataProduct) => {
                               {
                                 // TODO: for now lets have it take you to the studio project
                                 // eslint-disable-next-line no-console

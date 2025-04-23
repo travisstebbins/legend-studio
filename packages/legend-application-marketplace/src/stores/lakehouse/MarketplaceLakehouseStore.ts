@@ -38,7 +38,7 @@ import {
 } from '@finos/legend-graph';
 import { deserialize } from 'serializr';
 import { GAV_DELIMITER, type Entity } from '@finos/legend-storage';
-import type { DataAsset } from '@finos/legend-server-marketplace';
+import type { LightDataProduct } from '@finos/legend-server-marketplace';
 
 interface DataProductEntity {
   product: V1_DataProduct;
@@ -79,7 +79,7 @@ export class DataProductState {
     return DataProductType.UNKNOWN;
   }
 
-  get dataSet(): DataAsset {
+  get dataSet(): LightDataProduct {
     return {
       description: `${this.productEntity.groupId}${GAV_DELIMITER}${this.productEntity.artifactId}`,
       provider: this.product.name,
