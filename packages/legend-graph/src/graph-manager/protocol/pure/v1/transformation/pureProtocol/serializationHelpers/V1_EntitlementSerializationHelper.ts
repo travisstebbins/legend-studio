@@ -40,6 +40,7 @@ import {
   V1_TaskMetadata,
   V1_TaskResponse,
   V1_TaskStatusChangeResponse,
+  V1_ContractUserMembership,
 } from '../../../lakehouse/entitlements/V1_ConsumerEntitlements.js';
 import {
   createModelSchema,
@@ -58,6 +59,7 @@ import {
   V1_User,
   type V1_OrganizationalScope,
 } from '../../../lakehouse/entitlements/V1_CoreEntitlements.js';
+import { V1_dataSubscriptionModelSchema } from './V1_SubscriptionSerializationHelper.js';
 
 enum V1_OrganizationalScopeType {
   AdHocTeam = 'AdHocTeam',
@@ -144,13 +146,24 @@ const V1_deseralizeV1_ConsumerEntitlementResource = (
   }
 };
 
+const V1_contractUserMembershipModelSchema = createModelSchema(
+  V1_ContractUserMembership,
+  {
+    guid: primitive(),
+    user: usingModelSchema(V1_UserModelSchema),
+    status: primitive(),
+  },
+);
+
 export const V1_dataContractModelSchema = createModelSchema(V1_DataContract, {
   description: primitive(),
   guid: primitive(),
   version: primitive(),
   state: primitive(),
   resource: custom(() => SKIP, V1_deseralizeV1_ConsumerEntitlementResource),
-  // members: V1_ContractUserMembership[] = [];
+  members: optional(
+    list(usingModelSchema(V1_contractUserMembershipModelSchema)),
+  ),
   consumer: custom(
     V1_seralizeOrganizationalScope,
     V1_deseralizeOrganizationalScope,
@@ -158,17 +171,22 @@ export const V1_dataContractModelSchema = createModelSchema(V1_DataContract, {
   createdBy: primitive(),
 });
 
-export const V1_schemaSetModelSchema = createModelSchema(
+export const V1_dataContractSubscriptionsModelSchema = createModelSchema(
   V1_DataContractSubscriptions,
   {
     dataContract: usingModelSchema(V1_dataContractModelSchema),
+    subscriptions: optional(
+      list(usingModelSchema(V1_dataSubscriptionModelSchema)),
+    ),
   },
 );
 
-export const V1_DataContractsRecordModelSchema = createModelSchema(
+export const V1_dataContractsResponseModelSchema = createModelSchema(
   V1_DataContractsResponse,
   {
-    dataContracts: optional(customListWithSchema(V1_schemaSetModelSchema)),
+    dataContracts: optional(
+      customListWithSchema(V1_dataContractSubscriptionsModelSchema),
+    ),
   },
 );
 
@@ -269,10 +287,10 @@ export const V1_TaskStatusChangeResponseModelSchema = createModelSchema(
   },
 );
 
-export const V1_DataContractsRecordModelSchemaToContracts = (
+export const V1_dataContractsResponseModelSchemaToContracts = (
   json: PlainObject<V1_DataContractsResponse>,
 ): V1_DataContract[] => {
-  const contracts = deserialize(V1_DataContractsRecordModelSchema, json);
+  const contracts = deserialize(V1_dataContractsResponseModelSchema, json);
   return contracts.dataContracts?.map((e) => e.dataContract) ?? [];
 };
 

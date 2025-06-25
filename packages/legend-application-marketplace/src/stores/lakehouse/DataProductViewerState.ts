@@ -33,7 +33,7 @@ import {
   V1_AppDirNode,
   V1_AppDirNodeModelSchema,
   V1_createContractPayloadModelSchema,
-  V1_DataContractsRecordModelSchemaToContracts,
+  V1_dataContractsResponseModelSchemaToContracts,
   V1_ResourceType,
   V1_User,
   V1_UserType,
@@ -176,15 +176,15 @@ export class DataProductViewerState {
         [serialize(V1_AppDirNodeModelSchema, didNode)],
         token,
       )) as PlainObject<V1_DataContractsResponse>;
-      const dataProductContracts = V1_DataContractsRecordModelSchemaToContracts(
-        _contracts,
-      ).filter((_contract) =>
-        dataContractContainsDataProduct(
-          this.product,
-          this.deploymentId,
-          _contract,
-        ),
-      );
+      const dataProductContracts =
+        V1_dataContractsResponseModelSchemaToContracts(_contracts).filter(
+          (_contract) =>
+            dataContractContainsDataProduct(
+              this.product,
+              this.deploymentId,
+              _contract,
+            ),
+        );
       const dataProductContractIds = dataProductContracts.map((e) => e.guid);
       const enrichedContracts = (yield Promise.all(
         dataProductContractIds.map(async (contractId) => {
@@ -193,7 +193,7 @@ export class DataProductViewerState {
             token,
           )) as PlainObject<V1_DataContractsResponse>;
           const contract =
-            V1_DataContractsRecordModelSchemaToContracts(rawContracts);
+            V1_dataContractsResponseModelSchemaToContracts(rawContracts);
           return contract;
         }),
       )).flat();
@@ -232,7 +232,7 @@ export class DataProductViewerState {
         accessPointGroup: group.id,
         consumer: buildAdhocUser(userId),
       } satisfies V1_CreateContractPayload) as PlainObject<V1_CreateContractPayload>;
-      const contracts = V1_DataContractsRecordModelSchemaToContracts(
+      const contracts = V1_dataContractsResponseModelSchemaToContracts(
         (yield this.lakeServerClient.createContract(
           request,
           token,
