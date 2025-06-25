@@ -33,8 +33,8 @@ import {
   V1_CreateContractPayload,
   V1_DataBundle,
   V1_DataContract,
-  V1_DataContractRecord,
-  V1_DataContractsRecord,
+  V1_DataContractSubscriptions,
+  V1_DataContractsResponse,
   V1_DataProduct_Entitlements,
   V1_PendingTasksRespond,
   V1_TaskMetadata,
@@ -159,14 +159,14 @@ export const V1_dataContractModelSchema = createModelSchema(V1_DataContract, {
 });
 
 export const V1_schemaSetModelSchema = createModelSchema(
-  V1_DataContractRecord,
+  V1_DataContractSubscriptions,
   {
     dataContract: usingModelSchema(V1_dataContractModelSchema),
   },
 );
 
 export const V1_DataContractsRecordModelSchema = createModelSchema(
-  V1_DataContractsRecord,
+  V1_DataContractsResponse,
   {
     dataContracts: optional(customListWithSchema(V1_schemaSetModelSchema)),
   },
@@ -270,7 +270,7 @@ export const V1_TaskStatusChangeResponseModelSchema = createModelSchema(
 );
 
 export const V1_DataContractsRecordModelSchemaToContracts = (
-  json: PlainObject<V1_DataContractsRecord>,
+  json: PlainObject<V1_DataContractsResponse>,
 ): V1_DataContract[] => {
   const contracts = deserialize(V1_DataContractsRecordModelSchema, json);
   return contracts.dataContracts?.map((e) => e.dataContract) ?? [];
