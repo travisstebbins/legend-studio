@@ -79,6 +79,7 @@ export * from './utils/Backdrop.js';
 export * from './utils/ClickAwayListener.js';
 export * from './utils/LegendStyleProvider.js';
 export * from './utils/ComponentUtils.js';
+export * from './utils/ImageUtils.js';
 
 export * from './markdown/MarkdownTextViewer.js';
 

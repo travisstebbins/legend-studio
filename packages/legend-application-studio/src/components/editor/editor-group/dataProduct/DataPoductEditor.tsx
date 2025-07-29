@@ -63,6 +63,7 @@ import {
   BuildingIcon,
   Tooltip,
   InfoCircleIcon,
+  compressImage,
 } from '@finos/legend-art';
 import React, {
   useRef,
@@ -1122,6 +1123,7 @@ const DataProductSidebar = observer(
 const HomeTab = observer(
   (props: { product: DataProduct; isReadOnly: boolean }) => {
     const { product, isReadOnly } = props;
+    const editorStore = useEditorStore();
     const updateDataProductTitle = (val: string | undefined): void => {
       dataProduct_setTitle(product, val ?? '');
     };
@@ -1129,6 +1131,33 @@ const HomeTab = observer(
       HTMLTextAreaElement
     > = (event) => {
       dataProduct_setDescription(product, event.target.value);
+    };
+    const [image, setImage] = useState<string | null>(null);
+
+    const handleFileChange = async (
+      event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        try {
+          // Check file size first
+          const fileSizeKB = file.size / 1024;
+          if (fileSizeKB > 1024 * 5) {
+            // 5MB limit
+            editorStore.applicationStore.notificationService.notifyError(
+              'File size must be less than 5MB',
+            );
+            return;
+          }
+
+          const compressedImage = await compressImage(file, 128);
+          setImage(compressedImage);
+        } catch {
+          editorStore.applicationStore.notificationService.notifyError(
+            'Failed to process image. Please try a different file.',
+          );
+        }
+      }
     };
 
     return (
@@ -1173,6 +1202,62 @@ const HomeTab = observer(
             }}
           />
         </div>
+        <div style={{ margin: '1rem' }}>
+          <div className="panel__content__form__section__header__label">
+            Image
+          </div>
+          <div className="panel__content__form__section__header__prompt">
+            Upload an image to represent this Data Product in the marketplace.
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem',
+            }}
+          >
+            <input
+              type="file"
+              accept="image/*"
+              disabled={isReadOnly}
+              onChange={handleFileChange}
+              style={{
+                padding: '0.5rem',
+                border: '1px solid var(--color-light-grey-400)',
+                borderRadius: '0.25rem',
+                backgroundColor: isReadOnly
+                  ? 'var(--color-light-grey-100)'
+                  : 'var(--color-white)',
+              }}
+            />
+            <div
+              style={{
+                fontSize: '0.75rem',
+                color: 'var(--color-light-grey-400)',
+                fontStyle: 'italic',
+              }}
+            >
+              Supported formats: PNG, JPG, JPEG, GIF (max 5MB)
+            </div>
+          </div>
+        </div>
+        {image && (
+          <div style={{ margin: '1rem' }}>
+            <div className="panel__content__form__section__header__label">
+              Preview
+            </div>
+            <img
+              src={image}
+              alt="Data Product"
+              style={{
+                maxWidth: '300px',
+                maxHeight: '200px',
+                border: '1px solid var(--color-light-grey-400)',
+                borderRadius: '0.25rem',
+              }}
+            />
+          </div>
+        )}
       </div>
     );
   },
