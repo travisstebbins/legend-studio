@@ -120,7 +120,7 @@ export const mockDataProducts: PlainObject<V1_EntitlementsDataProductDetailsResp
 
 export const mockReleaseSDLCDataProduct: PlainObject<Entity> = {
   _type: 'dataProduct',
-  name: 'Sdlc_Release_DataProduct',
+  name: 'SDLC_RELEASE_DATAPRODUCT',
   package: 'test::dataproduct',
   title: 'SDLC Release Data Product',
   description:
@@ -159,7 +159,7 @@ export const mockReleaseSDLCDataProduct: PlainObject<Entity> = {
 
 export const mockSnapshotSDLCDataProduct: PlainObject<Entity> = {
   _type: 'dataProduct',
-  name: 'Sdlc_Snapshot_DataProduct',
+  name: 'SDLC_SNAPSHOT_DATAPRODUCT',
   package: 'test::dataproduct',
   accessPointGroups: [],
   icon: undefined,
