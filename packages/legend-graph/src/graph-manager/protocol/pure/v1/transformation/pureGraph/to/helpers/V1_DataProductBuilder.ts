@@ -16,14 +16,22 @@
 
 import { UnsupportedOperationError } from '@finos/legend-shared';
 import {
-  LakehouseAccessPoint,
   type AccessPoint,
+  type DataProductIcon,
+  LakehouseAccessPoint,
   UnknownAccessPoint,
+  DataProductReactIcon,
+  UnknownDataProductIcon,
+  DataProductIconEmbeddedImage,
 } from '../../../../../../../../graph/metamodel/pure/dataProduct/DataProduct.js';
 import {
+  type V1_AccessPoint,
+  type V1_DataProductIcon,
+  V1_DataProductIconEmbeddedImage,
+  V1_DataProductReactIcon,
   V1_LakehouseAccessPoint,
   V1_UnknownAccessPoint,
-  type V1_AccessPoint,
+  V1_UnknownDataProductIcon,
 } from '../../../../model/packageableElements/dataProduct/V1_DataProduct.js';
 import type { V1_GraphBuilderContext } from '../V1_GraphBuilderContext.js';
 import { V1_buildRawLambdaWithResolvedPaths } from './V1_ValueSpecificationPathResolver.js';
@@ -53,5 +61,25 @@ export const V1_buildAccessPoint = (
   }
   throw new UnsupportedOperationError(
     `Unsupported data product access type ${ap}`,
+  );
+};
+
+export const V1_buildDataProductIcon = (
+  icon: V1_DataProductIcon,
+): DataProductIcon => {
+  if (icon instanceof V1_DataProductReactIcon) {
+    const dataProductReactIcon = new DataProductReactIcon(icon.icon);
+    return dataProductReactIcon;
+  } else if (icon instanceof V1_DataProductIconEmbeddedImage) {
+    const dataProductIconEmbeddedImage = new DataProductIconEmbeddedImage(
+      icon.imageUrl,
+    );
+    return dataProductIconEmbeddedImage;
+  } else if (icon instanceof V1_UnknownDataProductIcon) {
+    const unknown = new UnknownDataProductIcon(icon.content);
+    return unknown;
+  }
+  throw new UnsupportedOperationError(
+    `Unsupported data product access type ${icon}`,
   );
 };

@@ -66,6 +66,7 @@ import { useAuth } from 'react-oidc-context';
 import { type DataProductState } from '../../stores/lakehouse/dataProducts/DataProducts.js';
 import type { LegendMarketplaceApplicationStore } from '../../stores/LegendMarketplaceBaseStore.js';
 import {
+  V1_DataProductReactIcon,
   V1_EntitlementsLakehouseEnvironmentType,
   V1_IngestEnvironmentClassification,
   V1_SdlcDeploymentDataProductOrigin,
@@ -285,11 +286,9 @@ export const LakehouseDataProductCard = observer(
       <>
         <Box className="marketplace-lakehouse-data-product-card__container">
           <Box className="marketplace-lakehouse-data-product-card__icon">
-            {dataProductState.imageUrl ? (
-              <img src={dataProductState.imageUrl} />
-            ) : (
-              deserializeIcon(dataProductState.icon)
-            )}
+            {dataProductState.icon instanceof V1_DataProductReactIcon
+              ? deserializeIcon(dataProductState.icon.icon)
+              : null}
           </Box>
           <Box className="marketplace-lakehouse-data-product-card__content">
             <Box className="marketplace-lakehouse-data-product-card__tags">

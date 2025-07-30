@@ -17,18 +17,26 @@
 import { UnsupportedOperationError } from '@finos/legend-shared';
 import {
   type AccessPoint,
+  type DataProduct,
+  type DataProductIcon,
+  DataProductIconEmbeddedImage,
+  DataProductReactIcon,
   LakehouseAccessPoint,
   UnknownAccessPoint,
-  type DataProduct,
+  UnknownDataProductIcon,
 } from '../../../../../../../graph/metamodel/pure/dataProduct/DataProduct.js';
 import {
   type V1_AccessPoint,
+  type V1_DataProductIcon,
   V1_AccessPointGroup,
   V1_DataProduct,
+  V1_DataProductIconEmbeddedImage,
+  V1_DataProductReactIcon,
   V1_Email,
   V1_LakehouseAccessPoint,
   V1_SupportInfo,
   V1_UnknownAccessPoint,
+  V1_UnknownDataProductIcon,
 } from '../../../model/packageableElements/dataProduct/V1_DataProduct.js';
 import { V1_initPackageableElement } from './V1_CoreTransformerHelper.js';
 import { V1_transformRawLambda } from './V1_RawValueSpecificationTransformer.js';
@@ -55,6 +63,27 @@ const transformAccessPoint = (
   }
   throw new UnsupportedOperationError(
     `Unable to transform data product access point`,
+  );
+};
+
+const transformDataProductIcon = (
+  icon: DataProductIcon,
+): V1_DataProductIcon => {
+  if (icon instanceof DataProductReactIcon) {
+    const dataProductReactIcon = new V1_DataProductReactIcon();
+    dataProductReactIcon.icon = icon.icon;
+    return dataProductReactIcon;
+  } else if (icon instanceof DataProductIconEmbeddedImage) {
+    const dataProductIconEmbeddedImage = new V1_DataProductIconEmbeddedImage();
+    dataProductIconEmbeddedImage.imageUrl = icon.imageUrl;
+    return dataProductIconEmbeddedImage;
+  } else if (icon instanceof UnknownDataProductIcon) {
+    const unknownDataProductIcon = new V1_UnknownDataProductIcon();
+    unknownDataProductIcon.content = icon.content;
+    return unknownDataProductIcon;
+  }
+  throw new UnsupportedOperationError(
+    `Can't transform data product icon type: ${icon}`,
   );
 };
 
@@ -96,6 +125,11 @@ export const V1_transformDataProduct = (
       return group;
     },
   );
+  if (!element.icon) {
+    product.icon = undefined;
+  } else {
+    product.icon = transformDataProductIcon(element.icon);
+  }
 
   return product;
 };

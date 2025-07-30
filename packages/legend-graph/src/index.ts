@@ -178,12 +178,16 @@ export { V1_ExternalFormatDescription } from './graph-manager/protocol/pure/v1/e
 export { V1_ExternalFormatModelGenerationInput } from './graph-manager/protocol/pure/v1/engine/externalFormat/V1_ExternalFormatModelGeneration.js';
 export { V1_GenerateSchemaInput } from './graph-manager/protocol/pure/v1/engine/externalFormat/V1_GenerateSchemaInput.js';
 export {
-  V1_DataProduct,
-  V1_SupportInfo,
-  V1_Email,
-  V1_LakehouseAccessPoint,
   V1_AccessPoint,
   V1_AccessPointGroup,
+  V1_DataProduct,
+  V1_DataProductIcon,
+  V1_DataProductIconEmbeddedImage,
+  V1_DataProductReactIcon,
+  V1_Email,
+  V1_LakehouseAccessPoint,
+  V1_SupportInfo,
+  V1_UnknownDataProductIcon,
 } from './graph-manager/protocol/pure/v1/model/packageableElements/dataProduct/V1_DataProduct.js';
 export {
   V1_ExecuteInput,
