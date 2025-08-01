@@ -59,6 +59,10 @@ export enum V1_DataProductIconType {
   EMBEDDED_IMAGE_ICON = 'embeddedImageIcon',
 }
 
+export enum V1_LibraryIconId {
+  REACT_ICONS = 'react-icons',
+}
+
 export const V1_lakehouseAccessPointModelSchema = createModelSchema(
   V1_LakehouseAccessPoint,
   {
