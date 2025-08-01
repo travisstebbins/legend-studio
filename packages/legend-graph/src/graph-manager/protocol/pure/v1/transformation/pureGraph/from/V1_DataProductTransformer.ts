@@ -19,8 +19,8 @@ import {
   type AccessPoint,
   type DataProduct,
   type DataProductIcon,
-  DataProductIconEmbeddedImage,
-  DataProductReactIcon,
+  DataProductEmbeddedImageIcon,
+  DataProductLibraryIcon,
   LakehouseAccessPoint,
   UnknownAccessPoint,
   UnknownDataProductIcon,
@@ -30,8 +30,8 @@ import {
   type V1_DataProductIcon,
   V1_AccessPointGroup,
   V1_DataProduct,
-  V1_DataProductIconEmbeddedImage,
-  V1_DataProductReactIcon,
+  V1_DataProductEmbeddedImageIcon,
+  V1_DataProductLibraryIcon,
   V1_Email,
   V1_LakehouseAccessPoint,
   V1_SupportInfo,
@@ -69,14 +69,15 @@ const transformAccessPoint = (
 const transformDataProductIcon = (
   icon: DataProductIcon,
 ): V1_DataProductIcon => {
-  if (icon instanceof DataProductReactIcon) {
-    const dataProductReactIcon = new V1_DataProductReactIcon();
-    dataProductReactIcon.icon = icon.icon;
-    return dataProductReactIcon;
-  } else if (icon instanceof DataProductIconEmbeddedImage) {
-    const dataProductIconEmbeddedImage = new V1_DataProductIconEmbeddedImage();
-    dataProductIconEmbeddedImage.imageUrl = icon.imageUrl;
-    return dataProductIconEmbeddedImage;
+  if (icon instanceof DataProductLibraryIcon) {
+    const dataProductLibraryIcon = new V1_DataProductLibraryIcon();
+    dataProductLibraryIcon.libraryId = icon.libraryId;
+    dataProductLibraryIcon.iconId = icon.iconId;
+    return dataProductLibraryIcon;
+  } else if (icon instanceof DataProductEmbeddedImageIcon) {
+    const dataProductEmbeddedImageIcon = new V1_DataProductEmbeddedImageIcon();
+    dataProductEmbeddedImageIcon.imageUrl = icon.imageUrl;
+    return dataProductEmbeddedImageIcon;
   } else if (icon instanceof UnknownDataProductIcon) {
     const unknownDataProductIcon = new V1_UnknownDataProductIcon();
     unknownDataProductIcon.content = icon.content;

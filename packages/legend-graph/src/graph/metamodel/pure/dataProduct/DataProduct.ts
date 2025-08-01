@@ -143,35 +143,41 @@ export abstract class DataProductIcon implements Hashable {
   abstract get hashCode(): string;
 }
 
-export class DataProductReactIcon extends DataProductIcon implements Hashable {
-  icon!: string | undefined;
-
-  constructor(icon: string | undefined) {
-    super();
-    this.icon = icon;
-  }
-
-  override get hashCode(): string {
-    return hashArray([CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON, this.icon ?? '']);
-  }
-}
-
-export class DataProductIconEmbeddedImage
+export class DataProductLibraryIcon
   extends DataProductIcon
   implements Hashable
 {
-  imageUrl!: string | undefined;
+  libraryId!: string;
+  iconId!: string;
 
-  constructor(imageUrl: string | undefined) {
+  constructor(libraryId: string, iconId: string) {
     super();
-    this.imageUrl = imageUrl;
+    this.libraryId = libraryId;
+    this.iconId = iconId;
   }
 
   override get hashCode(): string {
     return hashArray([
       CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON,
-      this.imageUrl ?? '',
+      this.libraryId,
+      this.iconId,
     ]);
+  }
+}
+
+export class DataProductEmbeddedImageIcon
+  extends DataProductIcon
+  implements Hashable
+{
+  imageUrl!: string;
+
+  constructor(imageUrl: string) {
+    super();
+    this.imageUrl = imageUrl;
+  }
+
+  override get hashCode(): string {
+    return hashArray([CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON, this.imageUrl]);
   }
 }
 

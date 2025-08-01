@@ -22,8 +22,8 @@ import {
   type DataProductIcon,
   type Email,
   type SupportInfo,
-  DataProductIconEmbeddedImage,
-  DataProductReactIcon,
+  DataProductEmbeddedImageIcon,
+  DataProductLibraryIcon,
   LakehouseAccessPoint,
   UnknownDataProductIcon,
 } from '../../../graph/metamodel/pure/dataProduct/DataProduct.js';
@@ -93,11 +93,12 @@ export const observe_AccessPointGroup = skipObserved(
 
 export const observe_DataProductIcon = skipObserved(
   (metamodel: DataProductIcon): DataProductIcon => {
-    if (metamodel instanceof DataProductReactIcon) {
+    if (metamodel instanceof DataProductLibraryIcon) {
       makeObservable(metamodel, {
-        icon: observable,
+        libraryId: observable,
+        iconId: observable,
       });
-    } else if (metamodel instanceof DataProductIconEmbeddedImage) {
+    } else if (metamodel instanceof DataProductEmbeddedImageIcon) {
       makeObservable(metamodel, {
         imageUrl: observable,
       });

@@ -127,28 +127,30 @@ export abstract class V1_DataProductIcon implements Hashable {
   abstract get hashCode(): string;
 }
 
-export class V1_DataProductReactIcon
+export class V1_DataProductLibraryIcon
   extends V1_DataProductIcon
   implements Hashable
 {
-  icon!: string | undefined;
-
-  override get hashCode(): string {
-    return hashArray([CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON, this.icon ?? '']);
-  }
-}
-
-export class V1_DataProductIconEmbeddedImage
-  extends V1_DataProductIcon
-  implements Hashable
-{
-  imageUrl!: string | undefined;
+  libraryId!: string;
+  iconId!: string;
 
   override get hashCode(): string {
     return hashArray([
       CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON,
-      this.imageUrl ?? '',
+      this.libraryId,
+      this.iconId,
     ]);
+  }
+}
+
+export class V1_DataProductEmbeddedImageIcon
+  extends V1_DataProductIcon
+  implements Hashable
+{
+  imageUrl!: string;
+
+  override get hashCode(): string {
+    return hashArray([CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON, this.imageUrl]);
   }
 }
 

@@ -20,15 +20,15 @@ import {
   type DataProductIcon,
   LakehouseAccessPoint,
   UnknownAccessPoint,
-  DataProductReactIcon,
+  DataProductLibraryIcon,
   UnknownDataProductIcon,
-  DataProductIconEmbeddedImage,
+  DataProductEmbeddedImageIcon,
 } from '../../../../../../../../graph/metamodel/pure/dataProduct/DataProduct.js';
 import {
   type V1_AccessPoint,
   type V1_DataProductIcon,
-  V1_DataProductIconEmbeddedImage,
-  V1_DataProductReactIcon,
+  V1_DataProductEmbeddedImageIcon,
+  V1_DataProductLibraryIcon,
   V1_LakehouseAccessPoint,
   V1_UnknownAccessPoint,
   V1_UnknownDataProductIcon,
@@ -67,14 +67,17 @@ export const V1_buildAccessPoint = (
 export const V1_buildDataProductIcon = (
   icon: V1_DataProductIcon,
 ): DataProductIcon => {
-  if (icon instanceof V1_DataProductReactIcon) {
-    const dataProductReactIcon = new DataProductReactIcon(icon.icon);
-    return dataProductReactIcon;
-  } else if (icon instanceof V1_DataProductIconEmbeddedImage) {
-    const dataProductIconEmbeddedImage = new DataProductIconEmbeddedImage(
+  if (icon instanceof V1_DataProductLibraryIcon) {
+    const dataProductLibraryIcon = new DataProductLibraryIcon(
+      icon.libraryId,
+      icon.iconId,
+    );
+    return dataProductLibraryIcon;
+  } else if (icon instanceof V1_DataProductEmbeddedImageIcon) {
+    const dataProductEmbeddedImageIcon = new DataProductEmbeddedImageIcon(
       icon.imageUrl,
     );
-    return dataProductIconEmbeddedImage;
+    return dataProductEmbeddedImageIcon;
   } else if (icon instanceof V1_UnknownDataProductIcon) {
     const unknown = new UnknownDataProductIcon(icon.content);
     return unknown;

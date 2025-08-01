@@ -25,22 +25,28 @@ import {
 } from './Icon.js';
 
 export const deserializeIcon = (
-  iconId: string | undefined,
+  libraryId: string,
+  iconId: string,
 ): React.ReactNode | undefined => {
-  switch (iconId) {
-    case 'FaUser':
-      return <UserIcon />;
-    case 'FaUserSecret':
-      return <HackerIcon />;
-    case 'FaDollarSign':
-      return <DollarIcon />;
-    case 'FaShoppingCart':
-      return <ShoppingCartIcon />;
-    case 'FaServer':
-      return <ServerIcon />;
-    case 'FaDatabase':
-      return <DatabaseIcon />;
+  switch (libraryId) {
+    case 'react-icons':
+      switch (iconId) {
+        case 'FaUser':
+          return <UserIcon />;
+        case 'FaUserSecret':
+          return <HackerIcon />;
+        case 'FaDollarSign':
+          return <DollarIcon />;
+        case 'FaShoppingCart':
+          return <ShoppingCartIcon />;
+        case 'FaServer':
+          return <ServerIcon />;
+        case 'FaDatabase':
+          return <DatabaseIcon />;
+        default:
+          return <FileUnknownIcon />;
+      }
     default:
-      return <FileUnknownIcon />;
+      return undefined;
   }
 };

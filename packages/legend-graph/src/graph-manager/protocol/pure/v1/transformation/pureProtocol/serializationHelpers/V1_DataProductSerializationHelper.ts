@@ -32,8 +32,8 @@ import {
   V1_SupportInfo,
   V1_LakehouseAccessPoint,
   V1_UnknownAccessPoint,
-  V1_DataProductReactIcon,
-  V1_DataProductIconEmbeddedImage,
+  V1_DataProductLibraryIcon,
+  V1_DataProductEmbeddedImageIcon,
   V1_UnknownDataProductIcon,
 } from '../../../model/packageableElements/dataProduct/V1_DataProduct.js';
 import {
@@ -55,8 +55,8 @@ export enum V1_AccessPointType {
 }
 
 export enum V1_DataProductIconType {
-  REACT_ICON = 'reactIcon',
-  EMBEDDED_IMAGE = 'embeddedImage',
+  LIBRARY_ICON = 'libraryIcon',
+  EMBEDDED_IMAGE_ICON = 'embeddedImageIcon',
 }
 
 export const V1_lakehouseAccessPointModelSchema = createModelSchema(
@@ -129,29 +129,30 @@ export const V1_SupportInfoModelSchema = createModelSchema(V1_SupportInfo, {
   emails: customListWithSchema(V1_EmailModelSchema),
 });
 
-export const V1_DataProductReactIconModelSchema = createModelSchema(
-  V1_DataProductReactIcon,
+export const V1_DataProductLibraryIconModelSchema = createModelSchema(
+  V1_DataProductLibraryIcon,
   {
-    _type: usingConstantValueSchema(V1_DataProductIconType.REACT_ICON),
-    icon: optional(primitive()),
+    _type: usingConstantValueSchema(V1_DataProductIconType.LIBRARY_ICON),
+    libraryId: primitive(),
+    iconId: primitive(),
   },
 );
 
-export const V1_DataProductIconEmbeddedImageModelSchema = createModelSchema(
-  V1_DataProductIconEmbeddedImage,
+export const V1_DataProductEmbeddedImageIconModelSchema = createModelSchema(
+  V1_DataProductEmbeddedImageIcon,
   {
-    _type: usingConstantValueSchema(V1_DataProductIconType.EMBEDDED_IMAGE),
-    imageUrl: optional(primitive()),
+    _type: usingConstantValueSchema(V1_DataProductIconType.EMBEDDED_IMAGE_ICON),
+    imageUrl: primitive(),
   },
 );
 
 const V1_serializeDataProductIcon = (
   protocol: V1_DataProductIcon,
 ): PlainObject<V1_AccessPoint> => {
-  if (protocol instanceof V1_DataProductReactIcon) {
-    return serialize(V1_DataProductReactIconModelSchema, protocol);
-  } else if (protocol instanceof V1_DataProductIconEmbeddedImage) {
-    return serialize(V1_DataProductIconEmbeddedImageModelSchema, protocol);
+  if (protocol instanceof V1_DataProductLibraryIcon) {
+    return serialize(V1_DataProductLibraryIconModelSchema, protocol);
+  } else if (protocol instanceof V1_DataProductEmbeddedImageIcon) {
+    return serialize(V1_DataProductEmbeddedImageIconModelSchema, protocol);
   }
   throw new UnsupportedOperationError(
     `Can't serialize data product icon type`,
@@ -163,10 +164,10 @@ const V1_deserializeDataProductIcon = (
   json: PlainObject<V1_DataProductIcon>,
 ): V1_DataProductIcon => {
   switch (json._type) {
-    case V1_DataProductIconType.REACT_ICON:
-      return deserialize(V1_DataProductReactIconModelSchema, json);
-    case V1_DataProductIconType.EMBEDDED_IMAGE:
-      return deserialize(V1_DataProductIconEmbeddedImageModelSchema, json);
+    case V1_DataProductIconType.LIBRARY_ICON:
+      return deserialize(V1_DataProductLibraryIconModelSchema, json);
+    case V1_DataProductIconType.EMBEDDED_IMAGE_ICON:
+      return deserialize(V1_DataProductEmbeddedImageIconModelSchema, json);
     default: {
       const unknown = new V1_UnknownDataProductIcon();
       unknown.content = json;
