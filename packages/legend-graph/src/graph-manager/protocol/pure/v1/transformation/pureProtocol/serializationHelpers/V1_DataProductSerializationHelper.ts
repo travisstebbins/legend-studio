@@ -21,9 +21,11 @@ import {
   optional,
   primitive,
   serialize,
+  SKIP,
 } from 'serializr';
 import {
   type V1_AccessPoint,
+  type V1_DataProductIcon,
   V1_AccessPointGroup,
   V1_DATA_PRODUCT_ELEMENT_PROTOCOL_TYPE,
   V1_DataProduct,
@@ -31,6 +33,9 @@ import {
   V1_SupportInfo,
   V1_LakehouseAccessPoint,
   V1_UnknownAccessPoint,
+  V1_DataProductLibraryIcon,
+  V1_DataProductEmbeddedImageIcon,
+  V1_UnknownDataProductIcon,
 } from '../../../model/packageableElements/dataProduct/V1_DataProduct.js';
 import {
   UnsupportedOperationError,
@@ -48,6 +53,15 @@ export enum V1_AccessPointType {
   LAKEHOUSE = 'lakehouseAccessPoint',
   EQUAL_TO_JSON = 'equalToJson',
   EQUAL_TO_TDS = 'equalToTDS',
+}
+
+export enum V1_DataProductIconType {
+  LIBRARY_ICON = 'libraryIcon',
+  EMBEDDED_IMAGE_ICON = 'embeddedImageIcon',
+}
+
+export enum V1_LibraryIconId {
+  REACT_ICONS = 'react-icons',
 }
 
 export const V1_lakehouseAccessPointModelSchema = createModelSchema(
@@ -120,6 +134,53 @@ export const V1_SupportInfoModelSchema = createModelSchema(V1_SupportInfo, {
   emails: customListWithSchema(V1_EmailModelSchema),
 });
 
+export const V1_DataProductLibraryIconModelSchema = createModelSchema(
+  V1_DataProductLibraryIcon,
+  {
+    _type: usingConstantValueSchema(V1_DataProductIconType.LIBRARY_ICON),
+    libraryId: primitive(),
+    iconId: primitive(),
+  },
+);
+
+export const V1_DataProductEmbeddedImageIconModelSchema = createModelSchema(
+  V1_DataProductEmbeddedImageIcon,
+  {
+    _type: usingConstantValueSchema(V1_DataProductIconType.EMBEDDED_IMAGE_ICON),
+    imageUrl: primitive(),
+  },
+);
+
+const V1_serializeDataProductIcon = (
+  protocol: V1_DataProductIcon,
+): PlainObject<V1_AccessPoint> => {
+  if (protocol instanceof V1_DataProductLibraryIcon) {
+    return serialize(V1_DataProductLibraryIconModelSchema, protocol);
+  } else if (protocol instanceof V1_DataProductEmbeddedImageIcon) {
+    return serialize(V1_DataProductEmbeddedImageIconModelSchema, protocol);
+  }
+  throw new UnsupportedOperationError(
+    `Can't serialize data product icon type`,
+    protocol,
+  );
+};
+
+const V1_deserializeDataProductIcon = (
+  json: PlainObject<V1_DataProductIcon>,
+): V1_DataProductIcon => {
+  switch (json._type) {
+    case V1_DataProductIconType.LIBRARY_ICON:
+      return deserialize(V1_DataProductLibraryIconModelSchema, json);
+    case V1_DataProductIconType.EMBEDDED_IMAGE_ICON:
+      return deserialize(V1_DataProductEmbeddedImageIconModelSchema, json);
+    default: {
+      const unknown = new V1_UnknownDataProductIcon();
+      unknown.content = json;
+      return unknown;
+    }
+  }
+};
+
 export const V1_dataProductModelSchema = createModelSchema(V1_DataProduct, {
   _type: usingConstantValueSchema(V1_DATA_PRODUCT_ELEMENT_PROTOCOL_TYPE),
   name: primitive(),
@@ -127,27 +188,9 @@ export const V1_dataProductModelSchema = createModelSchema(V1_DataProduct, {
   title: optional(primitive()),
   description: optional(primitive()),
   accessPointGroups: customListWithSchema(V1_AccessPointGroupModelSchema),
-  // TODO: replace custom deserializer with optional(primitive())
   icon: custom(
-    () => undefined,
-    () => {
-      const randomIndex = Math.floor(Math.random() * 6);
-      switch (randomIndex) {
-        case 0:
-          return 'FaUser';
-        case 1:
-          return 'FaUserSecret';
-        case 2:
-          return 'FaDollarSign';
-        case 3:
-          return 'FaShoppingCart';
-        case 4:
-          return 'FaServer';
-        default:
-          return undefined;
-      }
-    },
+    (val) => (val ? V1_serializeDataProductIcon(val) : SKIP),
+    (val) => (val ? V1_deserializeDataProductIcon(val) : SKIP),
   ),
-  imageUrl: optional(primitive()),
   supportInfo: optionalCustomUsingModelSchema(V1_SupportInfoModelSchema),
 });

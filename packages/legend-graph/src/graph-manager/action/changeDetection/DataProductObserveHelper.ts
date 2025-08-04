@@ -16,12 +16,16 @@
 
 import { makeObservable, observable, override } from 'mobx';
 import {
-  LakehouseAccessPoint,
-  type Email,
-  type SupportInfo,
   type AccessPoint,
   type AccessPointGroup,
   type DataProduct,
+  type DataProductIcon,
+  type Email,
+  type SupportInfo,
+  DataProductEmbeddedImageIcon,
+  DataProductLibraryIcon,
+  LakehouseAccessPoint,
+  UnknownDataProductIcon,
 } from '../../../graph/metamodel/pure/dataProduct/DataProduct.js';
 import {
   observe_Abstract_PackageableElement,
@@ -87,6 +91,26 @@ export const observe_AccessPointGroup = skipObserved(
   },
 );
 
+export const observe_DataProductIcon = skipObserved(
+  (metamodel: DataProductIcon): DataProductIcon => {
+    if (metamodel instanceof DataProductLibraryIcon) {
+      makeObservable(metamodel, {
+        libraryId: observable,
+        iconId: observable,
+      });
+    } else if (metamodel instanceof DataProductEmbeddedImageIcon) {
+      makeObservable(metamodel, {
+        imageUrl: observable,
+      });
+    } else if (metamodel instanceof UnknownDataProductIcon) {
+      makeObservable(metamodel, {
+        content: observable,
+      });
+    }
+    return metamodel;
+  },
+);
+
 export const observe_DataProduct = skipObserved(
   (metamodel: DataProduct): DataProduct => {
     observe_Abstract_PackageableElement(metamodel);
@@ -97,10 +121,14 @@ export const observe_DataProduct = skipObserved(
       title: observable,
       description: observable,
       supportInfo: observable,
+      icon: observable,
     });
 
     if (metamodel.supportInfo) {
       observe_SupportInfo(metamodel.supportInfo);
+    }
+    if (metamodel.icon) {
+      observe_DataProductIcon(metamodel.icon);
     }
     metamodel.accessPointGroups.forEach(observe_AccessPointGroup);
     return metamodel;

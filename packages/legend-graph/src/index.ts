@@ -178,12 +178,16 @@ export { V1_ExternalFormatDescription } from './graph-manager/protocol/pure/v1/e
 export { V1_ExternalFormatModelGenerationInput } from './graph-manager/protocol/pure/v1/engine/externalFormat/V1_ExternalFormatModelGeneration.js';
 export { V1_GenerateSchemaInput } from './graph-manager/protocol/pure/v1/engine/externalFormat/V1_GenerateSchemaInput.js';
 export {
-  V1_DataProduct,
-  V1_SupportInfo,
-  V1_Email,
-  V1_LakehouseAccessPoint,
   V1_AccessPoint,
   V1_AccessPointGroup,
+  V1_DataProduct,
+  V1_DataProductIcon,
+  V1_DataProductEmbeddedImageIcon,
+  V1_DataProductLibraryIcon,
+  V1_Email,
+  V1_LakehouseAccessPoint,
+  V1_SupportInfo,
+  V1_UnknownDataProductIcon,
 } from './graph-manager/protocol/pure/v1/model/packageableElements/dataProduct/V1_DataProduct.js';
 export {
   V1_ExecuteInput,
@@ -580,7 +584,10 @@ export {
   V1_RawValueSpecificationType,
   V1_deserializeRawValueSpecificationType,
 } from './graph-manager/protocol/pure/v1/transformation/pureProtocol/serializationHelpers/V1_RawValueSpecificationSerializationHelper.js';
-export { V1_dataProductModelSchema } from './graph-manager/protocol/pure/v1/transformation/pureProtocol/serializationHelpers/V1_DataProductSerializationHelper.js';
+export {
+  V1_dataProductModelSchema,
+  V1_LibraryIconId,
+} from './graph-manager/protocol/pure/v1/transformation/pureProtocol/serializationHelpers/V1_DataProductSerializationHelper.js';
 export { V1_transformPropertyReference } from './graph-manager/protocol/pure/v1/transformation/pureGraph/from/V1_MappingTransformer.js';
 export * from './graph-manager/protocol/pure/v1/transformation/pureGraph/from/V1_DataElementTransformer.js';
 export {
@@ -689,13 +696,17 @@ export * from './graph-manager/action/changeDetection/DSL_FunctionActivatorObser
 // ------------------------------------- Data Product --------------------------------------------
 
 export {
+  AccessPoint,
+  AccessPointGroup,
   DataProduct,
-  SupportInfo,
+  DataProductEmbeddedImageIcon,
+  DataProductIcon,
+  DataProductLibraryIcon,
   Email,
   LakehouseAccessPoint,
   LakehouseTargetEnv,
-  AccessPointGroup,
-  AccessPoint,
+  SupportInfo,
+  UnknownDataProductIcon,
 } from './graph/metamodel/pure/dataProduct/DataProduct.js';
 export * from './graph-manager/action/changeDetection/DataProductObserveHelper.js';
 

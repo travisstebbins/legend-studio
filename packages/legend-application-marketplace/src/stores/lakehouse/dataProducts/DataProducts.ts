@@ -21,6 +21,7 @@ import {
   type GeneratorFn,
 } from '@finos/legend-shared';
 import {
+  type V1_DataProductIcon,
   type V1_EntitlementsDataProductDetails,
   type V1_EntitlementsLakehouseEnvironmentType,
   type V1_PureGraphManager,
@@ -109,12 +110,8 @@ export class DataProductState {
     return this.dataProductElement?.description ?? '';
   }
 
-  get icon(): string | undefined {
+  get icon(): V1_DataProductIcon | undefined {
     return this.dataProductElement?.icon;
-  }
-
-  get imageUrl(): string | undefined {
-    return this.dataProductElement?.imageUrl;
   }
 
   get versionId(): string | undefined {

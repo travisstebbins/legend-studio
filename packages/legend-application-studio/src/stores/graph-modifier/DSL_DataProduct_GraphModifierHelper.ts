@@ -18,13 +18,14 @@ import {
   type AccessPoint,
   type AccessPointGroup,
   type DataProduct,
+  type DataProductIcon,
   type Email,
+  type LakehouseAccessPoint,
   observe_AccessPoint,
   observe_AccessPointGroup,
-  observe_SupportInfo,
   observe_Email,
+  observe_SupportInfo,
   SupportInfo,
-  type LakehouseAccessPoint,
 } from '@finos/legend-graph';
 import { addUniqueEntry, deleteEntry, swapEntry } from '@finos/legend-shared';
 import { action } from 'mobx';
@@ -109,6 +110,12 @@ export const dataProduct_setTitle = action(
 export const dataProduct_setDescription = action(
   (product: DataProduct, description: string) => {
     product.description = description;
+  },
+);
+
+export const dataProduct_setIcon = action(
+  (product: DataProduct, icon: DataProductIcon | undefined) => {
+    product.icon = icon;
   },
 );
 

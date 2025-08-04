@@ -139,11 +139,74 @@ export class SupportInfo implements Hashable {
   }
 }
 
+export abstract class DataProductIcon implements Hashable {
+  abstract get hashCode(): string;
+}
+
+export class DataProductLibraryIcon
+  extends DataProductIcon
+  implements Hashable
+{
+  libraryId!: string;
+  iconId!: string;
+
+  constructor(libraryId: string, iconId: string) {
+    super();
+    this.libraryId = libraryId;
+    this.iconId = iconId;
+  }
+
+  override get hashCode(): string {
+    return hashArray([
+      CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON,
+      this.libraryId,
+      this.iconId,
+    ]);
+  }
+}
+
+export class DataProductEmbeddedImageIcon
+  extends DataProductIcon
+  implements Hashable
+{
+  imageUrl!: string;
+
+  constructor(imageUrl: string) {
+    super();
+    this.imageUrl = imageUrl;
+  }
+
+  override get hashCode(): string {
+    return hashArray([CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON, this.imageUrl]);
+  }
+}
+
+// handle incoming icons not yet modeled
+export class UnknownDataProductIcon
+  extends DataProductIcon
+  implements Hashable
+{
+  content!: PlainObject;
+
+  constructor(content: PlainObject) {
+    super();
+    this.content = content;
+  }
+
+  override get hashCode(): string {
+    return hashArray([
+      CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON,
+      hashObjectWithoutSourceInformation(this.content),
+    ]);
+  }
+}
+
 export class DataProduct extends PackageableElement {
   title: string | undefined;
   description: string | undefined;
   supportInfo: SupportInfo | undefined;
   accessPointGroups: AccessPointGroup[] = [];
+  icon: DataProductIcon | undefined;
 
   override accept_PackageableElementVisitor<T>(
     visitor: PackageableElementVisitor<T>,
@@ -158,6 +221,7 @@ export class DataProduct extends PackageableElement {
       this.title ?? '',
       this.description ?? '',
       this.supportInfo ?? '',
+      this.icon ?? '',
     ]);
   }
 }

@@ -123,12 +123,57 @@ export class V1_SupportInfo implements Hashable {
   }
 }
 
+export abstract class V1_DataProductIcon implements Hashable {
+  abstract get hashCode(): string;
+}
+
+export class V1_DataProductLibraryIcon
+  extends V1_DataProductIcon
+  implements Hashable
+{
+  libraryId!: string;
+  iconId!: string;
+
+  override get hashCode(): string {
+    return hashArray([
+      CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON,
+      this.libraryId,
+      this.iconId,
+    ]);
+  }
+}
+
+export class V1_DataProductEmbeddedImageIcon
+  extends V1_DataProductIcon
+  implements Hashable
+{
+  imageUrl!: string;
+
+  override get hashCode(): string {
+    return hashArray([CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON, this.imageUrl]);
+  }
+}
+
+// handle incoming icons not yet modeled
+export class V1_UnknownDataProductIcon
+  extends V1_DataProductIcon
+  implements Hashable
+{
+  content!: PlainObject;
+
+  override get hashCode(): string {
+    return hashArray([
+      CORE_HASH_STRUCTURE.DATA_PRODUCT_ICON,
+      hashObjectWithoutSourceInformation(this.content),
+    ]);
+  }
+}
+
 export class V1_DataProduct extends V1_PackageableElement implements Hashable {
   title: string | undefined;
   description: string | undefined;
   accessPointGroups: V1_AccessPointGroup[] = [];
-  icon: string | undefined;
-  imageUrl: string | undefined;
+  icon: V1_DataProductIcon | undefined;
   supportInfo: V1_SupportInfo | undefined;
 
   override get hashCode(): string {
@@ -138,7 +183,6 @@ export class V1_DataProduct extends V1_PackageableElement implements Hashable {
       this.title ?? '',
       this.description ?? '',
       this.icon ?? '',
-      this.imageUrl ?? '',
       this.supportInfo ?? '',
     ]);
   }

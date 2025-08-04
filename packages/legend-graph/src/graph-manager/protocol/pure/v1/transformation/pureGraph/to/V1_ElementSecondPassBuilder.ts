@@ -123,7 +123,10 @@ import {
   Email,
   SupportInfo,
 } from '../../../../../../../graph/metamodel/pure/dataProduct/DataProduct.js';
-import { V1_buildAccessPoint } from './helpers/V1_DataProductBuilder.js';
+import {
+  V1_buildAccessPoint,
+  V1_buildDataProductIcon,
+} from './helpers/V1_DataProductBuilder.js';
 import type { V1_IngestDefinition } from '../../../model/packageableElements/ingest/V1_IngestDefinition.js';
 
 export class V1_ElementSecondPassBuilder
@@ -721,6 +724,11 @@ export class V1_ElementSecondPassBuilder
         return email;
       });
       dataProduct.supportInfo = supportInfo;
+    }
+    if (!element.icon) {
+      dataProduct.icon = undefined;
+    } else {
+      dataProduct.icon = V1_buildDataProductIcon(element.icon);
     }
   }
 }
