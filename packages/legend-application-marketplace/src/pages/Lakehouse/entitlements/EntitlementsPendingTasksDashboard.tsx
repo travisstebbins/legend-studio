@@ -391,13 +391,17 @@ export const EntitlementsPendingTasksDashbaord = observer(
       );
     };
 
-    const colDefs: DataGridColumnDefinition<V1_ContractUserEventRecord>[] = [
+    const defaultColDef: DataGridColumnDefinition<V1_ContractUserEventRecord> =
       {
         minWidth: 50,
         sortable: true,
         resizable: true,
-        headerName: 'Action Date',
         flex: 1,
+      };
+
+    const colDefs: DataGridColumnDefinition<V1_ContractUserEventRecord>[] = [
+      {
+        headerName: 'Action Date',
         valueGetter: (params) => {
           const taskType = params.data?.eventPayload.type;
           const timestamp = params.data?.eventPayload.eventTimestamp;
@@ -406,11 +410,8 @@ export const EntitlementsPendingTasksDashbaord = observer(
       },
       {
         minWidth: 25,
-        sortable: true,
-        resizable: true,
         colId: 'consumerType',
         headerName: 'Consumer Type',
-        flex: 1,
         cellRenderer: (
           params: DataGridCellRendererParams<V1_ContractUserEventRecord>,
         ) => {
@@ -446,12 +447,8 @@ export const EntitlementsPendingTasksDashbaord = observer(
         },
       },
       {
-        minWidth: 50,
-        sortable: true,
-        resizable: true,
         colId: 'targetUser',
         headerName: 'Target User',
-        flex: 1,
         cellRenderer: (
           params: DataGridCellRendererParams<V1_ContractUserEventRecord>,
         ) => {
@@ -465,12 +462,8 @@ export const EntitlementsPendingTasksDashbaord = observer(
         },
       },
       {
-        minWidth: 50,
-        sortable: true,
-        resizable: true,
         colId: 'requester',
         headerName: 'Requester',
-        flex: 1,
         cellRenderer: (
           params: DataGridCellRendererParams<V1_ContractUserEventRecord>,
         ) => {
@@ -490,11 +483,7 @@ export const EntitlementsPendingTasksDashbaord = observer(
         },
       },
       {
-        minWidth: 50,
-        sortable: true,
-        resizable: true,
         headerName: 'Target Data Product',
-        flex: 1,
         valueGetter: (params) => {
           const contractId = params.data?.dataContractId;
           const contract = allUserContracts?.find(
@@ -504,11 +493,7 @@ export const EntitlementsPendingTasksDashbaord = observer(
         },
       },
       {
-        minWidth: 50,
-        sortable: true,
-        resizable: true,
         headerName: 'Target Access Point Group',
-        flex: 1,
         valueGetter: (params) => {
           const contractId = params.data?.dataContractId;
           const contract = allUserContracts?.find(
@@ -523,9 +508,6 @@ export const EntitlementsPendingTasksDashbaord = observer(
         },
       },
       {
-        minWidth: 50,
-        sortable: true,
-        resizable: true,
         headerName: 'Business Justification',
         flex: 2,
         valueGetter: (params) => {
@@ -537,9 +519,6 @@ export const EntitlementsPendingTasksDashbaord = observer(
         },
       },
       {
-        minWidth: 50,
-        sortable: true,
-        resizable: true,
         hide: true,
         headerName: 'Contract ID',
         flex: 2,
@@ -597,6 +576,7 @@ export const EntitlementsPendingTasksDashbaord = observer(
                   rowSelection={rowSelection}
                   onFirstDataRendered={handleFirstDataRendered}
                   onCellClicked={handleCellClicked}
+                  defaultColDef={defaultColDef}
                   columnDefs={[
                     {
                       headerName: '',
@@ -648,6 +628,7 @@ export const EntitlementsPendingTasksDashbaord = observer(
                   rowSelection={rowSelection}
                   onFirstDataRendered={handleFirstDataRendered}
                   onCellClicked={handleCellClicked}
+                  defaultColDef={defaultColDef}
                   columnDefs={[
                     {
                       headerName: '',
@@ -688,6 +669,7 @@ export const EntitlementsPendingTasksDashbaord = observer(
                     rowSelection={rowSelection}
                     onFirstDataRendered={handleFirstDataRendered}
                     onCellClicked={handleCellClicked}
+                    defaultColDef={defaultColDef}
                     columnDefs={[
                       {
                         headerName: '',
