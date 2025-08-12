@@ -23,14 +23,13 @@ import {
 import { deserialize } from 'serializr';
 import {
   type V1_ContractUserEventRecord,
-  type V1_LiteDataContract,
-  type V1_LiteDataContractsResponse,
+  type V1_LiteDataContractWithUserDetails,
   type V1_PendingTasksResponse,
   type V1_TaskStatus,
   type V1_TaskStatusChangeResponse,
   type V1_UserPendingContractsRecord,
   type V1_UserPendingContractsResponse,
-  V1_liteDataContractsResponseModelSchemaToContracts,
+  V1_LiteDataContractWithUserDetailsModelSchema,
   V1_pendingTasksResponseModelSchema,
   V1_TaskStatusChangeResponseModelSchema,
 } from '@finos/legend-graph';
@@ -45,7 +44,7 @@ export class EntitlementsDashboardState {
   readonly lakehouseEntitlementsStore: LakehouseEntitlementsStore;
   pendingTasks: V1_ContractUserEventRecord[] | undefined;
   pendingContracts: V1_UserPendingContractsRecord[] | undefined;
-  allContracts: V1_LiteDataContract[] | undefined;
+  allContracts: V1_LiteDataContractWithUserDetails[] | undefined;
   initializationState = ActionState.create();
   changingState = ActionState.create();
 
@@ -64,7 +63,7 @@ export class EntitlementsDashboardState {
       approve: flow,
       fetchPendingContracts: flow,
       fetchPendingTasks: flow,
-      fetchAllContracts: flow,
+      fetchAllUserContracts: flow,
       init: flow,
       deny: flow,
     });
@@ -79,7 +78,7 @@ export class EntitlementsDashboardState {
       flowResult(this.fetchPendingContracts(token)).catch(
         this.lakehouseEntitlementsStore.applicationStore.alertUnhandledError,
       ),
-      flowResult(this.fetchAllContracts(token)).catch(
+      flowResult(this.fetchAllUserContracts(token)).catch(
         this.lakehouseEntitlementsStore.applicationStore.alertUnhandledError,
       ),
     ])
@@ -124,16 +123,22 @@ export class EntitlementsDashboardState {
     }
   }
 
-  *fetchAllContracts(token: string | undefined): GeneratorFn<void> {
+  *fetchAllUserContracts(token: string | undefined): GeneratorFn<void> {
     try {
       this.setAllContracts(undefined);
       const rawContracts =
-        (yield this.lakehouseEntitlementsStore.lakehouseServerClient.getLiteDataContracts(
+        (yield this.lakehouseEntitlementsStore.lakehouseServerClient.getDataContractsForUser(
+          this.lakehouseEntitlementsStore.applicationStore.identityService
+            .currentUser,
           token,
-        )) as PlainObject<V1_LiteDataContractsResponse>;
-      const contracts = V1_liteDataContractsResponseModelSchemaToContracts(
-        rawContracts,
-        this.lakehouseEntitlementsStore.applicationStore.pluginManager.getPureProtocolProcessorPlugins(),
+        )) as PlainObject<V1_LiteDataContractWithUserDetails>[];
+      const contracts = rawContracts.map((_rawContract) =>
+        deserialize(
+          V1_LiteDataContractWithUserDetailsModelSchema(
+            this.lakehouseEntitlementsStore.applicationStore.pluginManager.getPureProtocolProcessorPlugins(),
+          ),
+          _rawContract,
+        ),
       );
       this.setAllContracts([...contracts]);
     } catch (error) {
@@ -152,7 +157,7 @@ export class EntitlementsDashboardState {
     this.pendingContracts = val;
   }
 
-  setAllContracts(val: V1_LiteDataContract[] | undefined): void {
+  setAllContracts(val: V1_LiteDataContractWithUserDetails[] | undefined): void {
     this.allContracts = val;
   }
 
