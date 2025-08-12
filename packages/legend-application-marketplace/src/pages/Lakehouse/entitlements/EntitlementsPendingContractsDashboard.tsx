@@ -48,7 +48,7 @@ import {
   isContractInTerminalState,
 } from '../../../stores/lakehouse/LakehouseUtils.js';
 import type { LegendMarketplaceBaseStore } from '../../../stores/LegendMarketplaceBaseStore.js';
-import { startCase } from '@finos/legend-shared';
+import { assertErrorThrown, startCase } from '@finos/legend-shared';
 import { useAuth } from 'react-oidc-context';
 import { MultiUserCellRenderer } from '../../../components/MultiUserCellRenderer/MultiUserCellRenderer.js';
 import { InfoCircleIcon } from '@finos/legend-art';
@@ -87,6 +87,18 @@ const TargetUserCellRenderer = (props: {
                 )
               : [];
           setTargetUsers(_targetUsers);
+        } catch (error) {
+          assertErrorThrown(error);
+          marketplaceStore.applicationStore.notificationService.notifyError(
+            `Can't fetch target users for contract ${dataContract.contractResultLite.guid}: ${error.message}`,
+          );
+          setTargetUsers(
+            dataContract.contractResultLite.consumer instanceof V1_AdhocTeam
+              ? dataContract.contractResultLite.consumer.users.map(
+                  (user) => user.name,
+                )
+              : [],
+          );
         } finally {
           setLoading(false);
         }
@@ -94,7 +106,12 @@ const TargetUserCellRenderer = (props: {
     };
     // eslint-disable-next-line no-void
     void fetchTargetUsers();
-  }, [dataContract, marketplaceStore.lakehouseContractServerClient, token]);
+  }, [
+    dataContract,
+    marketplaceStore.applicationStore.notificationService,
+    marketplaceStore.lakehouseContractServerClient,
+    token,
+  ]);
 
   return loading ? (
     <CircularProgress size={20} />
