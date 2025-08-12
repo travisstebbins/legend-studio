@@ -51,11 +51,6 @@ export class LakehouseContractServerClient extends AbstractServerClient {
 
   private _dataContracts = (): string => `${this.baseUrl}/datacontracts`;
 
-  getDataContracts = (
-    token: string | undefined,
-  ): Promise<PlainObject<V1_DataContractsResponse>> =>
-    this.get(this._dataContracts(), {}, this._token(token));
-
   getLiteDataContracts = (
     token: string | undefined,
   ): Promise<PlainObject<V1_LiteDataContractsResponse>> =>
