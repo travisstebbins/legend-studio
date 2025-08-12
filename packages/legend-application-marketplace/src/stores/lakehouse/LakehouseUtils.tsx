@@ -160,9 +160,9 @@ export const getOrganizationalScopeTypeDetails = (
     return undefined;
   } else if (scope instanceof V1_AppDirOrganizationalScope) {
     return (
-      <>
+      <div>
         {scope.appDirNode.level}: {scope.appDirNode.appDirId}
-      </>
+      </div>
     );
   } else {
     const detailsRenderers = plugins
