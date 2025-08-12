@@ -27,7 +27,9 @@ export const MultiUserCellRenderer = (props: {
   const { userIds, marketplaceStore, singleUserClassName } = props;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  if (userIds.length === 1) {
+  if (userIds.length === 0) {
+    return <>0 Users</>;
+  } else if (userIds.length === 1) {
     return (
       <UserRenderer
         userId={userIds[0]}
