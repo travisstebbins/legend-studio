@@ -268,7 +268,6 @@ export { V1_RelationStoreAccessor } from './graph-manager/protocol/pure/v1/model
 export { V1_PackageableConnection } from './graph-manager/protocol/pure/v1/model/packageableElements/connection/V1_PackageableConnection.js';
 export {
   type V1_UserPendingContractsRecord,
-  type V1_UserPendingContractsResponse,
   V1_AccessPointGroupReference,
   V1_ApprovalType,
   V1_ContractState,

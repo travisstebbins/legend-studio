@@ -220,7 +220,3 @@ export type V1_UserPendingContractsRecord = {
   contractDescription: string;
   pendingTaskWithAssignees: V1_PendingTaskWithAssignees;
 };
-
-export type V1_UserPendingContractsResponse = {
-  records: V1_UserPendingContractsRecord[] | undefined;
-};

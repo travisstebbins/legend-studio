@@ -19,10 +19,10 @@ import { type IngestDeploymentServerConfig } from '@finos/legend-server-lakehous
 import {
   type V1_AppDirNode,
   type V1_AWSSnowflakeIngestEnvironment,
-  type V1_DataContractsResponse,
   type V1_DataSubscriptionResponse,
   type V1_EntitlementsDataProductDetailsResponse,
   type V1_LiteDataContractsResponse,
+  type V1_LiteDataContractWithUserDetails,
   V1_EntitlementsLakehouseEnvironmentType,
   V1_AppDirLevel,
 } from '@finos/legend-graph';
@@ -248,30 +248,29 @@ export const mockProdIngestEnvironmentResponse: PlainObject<V1_AWSSnowflakeInges
     storageIntegrationName: 'test-prod-storage-integration',
   };
 
-export const mockDataContracts: PlainObject<V1_DataContractsResponse> = {
-  dataContracts: [
+export const mockLiteDataContractsWithUserDetails: PlainObject<V1_LiteDataContractWithUserDetails>[] =
+  [
     {
-      dataContract: {
+      contractResultLite: {
         guid: 'contract-123',
         description: 'Test Contract Description 1',
         version: 1,
         state: 'COMPLETED',
-        members: [{ user: 'john.doe' }, { user: 'jane.smith' }],
         createdBy: 'admin.user',
       },
+      status: 'APPROVED',
     },
     {
-      dataContract: {
+      contractResultLite: {
         guid: 'contract-456',
         description: 'Test Contract Description 2',
         version: 2,
         state: 'PENDING',
-        members: [{ user: 'bob.wilson' }],
         createdBy: 'test.user',
       },
+      status: 'PENDING_DATA_OWNER_APPROVAL',
     },
-  ],
-};
+  ];
 
 export const mockLiteDataContracts: PlainObject<V1_LiteDataContractsResponse> =
   {

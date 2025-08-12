@@ -48,7 +48,7 @@ import {
   mockProdParallelIngestEnvironmentResponse,
   mockProdIngestEnvironmentResponse,
   mockSubscriptions,
-  mockDataContracts,
+  mockLiteDataContractsWithUserDetails,
   mockDataProducts,
   mockLiteDataContracts,
 } from './TEST_DATA__LakehouseData.js';
@@ -244,8 +244,8 @@ export const TEST__setUpMarketplaceLakehouse = async (
   ).mockResolvedValue(mockSubscriptions);
   createSpy(
     MOCK__store.lakehouseContractServerClient,
-    'getDataContracts',
-  ).mockResolvedValue(mockDataContracts);
+    'getDataContractsForUser',
+  ).mockResolvedValue(mockLiteDataContractsWithUserDetails);
   createSpy(
     MOCK__store.lakehouseContractServerClient,
     'getLiteDataContracts',
