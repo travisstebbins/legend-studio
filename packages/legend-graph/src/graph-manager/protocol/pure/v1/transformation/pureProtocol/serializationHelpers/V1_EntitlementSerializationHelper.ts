@@ -59,11 +59,11 @@ import {
   SKIP,
 } from 'serializr';
 import {
+  type V1_OrganizationalScope,
   V1_AdhocTeam,
   V1_AppDirNode,
   V1_UnknownOrganizationalScopeType,
   V1_User,
-  type V1_OrganizationalScope,
 } from '../../../lakehouse/entitlements/V1_CoreEntitlements.js';
 import type { PureProtocolProcessorPlugin } from '../../../../PureProtocolProcessorPlugin.js';
 import type { DSL_Lakehouse_PureProtocolProcessorPlugin_Extension } from '../../../../extensions/DSL_Lakehouse_PureProtocolProcessorPlugin_Extension.js';
@@ -84,6 +84,7 @@ import { V1_stereotypePtrModelSchema } from './V1_CoreSerializationHelper.js';
 
 enum V1_OrganizationalScopeType {
   AdHocTeam = 'AdHocTeam',
+  AppDir = 'AppDir',
 }
 
 export enum V1_DataProductOriginType {
@@ -239,6 +240,8 @@ const V1_deserializeOrganizationalScope = (
   switch (json._type) {
     case V1_OrganizationalScopeType.AdHocTeam:
       return deserialize(V1_AdhocTeamModelSchema, json);
+    case V1_OrganizationalScopeType.AppDir:
+      return deserialize(V1_AppDirNodeModelSchema, json);
     default: {
       const extraOrganizationalScopeDeserializers = plugins.flatMap(
         (plugin) =>
@@ -267,6 +270,8 @@ const V1_serializeOrganizationalScope = (
 ): PlainObject<V1_OrganizationalScope> => {
   if (organizationalScope instanceof V1_AdhocTeam) {
     return serialize(V1_AdhocTeamModelSchema, organizationalScope);
+  } else if (organizationalScope instanceof V1_AppDirNode) {
+    return serialize(V1_AppDirNodeModelSchema, organizationalScope);
   }
   const extraOrganizationalScopeSerializers = plugins.flatMap(
     (plugin) =>

@@ -156,11 +156,18 @@ export const getOrganizationalScopeTypeDetails = (
   plugins: LegendMarketplaceApplicationPlugin[],
 ): React.ReactNode => {
   if (
-    scope instanceof V1_AppDirOrganizationalScope ||
     scope instanceof V1_AdhocTeam ||
     scope instanceof V1_UnknownOrganizationalScopeType
   ) {
     return undefined;
+  } else if (scope instanceof V1_AppDirOrganizationalScope) {
+    return (
+      <>
+        {scope.appDirNode
+          .map((node) => `${node.level}: ${node.appDirId}`)
+          .join(', ')}
+      </>
+    );
   } else {
     const detailsRenderers = plugins
       .flatMap((plugin) =>
