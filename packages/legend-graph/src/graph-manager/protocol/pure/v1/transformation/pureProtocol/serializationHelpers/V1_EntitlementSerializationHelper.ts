@@ -31,21 +31,22 @@ import {
   V1_ContractUserEventDataProducerPayload,
   V1_ContractUserEventPrivilegeManagerPayload,
   V1_ContractUserEventRecord,
+  V1_ContractUserMembership,
+  V1_ContractUserStatusResponse,
   V1_CreateContractPayload,
   V1_DataBundle,
   V1_DataContract,
-  V1_DataContractSubscriptions,
+  V1_DataContractApprovedUsersResponse,
   V1_DataContractsResponse,
+  V1_DataContractSubscriptions,
+  V1_LiteDataContract,
+  V1_LiteDataContractsResponse,
+  V1_LiteDataContractWithUserDetails,
   V1_PendingTasksResponse,
+  V1_PendingTaskWithAssignees,
   V1_TaskMetadata,
   V1_TaskResponse,
   V1_TaskStatusChangeResponse,
-  V1_ContractUserMembership,
-  V1_ContractUserStatusResponse,
-  V1_LiteDataContractsResponse,
-  V1_LiteDataContract,
-  V1_DataContractApprovedUsersResponse,
-  V1_LiteDataContractWithUserDetails,
 } from '../../../lakehouse/entitlements/V1_ConsumerEntitlements.js';
 import {
   createModelSchema,
@@ -185,6 +186,14 @@ export const V1_contractUserEventRecordModelSchema = createModelSchema(
       V1_deserializeContractUserEventPayload,
     ),
     type: primitive(),
+  },
+);
+
+export const V1_pendingTaskWithAssigneesModelSchema = createModelSchema(
+  V1_PendingTaskWithAssignees,
+  {
+    taskId: primitive(),
+    assignees: list(primitive()),
   },
 );
 
@@ -356,7 +365,7 @@ export const V1_LiteDataContractWithUserDetailsModelSchema = (
     ),
     status: primitive(),
     pendingTaskWithAssignees: optionalCustomUsingModelSchema(
-      V1_pendingTasksResponseModelSchema,
+      V1_pendingTaskWithAssigneesModelSchema,
     ),
   });
 

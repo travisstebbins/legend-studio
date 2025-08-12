@@ -210,10 +210,10 @@ export class V1_TaskResponse {
 
 // ---------------------------------------- Pending Data Contracts ----------------------------------------
 
-export type V1_PendingTaskWithAssignees = {
-  taskId: string;
-  assignees: string[];
-};
+export class V1_PendingTaskWithAssignees {
+  taskId!: string;
+  assignees!: string[];
+}
 
 export type V1_UserPendingContractsRecord = {
   contractId: string;
