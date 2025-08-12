@@ -117,9 +117,7 @@ export const stringifyOrganizationalScope = (
   scope: V1_OrganizationalScope,
 ): string => {
   if (scope instanceof V1_AppDirOrganizationalScope) {
-    return scope.appDirNode
-      .map((node) => `${node.level}: ${node.appDirId}`)
-      .join(', ');
+    return `${scope.appDirNode.level}: ${scope.appDirNode.appDirId}`;
   } else if (scope instanceof V1_AdhocTeam) {
     return scope.users.map((user) => user.name).join(', ');
   } else if (scope instanceof V1_UnknownOrganizationalScopeType) {
@@ -163,9 +161,7 @@ export const getOrganizationalScopeTypeDetails = (
   } else if (scope instanceof V1_AppDirOrganizationalScope) {
     return (
       <>
-        {scope.appDirNode
-          .map((node) => `${node.level}: ${node.appDirId}`)
-          .join(', ')}
+        {scope.appDirNode.level}: {scope.appDirNode.appDirId}
       </>
     );
   } else {

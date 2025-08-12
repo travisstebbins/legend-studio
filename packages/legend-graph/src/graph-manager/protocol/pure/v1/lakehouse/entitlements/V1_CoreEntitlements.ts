@@ -32,7 +32,7 @@ export enum V1_AppDirLevel {
 }
 
 export class V1_AppDirOrganizationalScope extends V1_OrganizationalScope {
-  appDirNode!: V1_AppDirNode[];
+  appDirNode!: V1_AppDirNode;
 }
 
 export class V1_AdhocTeam extends V1_OrganizationalScope {

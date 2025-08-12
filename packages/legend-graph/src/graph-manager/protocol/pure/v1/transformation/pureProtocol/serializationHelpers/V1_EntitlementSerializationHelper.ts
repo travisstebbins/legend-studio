@@ -62,6 +62,7 @@ import {
   type V1_OrganizationalScope,
   V1_AdhocTeam,
   V1_AppDirNode,
+  V1_AppDirOrganizationalScope,
   V1_UnknownOrganizationalScopeType,
   V1_User,
 } from '../../../lakehouse/entitlements/V1_CoreEntitlements.js';
@@ -233,6 +234,14 @@ export const V1_AdhocTeamModelSchema = createModelSchema(V1_AdhocTeam, {
   users: customListWithSchema(V1_UserModelSchema),
 });
 
+export const V1_AppDirOrganizationalScopeModelSchema = createModelSchema(
+  V1_AppDirOrganizationalScope,
+  {
+    _type: usingConstantValueSchema(V1_OrganizationalScopeType.AppDir),
+    appDirNode: usingModelSchema(V1_AppDirNodeModelSchema),
+  },
+);
+
 const V1_deserializeOrganizationalScope = (
   json: PlainObject<V1_OrganizationalScope>,
   plugins: PureProtocolProcessorPlugin[],
@@ -241,7 +250,7 @@ const V1_deserializeOrganizationalScope = (
     case V1_OrganizationalScopeType.AdHocTeam:
       return deserialize(V1_AdhocTeamModelSchema, json);
     case V1_OrganizationalScopeType.AppDir:
-      return deserialize(V1_AppDirNodeModelSchema, json);
+      return deserialize(V1_AppDirOrganizationalScopeModelSchema, json);
     default: {
       const extraOrganizationalScopeDeserializers = plugins.flatMap(
         (plugin) =>
@@ -270,8 +279,11 @@ const V1_serializeOrganizationalScope = (
 ): PlainObject<V1_OrganizationalScope> => {
   if (organizationalScope instanceof V1_AdhocTeam) {
     return serialize(V1_AdhocTeamModelSchema, organizationalScope);
-  } else if (organizationalScope instanceof V1_AppDirNode) {
-    return serialize(V1_AppDirNodeModelSchema, organizationalScope);
+  } else if (organizationalScope instanceof V1_AppDirOrganizationalScope) {
+    return serialize(
+      V1_AppDirOrganizationalScopeModelSchema,
+      organizationalScope,
+    );
   }
   const extraOrganizationalScopeSerializers = plugins.flatMap(
     (plugin) =>
