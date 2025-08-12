@@ -17,6 +17,7 @@
 import {
   customListWithSchema,
   optionalCustomListWithSchema,
+  optionalCustomUsingModelSchema,
   UnsupportedOperationError,
   usingConstantValueSchema,
   usingModelSchema,
@@ -44,6 +45,7 @@ import {
   V1_LiteDataContractsResponse,
   V1_LiteDataContract,
   V1_DataContractApprovedUsersResponse,
+  V1_LiteDataContractWithUserDetails,
 } from '../../../lakehouse/entitlements/V1_ConsumerEntitlements.js';
 import {
   createModelSchema,
@@ -115,6 +117,86 @@ export const V1_AppDirNodeModelSchema = createModelSchema(V1_AppDirNode, {
   appDirId: primitive(),
   level: primitive(),
 });
+
+export const V1_contractUserEventDataProducerPayloadModelSchema =
+  createModelSchema(V1_ContractUserEventDataProducerPayload, {
+    type: primitive(),
+    dataProducerIdentity: primitive(),
+    candidateIdentity: primitive(),
+    taskId: primitive(),
+    eventTimestamp: primitive(),
+  });
+
+export const V1_contractUserEventPrivilegeManagerPayloadModelSchema =
+  createModelSchema(V1_ContractUserEventPrivilegeManagerPayload, {
+    type: primitive(),
+    managerIdentity: primitive(),
+    candidateIdentity: primitive(),
+    taskId: primitive(),
+    eventTimestamp: primitive(),
+  });
+
+const V1_deserializeContractUserEventPayload = (
+  json: PlainObject<V1_ContractUserEventPayload>,
+): V1_ContractUserEventPayload => {
+  if (
+    [
+      V1_ContractEventPayloadType.DATA_PRODUCER_APPROVED,
+      V1_ContractEventPayloadType.DATA_PRODUCER_REJECTED,
+    ].includes((json as unknown as V1_ContractUserEventPayload).type)
+  ) {
+    return deserialize(
+      V1_contractUserEventDataProducerPayloadModelSchema,
+      json,
+    );
+  } else {
+    return deserialize(
+      V1_contractUserEventPrivilegeManagerPayloadModelSchema,
+      json,
+    );
+  }
+};
+
+const V1_serializeContractUserEventPayload = (
+  payload: V1_ContractUserEventPayload,
+): PlainObject<V1_ContractUserEventPayload> => {
+  if (payload instanceof V1_ContractUserEventDataProducerPayload) {
+    return serialize(
+      V1_contractUserEventDataProducerPayloadModelSchema,
+      payload,
+    );
+  } else {
+    return serialize(
+      V1_contractUserEventPrivilegeManagerPayloadModelSchema,
+      payload,
+    );
+  }
+};
+
+export const V1_contractUserEventRecordModelSchema = createModelSchema(
+  V1_ContractUserEventRecord,
+  {
+    taskId: primitive(),
+    dataContractId: primitive(),
+    status: primitive(),
+    consumer: primitive(),
+    eventPayload: custom(
+      V1_serializeContractUserEventPayload,
+      V1_deserializeContractUserEventPayload,
+    ),
+    type: primitive(),
+  },
+);
+
+export const V1_pendingTasksResponseModelSchema = createModelSchema(
+  V1_PendingTasksResponse,
+  {
+    privilegeManager: customListWithSchema(
+      V1_contractUserEventRecordModelSchema,
+    ),
+    dataOwner: customListWithSchema(V1_contractUserEventRecordModelSchema),
+  },
+);
 
 export const V1_EntitlementsDataProductModelSchema = createModelSchema(
   V1_EntitlementsDataProduct,
@@ -265,6 +347,19 @@ export const V1_liteDataContractModelSchema = (
     accessPointGroup: optional(primitive()),
   });
 
+export const V1_LiteDataContractWithUserDetailsModelSchema = (
+  plugins: PureProtocolProcessorPlugin[],
+) =>
+  createModelSchema(V1_LiteDataContractWithUserDetails, {
+    contractResultLite: usingModelSchema(
+      V1_liteDataContractModelSchema(plugins),
+    ),
+    status: primitive(),
+    pendingTaskWithAssignees: optionalCustomUsingModelSchema(
+      V1_pendingTasksResponseModelSchema,
+    ),
+  });
+
 export const V1_dataContractsResponseModelSchema = (
   plugins: PureProtocolProcessorPlugin[],
 ) =>
@@ -283,75 +378,6 @@ export const V1_liteDataContractsResponseModelSchema = (
     ),
   });
 
-export const V1_contractUserEventPrivilegeManagerPayloadModelSchema =
-  createModelSchema(V1_ContractUserEventPrivilegeManagerPayload, {
-    type: primitive(),
-    managerIdentity: primitive(),
-    candidateIdentity: primitive(),
-    taskId: primitive(),
-    eventTimestamp: primitive(),
-  });
-
-export const V1_contractUserEventDataProducerPayloadModelSchema =
-  createModelSchema(V1_ContractUserEventDataProducerPayload, {
-    type: primitive(),
-    dataProducerIdentity: primitive(),
-    candidateIdentity: primitive(),
-    taskId: primitive(),
-    eventTimestamp: primitive(),
-  });
-
-const V1_deserializeContractUserEventPayload = (
-  json: PlainObject<V1_ContractUserEventPayload>,
-): V1_ContractUserEventPayload => {
-  if (
-    [
-      V1_ContractEventPayloadType.DATA_PRODUCER_APPROVED,
-      V1_ContractEventPayloadType.DATA_PRODUCER_REJECTED,
-    ].includes((json as unknown as V1_ContractUserEventPayload).type)
-  ) {
-    return deserialize(
-      V1_contractUserEventDataProducerPayloadModelSchema,
-      json,
-    );
-  } else {
-    return deserialize(
-      V1_contractUserEventPrivilegeManagerPayloadModelSchema,
-      json,
-    );
-  }
-};
-
-const V1_serializeContractUserEventPayload = (
-  payload: V1_ContractUserEventPayload,
-): PlainObject<V1_ContractUserEventPayload> => {
-  if (payload instanceof V1_ContractUserEventDataProducerPayload) {
-    return serialize(
-      V1_contractUserEventDataProducerPayloadModelSchema,
-      payload,
-    );
-  } else {
-    return serialize(
-      V1_contractUserEventPrivilegeManagerPayloadModelSchema,
-      payload,
-    );
-  }
-};
-
-export const V1_contractUserEventRecordModelSchema = createModelSchema(
-  V1_ContractUserEventRecord,
-  {
-    taskId: primitive(),
-    dataContractId: primitive(),
-    status: primitive(),
-    consumer: primitive(),
-    eventPayload: custom(
-      V1_serializeContractUserEventPayload,
-      V1_deserializeContractUserEventPayload,
-    ),
-    type: primitive(),
-  },
-);
 export const V1_taskMetadataModelSchema = createModelSchema(V1_TaskMetadata, {
   rec: usingModelSchema(V1_contractUserEventRecordModelSchema),
   assignees: list(primitive()),
@@ -360,16 +386,6 @@ export const V1_taskMetadataModelSchema = createModelSchema(V1_TaskMetadata, {
 export const V1_taskResponseModelSchema = createModelSchema(V1_TaskResponse, {
   tasks: customListWithSchema(V1_taskMetadataModelSchema),
 });
-
-export const V1_pendingTasksResponseModelSchema = createModelSchema(
-  V1_PendingTasksResponse,
-  {
-    privilegeManager: customListWithSchema(
-      V1_contractUserEventRecordModelSchema,
-    ),
-    dataOwner: customListWithSchema(V1_contractUserEventRecordModelSchema),
-  },
-);
 
 export const V1_TaskStatusChangeResponseModelSchema = createModelSchema(
   V1_TaskStatusChangeResponse,
