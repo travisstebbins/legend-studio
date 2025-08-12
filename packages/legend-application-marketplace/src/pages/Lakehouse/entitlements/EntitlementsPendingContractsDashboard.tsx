@@ -15,7 +15,6 @@
  */
 
 import {
-  type V1_ContractUserEventRecord,
   type V1_LiteDataContractWithUserDetails,
   V1_AdhocTeam,
   V1_ContractState,
@@ -176,9 +175,9 @@ export const EntitlementsPendingContractsDashbaord = observer(
           colId: 'consumerType',
           headerName: 'Consumer Type',
           cellRenderer: (
-            params: DataGridCellRendererParams<V1_ContractUserEventRecord>,
+            params: DataGridCellRendererParams<V1_LiteDataContractWithUserDetails>,
           ) => {
-            const consumer = params.data?.consumer;
+            const consumer = params.data?.contractResultLite.consumer;
             const typeName = consumer
               ? getOrganizationalScopeTypeName(
                   consumer,
