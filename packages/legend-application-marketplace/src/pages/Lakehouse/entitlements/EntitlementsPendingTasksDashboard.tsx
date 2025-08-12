@@ -497,7 +497,7 @@ export const EntitlementsPendingTasksDashbaord = observer(
             resource instanceof V1_AccessPointGroupReference
               ? resource.dataProduct
               : undefined;
-          return dataProduct ?? 'Unknown';
+          return dataProduct?.name ?? 'Unknown';
         },
       },
       {
