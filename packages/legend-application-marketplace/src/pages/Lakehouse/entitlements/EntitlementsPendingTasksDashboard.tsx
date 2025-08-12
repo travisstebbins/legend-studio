@@ -17,9 +17,10 @@
 import { useSearchParams } from '@finos/legend-application/browser';
 import {
   type V1_ContractUserEventRecord,
-  type V1_LiteDataContractWithUserDetails,
+  type V1_DataContract,
+  V1_AccessPointGroupReference,
   V1_ApprovalType,
-  V1_ResourceType,
+  V1_transformDataContractToLiteDatacontract,
 } from '@finos/legend-graph';
 import {
   DataGrid,
@@ -60,7 +61,6 @@ import {
   getOrganizationalScopeTypeDetails,
   getOrganizationalScopeTypeName,
 } from '../../../stores/lakehouse/LakehouseUtils.js';
-import { startCase } from '@finos/legend-shared';
 
 const EntitlementsDashboardActionModal = (props: {
   open: boolean;
@@ -68,7 +68,6 @@ const EntitlementsDashboardActionModal = (props: {
   dashboardState: EntitlementsDashboardState;
   onClose: () => void;
   action: 'approve' | 'deny' | undefined;
-  allUserContracts: V1_LiteDataContractWithUserDetails[];
   marketplaceStore: LegendMarketplaceBaseStore;
 }) => {
   const {
@@ -77,7 +76,6 @@ const EntitlementsDashboardActionModal = (props: {
     dashboardState,
     onClose,
     action,
-    allUserContracts,
     marketplaceStore,
   } = props;
 
@@ -87,6 +85,8 @@ const EntitlementsDashboardActionModal = (props: {
     [V1_ContractUserEventRecord, string][]
   >([]);
   const [successCount, setSuccessCount] = useState(0);
+
+  const taskContracts = dashboardState.pendingTaskContracts;
 
   const handleClose = () => {
     setIsLoading(false);
@@ -155,9 +155,13 @@ const EntitlementsDashboardActionModal = (props: {
             )}
             {errorMessages.map(([task, errorMessage]) => {
               const contractId = task.dataContractId;
-              const contract = allUserContracts.find(
-                (_contract) => _contract.contractResultLite.guid === contractId,
-              );
+              const contract = contractId
+                ? taskContracts.get(contractId)
+                : undefined;
+              const accessPointGroupReference =
+                contract?.resource instanceof V1_AccessPointGroupReference
+                  ? contract?.resource
+                  : undefined;
               return (
                 <Box
                   key={task.taskId}
@@ -171,18 +175,20 @@ const EntitlementsDashboardActionModal = (props: {
                         userId={task.consumer}
                         marketplaceStore={marketplaceStore}
                       />
-                    </div>{' '}
-                    for{' '}
-                    {startCase(
-                      contract?.contractResultLite.resourceType.toLowerCase(),
-                    )}{' '}
-                    <span className="marketplace-lakehouse-text__emphasis">
-                      {contract?.contractResultLite.accessPointGroup}
-                    </span>{' '}
-                    on Data Product{' '}
-                    <span className="marketplace-lakehouse-text__emphasis">
-                      {contract?.contractResultLite.resourceId}
-                    </span>
+                    </div>
+                    {accessPointGroupReference !== undefined && (
+                      <>
+                        {' '}
+                        for Access Point Group{' '}
+                        <span className="marketplace-lakehouse-text__emphasis">
+                          {accessPointGroupReference.accessPointGroup}
+                        </span>{' '}
+                        on Data Product{' '}
+                        <span className="marketplace-lakehouse-text__emphasis">
+                          {accessPointGroupReference.dataProduct.name}
+                        </span>
+                      </>
+                    )}
                     :
                   </div>
                   <div>
@@ -220,7 +226,7 @@ export const EntitlementsPendingTasksDashbaord = observer(
 
     const { dashboardState } = props;
     const tasks = dashboardState.pendingTasks;
-    const allUserContracts = dashboardState.allUserContracts;
+    const taskContracts = dashboardState.pendingTaskContracts;
     const privilegeManagerTasks =
       tasks?.filter(
         (task) =>
@@ -247,7 +253,7 @@ export const EntitlementsPendingTasksDashbaord = observer(
       new Set<string>(searchParams.get('selectedTasks')?.split(',') ?? []),
     );
     const [selectedContract, setSelectedContract] = useState<
-      V1_LiteDataContractWithUserDetails | undefined
+      V1_DataContract | undefined
     >();
     const [selectedContractTargetUser, setSelectedContractTargetUser] =
       useState<string | undefined>();
@@ -302,14 +308,12 @@ export const EntitlementsPendingTasksDashbaord = observer(
       event: DataGridCellClickedEvent<V1_ContractUserEventRecord, unknown>,
     ) => {
       if (
+        event.data?.dataContractId &&
         event.colDef.colId !== 'selection' &&
         event.colDef.colId !== 'targetUser' &&
         event.colDef.colId !== 'requester'
       ) {
-        const contract = allUserContracts?.find(
-          (_contract) =>
-            _contract.contractResultLite.guid === event.data?.dataContractId,
-        );
+        const contract = taskContracts.get(event.data.dataContractId);
         setSelectedContract(contract);
         setSelectedContractTargetUser(event.data?.consumer);
       }
@@ -416,9 +420,9 @@ export const EntitlementsPendingTasksDashbaord = observer(
           params: DataGridCellRendererParams<V1_ContractUserEventRecord>,
         ) => {
           const contractId = params.data?.dataContractId;
-          const consumer = allUserContracts?.find(
-            (contract) => contract.contractResultLite.guid === contractId,
-          )?.contractResultLite.consumer;
+          const consumer = contractId
+            ? taskContracts.get(contractId)?.consumer
+            : undefined;
           const typeName = consumer
             ? getOrganizationalScopeTypeName(
                 consumer,
@@ -468,9 +472,9 @@ export const EntitlementsPendingTasksDashbaord = observer(
           params: DataGridCellRendererParams<V1_ContractUserEventRecord>,
         ) => {
           const contractId = params.data?.dataContractId;
-          const requester = allUserContracts?.find(
-            (contract) => contract.contractResultLite.guid === contractId,
-          )?.contractResultLite.createdBy;
+          const requester = contractId
+            ? taskContracts.get(contractId)?.createdBy
+            : undefined;
           return requester ? (
             <UserRenderer
               userId={requester}
@@ -486,24 +490,27 @@ export const EntitlementsPendingTasksDashbaord = observer(
         headerName: 'Target Data Product',
         valueGetter: (params) => {
           const contractId = params.data?.dataContractId;
-          const contract = allUserContracts?.find(
-            (_contract) => _contract.contractResultLite.guid === contractId,
-          );
-          return contract?.contractResultLite.resourceId ?? 'Unknown';
+          const resource = contractId
+            ? taskContracts.get(contractId)?.resource
+            : undefined;
+          const dataProduct =
+            resource instanceof V1_AccessPointGroupReference
+              ? resource.dataProduct
+              : undefined;
+          return dataProduct ?? 'Unknown';
         },
       },
       {
         headerName: 'Target Access Point Group',
         valueGetter: (params) => {
           const contractId = params.data?.dataContractId;
-          const contract = allUserContracts?.find(
-            (_contract) => _contract.contractResultLite.guid === contractId,
-          );
+          const resource = contractId
+            ? taskContracts.get(contractId)?.resource
+            : undefined;
           const accessPointGroup =
-            contract?.contractResultLite.resourceType ===
-            V1_ResourceType.ACCESS_POINT_GROUP
-              ? contract.contractResultLite.accessPointGroup
-              : `${contract?.contractResultLite.accessPointGroup ?? 'Unknown'} (${contract?.contractResultLite.resourceType ?? 'Unknown Type'})`;
+            resource instanceof V1_AccessPointGroupReference
+              ? resource.accessPointGroup
+              : undefined;
           return accessPointGroup ?? 'Unknown';
         },
       },
@@ -512,9 +519,9 @@ export const EntitlementsPendingTasksDashbaord = observer(
         flex: 2,
         valueGetter: (params) => {
           const contractId = params.data?.dataContractId;
-          const businessJustification = allUserContracts?.find(
-            (contract) => contract.contractResultLite.guid === contractId,
-          )?.contractResultLite.description;
+          const businessJustification = contractId
+            ? taskContracts.get(contractId)?.description
+            : undefined;
           return businessJustification ?? 'Unknown';
         },
       },
@@ -703,7 +710,6 @@ export const EntitlementsPendingTasksDashbaord = observer(
           dashboardState={dashboardState}
           onClose={() => setSelectedAction(undefined)}
           action={selectedAction}
-          allUserContracts={allUserContracts ?? []}
           marketplaceStore={marketplaceBaseStore}
         />
         {selectedContract !== undefined && (
@@ -711,7 +717,7 @@ export const EntitlementsPendingTasksDashbaord = observer(
             open={true}
             currentViewer={
               new EntitlementsDataContractViewerState(
-                selectedContract.contractResultLite,
+                V1_transformDataContractToLiteDatacontract(selectedContract),
                 marketplaceBaseStore.lakehouseContractServerClient,
               )
             }

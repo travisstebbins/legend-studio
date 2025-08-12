@@ -23,10 +23,12 @@ import {
 import { deserialize } from 'serializr';
 import {
   type V1_ContractUserEventRecord,
+  type V1_DataContract,
   type V1_LiteDataContractWithUserDetails,
   type V1_PendingTasksResponse,
   type V1_TaskStatus,
   type V1_TaskStatusChangeResponse,
+  V1_dataContractsResponseModelSchemaToContracts,
   V1_LiteDataContractWithUserDetailsModelSchema,
   V1_pendingTasksResponseModelSchema,
   V1_TaskStatusChangeResponseModelSchema,
@@ -48,6 +50,7 @@ import { isContractInTerminalState } from '../LakehouseUtils.js';
 export class EntitlementsDashboardState {
   readonly lakehouseEntitlementsStore: LakehouseEntitlementsStore;
   pendingTasks: V1_ContractUserEventRecord[] | undefined;
+  pendingTaskContracts: Map<string, V1_DataContract> = new Map();
   allUserContracts: V1_LiteDataContractWithUserDetails[] | undefined;
   initializationState = ActionState.create();
   changingState = ActionState.create();
@@ -57,10 +60,12 @@ export class EntitlementsDashboardState {
 
     makeObservable(this, {
       pendingTasks: observable,
+      pendingTaskContracts: observable,
       allUserContracts: observable,
       changingState: observable,
       initializationState: observable,
       setPendingTasks: action,
+      setPendingTaskContracts: action,
       setAllUserContracts: action,
       approve: flow,
       fetchPendingTasks: flow,
@@ -82,10 +87,10 @@ export class EntitlementsDashboardState {
   *init(token: string | undefined): GeneratorFn<void> {
     this.initializationState.inProgress();
     Promise.all([
-      flowResult(this.fetchPendingTasks(token)).catch(
+      yield flowResult(this.fetchPendingTasks(token)).catch(
         this.lakehouseEntitlementsStore.applicationStore.alertUnhandledError,
       ),
-      flowResult(this.fetchAllUserContracts(token)).catch(
+      yield flowResult(this.fetchAllUserContracts(token)).catch(
         this.lakehouseEntitlementsStore.applicationStore.alertUnhandledError,
       ),
     ])
@@ -105,6 +110,28 @@ export class EntitlementsDashboardState {
         )) as PlainObject<V1_PendingTasksResponse>;
       const tasks = deserialize(V1_pendingTasksResponseModelSchema, rawTasks);
       this.setPendingTasks([...tasks.dataOwner, ...tasks.privilegeManager]);
+      const taskContractIds = Array.from(
+        new Set<string>(this.pendingTasks?.map((task) => task.dataContractId)),
+      );
+      const taskContracts = (yield Promise.all(
+        taskContractIds.map(async (contractId) => {
+          const rawContracts =
+            await this.lakehouseEntitlementsStore.lakehouseServerClient.getDataContract(
+              contractId,
+              token,
+            );
+          const contracts = V1_dataContractsResponseModelSchemaToContracts(
+            rawContracts,
+            this.lakehouseEntitlementsStore.applicationStore.pluginManager.getPureProtocolProcessorPlugins(),
+          );
+          return contracts[0];
+        }),
+      )) as V1_DataContract[];
+      this.setPendingTaskContracts(
+        new Map<string, V1_DataContract>(
+          taskContracts.map((contract) => [contract.guid, contract]),
+        ),
+      );
     } catch (error) {
       assertErrorThrown(error);
       this.lakehouseEntitlementsStore.applicationStore.notificationService.notifyError(
@@ -141,6 +168,10 @@ export class EntitlementsDashboardState {
 
   setPendingTasks(val: V1_ContractUserEventRecord[] | undefined): void {
     this.pendingTasks = val;
+  }
+
+  setPendingTaskContracts(val: Map<string, V1_DataContract>): void {
+    this.pendingTaskContracts = val;
   }
 
   setAllUserContracts(
