@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { type NavigationZone } from '@finos/legend-application';
+import type { NavigationZone } from '@finos/legend-application';
 import {
   type GraphManagerState,
   type V1_AccessPointGroup,
@@ -22,6 +22,7 @@ import {
   type V1_DataContract,
   type V1_DataContractsResponse,
   type V1_DataProduct,
+  type V1_EngineServerClient,
   type V1_EntitlementsDataProductDetails,
   type V1_OrganizationalScope,
   V1_AdhocTeam,
@@ -33,8 +34,6 @@ import {
   V1_ResourceType,
 } from '@finos/legend-graph';
 import { action, flow, observable, makeObservable } from 'mobx';
-import type { DataProductLayoutState } from './BaseLayoutState.js';
-import { DATA_PRODUCT_VIEWER_SECTION } from './ProductViewerNavigation.js';
 import { DataProductDataAccessState } from './DataProductDataAccessState.js';
 import {
   ActionState,
@@ -43,15 +42,21 @@ import {
   type PlainObject,
 } from '@finos/legend-shared';
 import { serialize } from 'serializr';
-import { dataContractContainsDataProduct } from './LakehouseUtils.js';
-import type { LegendMarketplaceProductViewerStore } from './LegendMarketplaceProductViewerStore.js';
-import { BaseViewerState } from './BaseViewerState.js';
+import type { DataProductLayoutState } from '../BaseLayoutState.js';
+import {
+  type ProductViewerLegendApplicationStore,
+  BaseViewerState,
+} from '../BaseViewerState.js';
+import { DATA_PRODUCT_VIEWER_SECTION } from '../ProductViewerNavigation.js';
+import type { LakehouseContractServerClient } from '@finos/legend-server-marketplace';
+import { dataContractContainsDataProduct } from '../../utils/DataContractUtils.js';
 
 export class DataProductViewerState extends BaseViewerState<
   V1_DataProduct,
   DataProductLayoutState
 > {
-  readonly productViewerStore: LegendMarketplaceProductViewerStore;
+  readonly engineServerClient: V1_EngineServerClient;
+  readonly lakehouseContractServerClient: LakehouseContractServerClient;
   readonly graphManagerState: GraphManagerState;
   readonly entitlementsDataProductDetails: V1_EntitlementsDataProductDetails;
   readonly viewDataProductSource: () => void;
@@ -64,7 +69,9 @@ export class DataProductViewerState extends BaseViewerState<
   creatingContractState = ActionState.create();
 
   constructor(
-    productViewerStore: LegendMarketplaceProductViewerStore,
+    applicationStore: ProductViewerLegendApplicationStore,
+    engineServerClient: V1_EngineServerClient,
+    lakehouseContractServerClient: LakehouseContractServerClient,
     dataProductLayoutState: DataProductLayoutState,
     graphManagerState: GraphManagerState,
     product: V1_DataProduct,
@@ -74,12 +81,7 @@ export class DataProductViewerState extends BaseViewerState<
       onZoneChange?: ((zone: NavigationZone | undefined) => void) | undefined;
     },
   ) {
-    super(
-      product,
-      productViewerStore.marketplaceBaseStore.applicationStore,
-      dataProductLayoutState,
-      actions,
-    );
+    super(product, applicationStore, dataProductLayoutState, actions);
 
     makeObservable(this, {
       accessState: observable,
@@ -94,7 +96,8 @@ export class DataProductViewerState extends BaseViewerState<
       createContract: flow,
     });
 
-    this.productViewerStore = productViewerStore;
+    this.engineServerClient = engineServerClient;
+    this.lakehouseContractServerClient = lakehouseContractServerClient;
     this.graphManagerState = graphManagerState;
     this.entitlementsDataProductDetails = entitlementsDataProductDetails;
     this.viewDataProductSource = actions.viewDataProductSource;
@@ -130,6 +133,7 @@ export class DataProductViewerState extends BaseViewerState<
   setDataContract(val: V1_DataContract | undefined) {
     this.dataContract = val;
   }
+
   *fetchContracts(token: string | undefined): GeneratorFn<void> {
     try {
       this.accessState.accessGroupStates.forEach((e) =>
@@ -139,7 +143,7 @@ export class DataProductViewerState extends BaseViewerState<
       didNode.appDirId = this.deploymentId;
       didNode.level = V1_AppDirLevel.DEPLOYMENT;
       const _contracts =
-        (yield this.productViewerStore.marketplaceBaseStore.lakehouseContractServerClient.getDataContractsFromDID(
+        (yield this.lakehouseContractServerClient.getDataContractsFromDID(
           [serialize(V1_AppDirNodeModelSchema, didNode)],
           token,
         )) as PlainObject<V1_DataContractsResponse>;
@@ -193,11 +197,11 @@ export class DataProductViewerState extends BaseViewerState<
         } satisfies V1_CreateContractPayload,
       ) as PlainObject<V1_CreateContractPayload>;
       const contracts = V1_dataContractsResponseModelSchemaToContracts(
-        (yield this.productViewerStore.marketplaceBaseStore.lakehouseContractServerClient.createContract(
+        (yield this.lakehouseContractServerClient.createContract(
           request,
           token,
         )) as unknown as PlainObject<V1_DataContractsResponse>,
-        this.productViewerStore.marketplaceBaseStore.applicationStore.pluginManager.getPureProtocolProcessorPlugins(),
+        this.applicationStore.pluginManager.getPureProtocolProcessorPlugins(),
       );
       const associatedContract = contracts[0];
       // Only if the user has requested a contract for themself do we update the associated contract.

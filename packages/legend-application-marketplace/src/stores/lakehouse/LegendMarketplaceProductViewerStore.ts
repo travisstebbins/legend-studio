@@ -48,7 +48,6 @@ import {
   V1_SdlcDeploymentDataProductOrigin,
   getRowDataFromExecutionResult,
 } from '@finos/legend-graph';
-import { DataProductViewerState } from './DataProductViewerState.js';
 import type { AuthContextProps } from 'react-oidc-context';
 import { getDataProductFromDetails } from './LakehouseUtils.js';
 import {
@@ -58,11 +57,6 @@ import {
 } from '@finos/legend-storage';
 import { deserialize } from 'serializr';
 import { generateLakehouseDataProductPath } from '../../__lib__/LegendMarketplaceNavigation.js';
-import { TerminalProductViewerState } from './TerminalProductViewerState.js';
-import {
-  DataProductLayoutState,
-  TerminalProductLayoutState,
-} from './BaseLayoutState.js';
 
 const ARTIFACT_GENERATION_DAT_PRODUCT_KEY = 'dataProduct';
 

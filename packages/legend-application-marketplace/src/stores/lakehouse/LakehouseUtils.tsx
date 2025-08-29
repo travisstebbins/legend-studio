@@ -16,7 +16,6 @@
 
 import {
   type GraphManagerState,
-  type V1_AccessPointGroup,
   type V1_DataContract,
   type V1_EntitlementsDataProductDetails,
   type V1_LiteDataContract,
@@ -24,7 +23,6 @@ import {
   type V1_PureGraphManager,
   CORE_PURE_PATH,
   DataProduct,
-  V1_AccessPointGroupReference,
   V1_AdHocDeploymentDataProductOrigin,
   V1_AdhocTeam,
   V1_AppDirOrganizationalScope,
@@ -49,89 +47,6 @@ import type { Entity } from '@finos/legend-storage';
 import { deserialize } from 'serializr';
 import type { LegendMarketplaceBaseStore } from '../LegendMarketplaceBaseStore.js';
 import type { LakehouseContractServerClient } from '@finos/legend-server-marketplace';
-
-const invalidContractState = [
-  V1_ContractState.DRAFT,
-  V1_ContractState.REJECTED,
-  V1_ContractState.CLOSED,
-];
-
-export const dataContractContainsDataProduct = (
-  dataProduct: V1_DataProduct,
-  dataProductDeploymentID: number,
-  dataContract: V1_DataContract,
-): boolean => {
-  if (invalidContractState.includes(dataContract.state)) {
-    return false;
-  }
-  const contractResource = dataContract.resource;
-  if (
-    contractResource instanceof V1_AccessPointGroupReference &&
-    dataProductDeploymentID
-  ) {
-    const didMatch =
-      dataProductDeploymentID === contractResource.dataProduct.owner.appDirId;
-    const nameMatch =
-      contractResource.dataProduct.name.toLowerCase() ===
-      dataProduct.name.toLowerCase();
-    const dataProductContainsContractAPG = dataProduct.accessPointGroups
-      .map((e) => e.id)
-      .includes(contractResource.accessPointGroup);
-    return didMatch && nameMatch && dataProductContainsContractAPG;
-  }
-
-  return false;
-};
-
-// Assume contract already part of data product
-export const dataContractContainsAccessGroup = (
-  group: V1_AccessPointGroup,
-  dataContract: V1_DataContract,
-): boolean => {
-  const contractResource = dataContract.resource;
-  if (contractResource instanceof V1_AccessPointGroupReference) {
-    return contractResource.accessPointGroup === group.id;
-  }
-  return false;
-};
-
-export const isMemberOfContract = async (
-  user: string,
-  contract: V1_DataContract,
-  lakehouseContractServerClient: LakehouseContractServerClient,
-  token: string | undefined,
-): Promise<boolean> => {
-  const consumer = contract.consumer;
-  if (consumer instanceof V1_AdhocTeam) {
-    return consumer.users.some((e) => e.name === user);
-  } else if (contract.members.length > 0) {
-    return contract.members.some((e) => e.user.name === user);
-  } else {
-    // If consumer is not an ad-hoc team and the contract's members are not defined,
-    // we will fetch the tasks and use the tasks to determine if user is a member
-    // of the contract.
-    const rawTasks = await lakehouseContractServerClient.getContractTasks(
-      contract.guid,
-      token,
-    );
-    const tasks = V1_deserializeTaskResponse(rawTasks);
-    return tasks.some((task) => task.rec.consumer === user);
-  }
-};
-
-export const contractContainsSystemAccount = (
-  contract: V1_DataContract,
-): boolean => {
-  return (
-    (contract.consumer instanceof V1_AdhocTeam &&
-      contract.consumer.users.some(
-        (_user) => _user.userType === V1_UserType.SYSTEM_ACCOUNT,
-      )) ||
-    contract.members.some(
-      (_user) => _user.user.userType === V1_UserType.SYSTEM_ACCOUNT,
-    )
-  );
-};
 
 export const isContractInTerminalState = (
   contract: V1_DataContract | V1_LiteDataContract,

@@ -15,62 +15,27 @@
  */
 
 import { observer } from 'mobx-react-lite';
-import { useEffect, useRef, useState } from 'react';
-import { DataProductViewerState } from '../../../stores/lakehouse/DataProductViewerState.js';
-import {
-  DATA_PRODUCT_VIEWER_SECTION,
-  generateAnchorForSection,
-  TERMINAL_PRODUCT_VIEWER_SECTION,
-} from '../../../stores/lakehouse/ProductViewerNavigation.js';
+import { useEffect, useRef } from 'react';
 import { MarkdownTextViewer } from '@finos/legend-art';
-import { DataProducteDataAccess } from './DataProductDataAccess.js';
-import type { BaseViewerState } from '../../../stores/lakehouse/BaseViewerState.js';
-import { TerminalProductViewerState } from '../../../stores/lakehouse/TerminalProductViewerState.js';
 import type {
   SupportedProducts,
   SupportedLayoutStates,
 } from './ProductViewer.js';
+import type { BaseViewerState } from '../stores/BaseViewerState.js';
+import { DataProductViewerState } from '../stores/DataProduct/DataProductViewerState.js';
+import {
+  DATA_PRODUCT_VIEWER_SECTION,
+  TERMINAL_PRODUCT_VIEWER_SECTION,
+  generateAnchorForSection,
+} from '../stores/ProductViewerNavigation.js';
+import { TerminalProductViewerState } from '../stores/TerminalProduct/TerminalProductViewerState.js';
+import { DataProducteDataAccess } from './DataProduct/DataProductDataAccess.js';
+import { TerminalProductPrice } from './TerminalProduct/TerminalProductPrice.js';
 
 export const ProductWikiPlaceholder: React.FC<{ message: string }> = (
   props,
 ) => (
   <div className="data-space__viewer__wiki__placeholder">{props.message}</div>
-);
-
-export const TerminalProductPrice = observer(
-  (props: { terminalProductViewerState: TerminalProductViewerState }) => {
-    const { terminalProductViewerState } = props;
-    const terminal = terminalProductViewerState.product;
-    const [isAnnual, setIsAnnual] = useState(true);
-
-    const availablePrice =
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      terminal.price || terminal.tieredPrice || terminal.totalFirmPrice;
-
-    if (!availablePrice) {
-      return (
-        <ProductWikiPlaceholder message="No price information available." />
-      );
-    }
-
-    const getDisplayPrice = () => {
-      const price = Number(availablePrice);
-      return isAnnual ? Number(price).toFixed(2) : (price / 12).toFixed(2);
-    };
-
-    const handlePricingToggle = () => {
-      setIsAnnual((prev) => !prev);
-    };
-
-    return (
-      <button
-        className="data-space__viewer__wiki__section__pricing"
-        onClick={handlePricingToggle}
-      >
-        ${getDisplayPrice()} {isAnnual ? 'ANNUALLY' : 'MONTHLY'} PER LICENSE
-      </button>
-    );
-  },
 );
 
 export const ProductDescription = observer(
@@ -131,7 +96,7 @@ export const ProductDescription = observer(
     );
   },
 );
-export const DataProductWiki = observer(
+export const ProductWiki = observer(
   (props: {
     productViewerState: BaseViewerState<
       SupportedProducts,
