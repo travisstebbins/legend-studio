@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { type DataProductSearchResult } from '@finos/legend-server-marketplace';
+import { type TMP__DataProductSearchResult } from '@finos/legend-server-marketplace';
 import {
   Card,
   CardContent,
@@ -28,7 +28,7 @@ import {
 import DOMPurify from 'dompurify';
 
 export const LegendMarketplaceSearchResultDrawerContent = (props: {
-  productSearchResult: DataProductSearchResult | undefined;
+  productSearchResult: TMP__DataProductSearchResult | undefined;
 }) => {
   const { productSearchResult } = props;
 

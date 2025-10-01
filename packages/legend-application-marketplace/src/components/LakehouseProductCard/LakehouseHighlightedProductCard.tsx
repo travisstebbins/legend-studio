@@ -23,15 +23,15 @@ import {
   Skeleton,
 } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import type { BaseProductCardState } from '../../stores/lakehouse/dataProducts/BaseProductCardState.js';
 import { useLegendMarketplaceBaseStore } from '../../application/providers/LegendMarketplaceFrameworkProvider.js';
+import type { ProductCardState } from '../../stores/lakehouse/dataProducts/ProductCardState.js';
 
 const MAX_DESCRIPTION_LENGTH = 350;
 
 export const LakehouseHighlightedProductCard = observer(
   (props: {
-    productCardState: BaseProductCardState;
-    onClick: (productCardState: BaseProductCardState) => void;
+    productCardState: ProductCardState;
+    onClick: (productCardState: ProductCardState) => void;
   }): React.ReactNode => {
     const { productCardState, onClick } = props;
 

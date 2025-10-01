@@ -70,22 +70,76 @@ export class DataProductSearchResultTable {
   );
 }
 
-export class DataProductSearchResult {
+export class TMP__DataProductSearchResult {
   data_product_description!: string;
   data_product_link!: string;
   data_product_name!: string;
-  product_score!: number;
-  tables!: DataProductSearchResultTable[];
+  embedding_type!: string;
+  id!: string;
+  similarity!: number;
+  tables!: string[];
+  tag_score!: number;
+  tags1!: string[];
+  tags2!: string[];
   vendor_name!: string;
 
   static readonly serialization = new SerializationFactory(
-    createModelSchema(DataProductSearchResult, {
+    createModelSchema(TMP__DataProductSearchResult, {
       data_product_description: primitive(),
       data_product_link: primitive(),
       data_product_name: primitive(),
-      product_score: primitive(),
+      embedding_type: primitive(),
+      id: primitive(),
+      similarity: primitive(),
+      tag_score: primitive(),
       tables: list(object(DataProductSearchResultTable)),
+      tags1: list(primitive()),
+      tags2: list(primitive()),
       vendor_name: primitive(),
     }),
   );
+}
+
+export abstract class LakehouseDataProductSearchResultOrigin {}
+
+export class LakehouseSDLCDataProductSearchResultOrigin extends LakehouseDataProductSearchResultOrigin {
+  groupId!: string;
+  artifactId!: string;
+  versionId!: string;
+  path!: string;
+}
+
+export class LakehouseAdHocDataProductSearchResultOrigin extends LakehouseDataProductSearchResultOrigin {}
+
+export abstract class DataProductSearchResultDetails {}
+
+export class LakehouseDataProductSearchResultDetails extends DataProductSearchResultDetails {
+  dataProductId!: string;
+  did!: number;
+  producerEnviornmentName!: string;
+  producerEnvironmentType!: string;
+  origin!: LakehouseDataProductSearchResultOrigin;
+
+  static readonly serialization = new SerializationFactory(
+    createModelSchema(LakehouseDataProductSearchResultDetails, {
+      dataProductId: primitive(),
+      did: primitive(),
+      producerEnviornmentName: primitive(),
+      producerEnvironmentType: primitive(),
+      origin: object(LakehouseSDLCDataProductSearchResultOrigin),
+    }),
+  );
+}
+
+export class LegacyDataProductSearchResultDetails extends DataProductSearchResultDetails {
+  groupId!: string;
+  artifactId!: string;
+  versionId!: string;
+  path!: string;
+}
+
+export class DataProductSearchResult {
+  dataProductName!: string;
+  dataProductDescription!: string;
+  dataProductDetails!: DataProductSearchResultDetails;
 }

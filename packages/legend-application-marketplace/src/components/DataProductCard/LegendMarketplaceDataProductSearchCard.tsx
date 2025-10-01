@@ -16,16 +16,16 @@
 
 import { type JSX } from 'react';
 import { Button } from '@mui/material';
-import type { DataProductSearchResult } from '@finos/legend-server-marketplace';
+import type { TMP__DataProductSearchResult } from '@finos/legend-server-marketplace';
 import DOMPurify from 'dompurify';
 import { LegendMarketplaceCard } from '../MarketplaceCard/LegendMarketplaceCard.js';
 
 const MAX_DESCRIPTION_LENGTH = 250;
 
 export const LegendMarketplaceProductSearchCard = (props: {
-  productSearchResult: DataProductSearchResult;
-  onPreviewClick: (productSearchResult: DataProductSearchResult) => void;
-  onLearnMoreClick: (productSearchResult: DataProductSearchResult) => void;
+  productSearchResult: TMP__DataProductSearchResult;
+  onPreviewClick: (productSearchResult: TMP__DataProductSearchResult) => void;
+  onLearnMoreClick: (productSearchResult: TMP__DataProductSearchResult) => void;
 }): JSX.Element => {
   const { productSearchResult, onPreviewClick, onLearnMoreClick } = props;
 

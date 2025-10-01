@@ -291,13 +291,13 @@ export const MarketplaceLakehouseSearchResults =
       searchResultsStore.handleSearch(searchQuery);
 
       useEffect(() => {
-        if (searchResultsStore.loadingAllProductsState.isInInitialState) {
-          searchResultsStore.init(auth.user?.access_token);
+        if (searchResultsStore.executingSearchState.isInInitialState) {
+          searchResultsStore.executeSearch(searchQuery);
         }
-      }, [searchResultsStore, auth]);
+      }, [searchQuery, searchResultsStore]);
 
       const isLoadingDataProducts =
-        searchResultsStore.loadingAllProductsState.isInProgress;
+        searchResultsStore.executingSearchState.isInProgress;
 
       const handleSearch = (query: string | undefined): void => {
         applicationStore.navigationService.navigator.goToLocation(

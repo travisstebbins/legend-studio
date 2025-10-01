@@ -18,7 +18,7 @@ import { observer } from 'mobx-react-lite';
 import { LegendMarketplaceSearchBar } from '../../components/SearchBar/LegendMarketplaceSearchBar.js';
 import { useApplicationStore } from '@finos/legend-application';
 import { generateSearchResultsRoute } from '../../__lib__/LegendMarketplaceNavigation.js';
-import { DataProductSearchResult } from '@finos/legend-server-marketplace';
+import { TMP__DataProductSearchResult } from '@finos/legend-server-marketplace';
 import { useEffect, useState } from 'react';
 import {
   CubesLoadingIndicator,
@@ -45,12 +45,14 @@ export const LegendMarketplaceSearchResults =
           query: string | undefined;
         }>();
 
-      const [results, setResults] = useState<DataProductSearchResult[]>([]);
+      const [results, setResults] = useState<TMP__DataProductSearchResult[]>(
+        [],
+      );
       const [isError, setIsError] = useState<boolean>(false);
       const [isLoading, setIsLoading] = useState<boolean>(false);
 
       const [selectedPreviewResult, setSelectedPreviewResult] =
-        useState<DataProductSearchResult>();
+        useState<TMP__DataProductSearchResult>();
 
       useEffect(() => {
         const fetchResults = async () => {
@@ -66,7 +68,7 @@ export const LegendMarketplaceSearchResults =
             );
             setResults(
               _results.map((result) =>
-                DataProductSearchResult.serialization.fromJson(result),
+                TMP__DataProductSearchResult.serialization.fromJson(result),
               ),
             );
           } catch (error) {

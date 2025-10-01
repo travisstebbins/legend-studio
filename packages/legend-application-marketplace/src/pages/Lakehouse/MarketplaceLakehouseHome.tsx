@@ -37,10 +37,6 @@ import {
   isNonNullable,
 } from '@finos/legend-shared';
 import { useLegendMarketplaceBaseStore } from '../../application/providers/LegendMarketplaceFrameworkProvider.js';
-import type { BaseProductCardState } from '../../stores/lakehouse/dataProducts/BaseProductCardState.js';
-import { LakehouseHighlightedProductCard } from '../../components/LakehouseProductCard/LakehouseHighlightedProductCard.js';
-import { DataProductCardState } from '../../stores/lakehouse/dataProducts/DataProductCardState.js';
-import { LegacyDataProductCardState } from '../../stores/lakehouse/dataProducts/LegacyDataProductCardState.js';
 import { generateGAVCoordinates } from '@finos/legend-storage';
 import { DemoModal } from './DemoModal.js';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -51,6 +47,11 @@ import {
   LegendMarketplaceTelemetryHelper,
 } from '../../__lib__/LegendMarketplaceTelemetryHelper.js';
 import { V1_SdlcDeploymentDataProductOrigin } from '@finos/legend-graph';
+import type {
+  ProductCardState,
+  ProductCardState,
+} from '../../stores/lakehouse/dataProducts/ProductCardState.js';
+import { LakehouseHighlightedProductCard } from '../../components/LakehouseProductCard/LakehouseHighlightedProductCard.js';
 
 export const MarketplaceLakehouseHome = observer(() => {
   const legendMarketplaceBaseStore = useLegendMarketplaceBaseStore();
@@ -60,7 +61,7 @@ export const MarketplaceLakehouseHome = observer(() => {
   const showDevFeatures = configOptions.showDevFeatures;
 
   const [highlightedDataProducts, setHighlightedDataProducts] = useState<
-    BaseProductCardState[]
+    ProductCardState[]
   >([]);
   const [loading, setLoading] = useState(false);
 
@@ -113,40 +114,40 @@ export const MarketplaceLakehouseHome = observer(() => {
     );
   };
 
-  const logClickingDataProductCard = (
-    productCardState: BaseProductCardState,
-  ): void => {
-    if (productCardState instanceof DataProductCardState) {
-      const details = productCardState.dataProductDetails;
-      const origin =
-        details.origin instanceof V1_SdlcDeploymentDataProductOrigin
-          ? {
-              type: DATAPRODUCT_TYPE.SDLC,
-              groupId: details.origin.group,
-              artifactId: details.origin.artifact,
-              versionId: details.origin.version,
-            }
-          : {
-              type: DATAPRODUCT_TYPE.ADHOC,
-            };
-      LegendMarketplaceTelemetryHelper.logEvent_ClickingDataProductCard(
-        applicationStore.telemetryService,
-        {
-          origin: origin,
-          dataProductId: details.id,
-          deploymentId: details.deploymentId,
-          name: details.dataProduct.name,
-        },
-        LEGEND_MARKETPLACE_PAGE.HOME_PAGE,
-      );
-    } else if (productCardState instanceof LegacyDataProductCardState) {
-      LegendMarketplaceTelemetryHelper.logEvent_ClickingLegacyDataProductCard(
-        applicationStore.telemetryService,
-        productCardState,
-        LEGEND_MARKETPLACE_PAGE.HOME_PAGE,
-      );
-    }
-  };
+  // const logClickingDataProductCard = (
+  //   productCardState: ProductCardState,
+  // ): void => {
+  //   if (productCardState instanceof ProductCardState) {
+  //     const details = productCardState.dataProductDetails;
+  //     const origin =
+  //       details.origin instanceof V1_SdlcDeploymentDataProductOrigin
+  //         ? {
+  //             type: DATAPRODUCT_TYPE.SDLC,
+  //             groupId: details.origin.group,
+  //             artifactId: details.origin.artifact,
+  //             versionId: details.origin.version,
+  //           }
+  //         : {
+  //             type: DATAPRODUCT_TYPE.ADHOC,
+  //           };
+  //     LegendMarketplaceTelemetryHelper.logEvent_ClickingDataProductCard(
+  //       applicationStore.telemetryService,
+  //       {
+  //         origin: origin,
+  //         dataProductId: details.id,
+  //         deploymentId: details.deploymentId,
+  //         name: details.dataProduct.name,
+  //       },
+  //       LEGEND_MARKETPLACE_PAGE.HOME_PAGE,
+  //     );
+  //   } else if (productCardState instanceof LegacyDataProductCardState) {
+  //     LegendMarketplaceTelemetryHelper.logEvent_ClickingLegacyDataProductCard(
+  //       applicationStore.telemetryService,
+  //       productCardState,
+  //       LEGEND_MARKETPLACE_PAGE.HOME_PAGE,
+  //     );
+  //   }
+  // };
 
   const getCarouselTitle = (): string => {
     if (activeIndex === 0) {
@@ -248,13 +249,13 @@ export const MarketplaceLakehouseHome = observer(() => {
               <SwiperSlide key={1}>
                 <div className="marketplace-lakehouse-home__carousel-slide">
                   {highlightedDataProducts.map(
-                    (productCardState: BaseProductCardState, index: number) => (
+                    (productCardState: ProductCardState, index: number) => (
                       <LakehouseHighlightedProductCard
                         key={`slide-1-${productCardState.guid}`}
                         productCardState={productCardState}
                         onClick={() => {
                           const path =
-                            productCardState instanceof DataProductCardState
+                            productCardState instanceof ProductCardState
                               ? generateLakehouseDataProductPath(
                                   productCardState.dataProductDetails.id,
                                   productCardState.dataProductDetails
