@@ -171,7 +171,7 @@ export class LegendMarketplaceSearchResultsStore {
   }
 
   get filterSortProducts(): ProductCardState[] | undefined {
-    return this.productCardStates.sort((a, b) => {
+    return this.productCardStates.slice().sort((a, b) => {
       if (this.sort === DataProductSort.NAME_ALPHABETICAL) {
         return a.title.localeCompare(b.title);
       } else {
