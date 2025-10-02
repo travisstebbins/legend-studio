@@ -20,6 +20,7 @@ import type { LegendMarketplaceBaseStore } from '../LegendMarketplaceBaseStore.j
 import {
   ActionState,
   assertErrorThrown,
+  guaranteeNonNullable,
   type GeneratorFn,
   type PlainObject,
 } from '@finos/legend-shared';
@@ -32,10 +33,12 @@ import {
   DataProductSearchResult,
   LakehouseDataProductSearchResultDetails,
   LakehouseSDLCDataProductSearchResultOrigin,
+  LegacyDataProductSearchResultDetails,
   TMP__DataProductSearchResult,
   type MarketplaceServerClient,
 } from '@finos/legend-server-marketplace';
 import { ProductCardState } from './dataProducts/ProductCardState.js';
+import { parseGAVCoordinates } from '@finos/legend-storage';
 
 export enum DataProductFilterType {
   MODELED_DATA_PRODUCTS = 'MODELED_DATA_PRODUCTS',
@@ -268,18 +271,47 @@ export class LegendMarketplaceSearchResultsStore {
         const newResult = new DataProductSearchResult();
         newResult.dataProductName = result.data_product_name;
         newResult.dataProductDescription = result.data_product_description;
-        const lakehouseDetails = new LakehouseDataProductSearchResultDetails();
-        lakehouseDetails.dataProductId = '';
-        lakehouseDetails.did = 0;
-        lakehouseDetails.producerEnvironmentName = '';
-        lakehouseDetails.producerEnvironmentType = '';
-        const origin = new LakehouseSDLCDataProductSearchResultOrigin();
-        origin.groupId = '';
-        origin.artifactId = '';
-        origin.versionId = '';
-        origin.path = '';
-        lakehouseDetails.origin = origin;
-        newResult.dataProductDetails = lakehouseDetails;
+        const legacyMatch = result.data_product_link.match(
+          /taxonomy\/dataspace\/(?<gav>.+)\/(?<path>.+)/,
+        );
+        const lakehouseMatch = result.data_product_link.match(
+          /lakehouse\/dataproduct\/deployed\/(?<dataProductId>.+)\/(?<deploymentId>.+)/,
+        );
+        if (legacyMatch !== null && legacyMatch.groups !== undefined) {
+          const { gav, path } = legacyMatch.groups;
+          const coordinates = parseGAVCoordinates(guaranteeNonNullable(gav));
+          const details = new LegacyDataProductSearchResultDetails();
+          details.groupId = coordinates.groupId;
+          details.artifactId = coordinates.artifactId;
+          details.versionId = coordinates.versionId;
+          details.path = guaranteeNonNullable(path);
+          newResult.dataProductDetails = details;
+        } else if (
+          lakehouseMatch !== null &&
+          lakehouseMatch.groups !== undefined
+        ) {
+          const { dataProductId, deploymentId } = lakehouseMatch.groups;
+          const lakehouseDetails =
+            new LakehouseDataProductSearchResultDetails();
+          lakehouseDetails.dataProductId = guaranteeNonNullable(dataProductId);
+          lakehouseDetails.did = parseInt(guaranteeNonNullable(deploymentId));
+          lakehouseDetails.producerEnvironmentName = '';
+          lakehouseDetails.producerEnvironmentType = '';
+          const origin = new LakehouseSDLCDataProductSearchResultOrigin();
+          origin.groupId = '';
+          origin.artifactId = '';
+          origin.versionId = '';
+          origin.path = '';
+          lakehouseDetails.origin = origin;
+          newResult.dataProductDetails = lakehouseDetails;
+        } else {
+          const details = new LegacyDataProductSearchResultDetails();
+          details.groupId = '';
+          details.artifactId = '';
+          details.versionId = '';
+          details.path = '';
+          newResult.dataProductDetails = details;
+        }
         return newResult;
       });
 
