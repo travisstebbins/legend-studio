@@ -15,13 +15,7 @@
  */
 
 import { EXTERNAL_APPLICATION_NAVIGATION__generateStudioProjectViewUrl } from '@finos/legend-application';
-import {
-  OpenIcon,
-  CubesLoadingIndicator,
-  CubesLoadingIndicatorIcon,
-  clsx,
-  InfoCircleIcon,
-} from '@finos/legend-art';
+import { OpenIcon, clsx, InfoCircleIcon } from '@finos/legend-art';
 import { V1_EntitlementsLakehouseEnvironmentType } from '@finos/legend-graph';
 import { isSnapshotVersion } from '@finos/legend-server-depot';
 import {
@@ -275,11 +269,7 @@ export const LakehouseProductCard = observer(
     const versionId = productCardState.versionId;
     const isSnapshot = versionId ? isSnapshotVersion(versionId) : undefined;
 
-    const content = productCardState.initState.isInProgress ? (
-      <CubesLoadingIndicator isLoading={true}>
-        <CubesLoadingIndicatorIcon />
-      </CubesLoadingIndicator>
-    ) : (
+    const content = (
       <>
         <Box className="marketplace-lakehouse-data-product-card__container">
           <Box className="marketplace-lakehouse-data-product-card__content">

@@ -20,7 +20,6 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
-  Skeleton,
 } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useLegendMarketplaceBaseStore } from '../../application/providers/LegendMarketplaceFrameworkProvider.js';
@@ -47,8 +46,6 @@ export const LakehouseHighlightedProductCard = observer(
           )}...`
         : productCardState.description;
 
-    const loading = productCardState.initState.isInProgress;
-
     const assetUrl = (): string => {
       return applicationStore.config.assetsBaseUrl;
     };
@@ -64,43 +61,27 @@ export const LakehouseHighlightedProductCard = observer(
         : productCardState.displayImage;
     };
 
-    const skeletonLoader = (
-      <>
-        <Skeleton variant="rectangular" width="100%" height={200} />
-        <Skeleton variant="text" sx={{ fontSize: '2rem' }} />
-        <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-        <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-        <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-      </>
-    );
-
     return (
       <Card className="lakehouse-highlighted-data-product-card">
         <CardActionArea
           onClick={() => onClick(productCardState)}
           className="lakehouse-highlighted-data-product-card__action"
         >
-          {loading ? (
-            skeletonLoader
-          ) : (
-            <>
-              <CardMedia
-                component="img"
-                className="lakehouse-highlighted-data-product-card__image"
-                height="140"
-                image={getImageUrl()}
-                alt="data asset"
-              />
-              <CardContent className="lakehouse-highlighted-data-product-card__content">
-                <Box className="lakehouse-highlighted-data-product-card__title">
-                  {productCardState.title}
-                </Box>
-                <Box className="lakehouse-highlighted-data-product-card__description">
-                  {truncatedDescription}
-                </Box>
-              </CardContent>
-            </>
-          )}
+          <CardMedia
+            component="img"
+            className="lakehouse-highlighted-data-product-card__image"
+            height="140"
+            image={getImageUrl()}
+            alt="data asset"
+          />
+          <CardContent className="lakehouse-highlighted-data-product-card__content">
+            <Box className="lakehouse-highlighted-data-product-card__title">
+              {productCardState.title}
+            </Box>
+            <Box className="lakehouse-highlighted-data-product-card__description">
+              {truncatedDescription}
+            </Box>
+          </CardContent>
         </CardActionArea>
       </Card>
     );
