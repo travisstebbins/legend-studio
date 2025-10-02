@@ -157,5 +157,6 @@ export const dataProductSearchResultModelSchema = createModelSchema(
       serializeDataProductSearchResultDetails,
       deserializeDataProductSearchResultDetails,
     ),
+    similarity: primitive(),
   },
 );

@@ -142,4 +142,5 @@ export class DataProductSearchResult {
   dataProductName!: string;
   dataProductDescription!: string;
   dataProductDetails!: DataProductSearchResultDetails;
+  similarity!: number;
 }

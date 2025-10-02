@@ -135,6 +135,7 @@ class DataProductFilterState {
 }
 
 export enum DataProductSort {
+  DEFAULT = 'Default',
   NAME_ALPHABETICAL = 'Name A-Z',
   NAME_REVERSE_ALPHABETICAL = 'Name Z-A',
 }
@@ -145,7 +146,7 @@ export class LegendMarketplaceSearchResultsStore {
   readonly displayImageMap = new Map<string, string>();
   productCardStates: ProductCardState[] = [];
   filterState: DataProductFilterState;
-  sort: DataProductSort = DataProductSort.NAME_ALPHABETICAL;
+  sort: DataProductSort = DataProductSort.DEFAULT;
 
   executingSearchState = ActionState.create();
 
@@ -176,10 +177,19 @@ export class LegendMarketplaceSearchResultsStore {
 
   get filterSortProducts(): ProductCardState[] | undefined {
     return this.productCardStates.slice().sort((a, b) => {
-      if (this.sort === DataProductSort.NAME_ALPHABETICAL) {
-        return a.title.localeCompare(b.title);
-      } else {
-        return b.title.localeCompare(a.title);
+      switch (this.sort) {
+        case DataProductSort.DEFAULT:
+          return a.searchResult.similarity - b.searchResult.similarity;
+        case DataProductSort.NAME_ALPHABETICAL:
+          return a.searchResult.dataProductName.localeCompare(
+            b.searchResult.dataProductName,
+          );
+        case DataProductSort.NAME_REVERSE_ALPHABETICAL:
+          return b.searchResult.dataProductName.localeCompare(
+            a.searchResult.dataProductName,
+          );
+        default:
+          return 0;
       }
     });
   }
@@ -271,6 +281,7 @@ export class LegendMarketplaceSearchResultsStore {
         const newResult = new DataProductSearchResult();
         newResult.dataProductName = result.data_product_name;
         newResult.dataProductDescription = result.data_product_description;
+        newResult.similarity = result.similarity;
         const legacyMatch = result.data_product_link.match(
           /taxonomy\/dataspace\/(?<gav>.+)\/(?<path>.+)/,
         );
