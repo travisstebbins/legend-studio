@@ -299,9 +299,12 @@ export const MarketplaceLakehouseSearchResults =
         searchResultsStore.executingSearchState.isInProgress;
 
       const handleSearch = (query: string | undefined): void => {
-        applicationStore.navigationService.navigator.goToLocation(
-          generateLakehouseSearchResultsRoute(query),
-        );
+        if (query) {
+          searchResultsStore.executeSearch(query, auth.user?.access_token);
+          searchResultsStore.marketplaceBaseStore.applicationStore.navigationService.navigator.updateCurrentLocation(
+            generateLakehouseSearchResultsRoute(query),
+          );
+        }
       };
 
       return (
