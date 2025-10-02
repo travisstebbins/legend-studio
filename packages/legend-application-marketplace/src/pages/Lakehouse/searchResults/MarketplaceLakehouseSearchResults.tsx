@@ -396,7 +396,7 @@ export const MarketplaceLakehouseSearchResults =
                           productCardState.searchResult,
                         );
                         if (path) {
-                          applicationStore.navigationService.navigator.goToLocation(
+                          applicationStore.navigationService.navigator.visitAddress(
                             path,
                           );
                         }

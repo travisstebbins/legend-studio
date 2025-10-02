@@ -215,7 +215,7 @@ export const MarketplaceLakehouseHome = observer(() => {
                             productCardState.searchResult,
                           );
                           if (path) {
-                            applicationStore.navigationService.navigator.goToLocation(
+                            applicationStore.navigationService.navigator.visitAddress(
                               path,
                             );
                           }
@@ -242,7 +242,7 @@ export const MarketplaceLakehouseHome = observer(() => {
                             productCardState.searchResult,
                           );
                           if (path) {
-                            applicationStore.navigationService.navigator.goToLocation(
+                            applicationStore.navigationService.navigator.visitAddress(
                               path,
                             );
                           }
@@ -269,7 +269,7 @@ export const MarketplaceLakehouseHome = observer(() => {
                             productCardState.searchResult,
                           );
                           if (path) {
-                            applicationStore.navigationService.navigator.goToLocation(
+                            applicationStore.navigationService.navigator.visitAddress(
                               path,
                             );
                           }
