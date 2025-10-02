@@ -39,7 +39,7 @@ import {
   type DataProductSearchResult,
 } from '@finos/legend-server-marketplace';
 import { LEGEND_MARKETPLACE_APP_EVENT } from '../../../__lib__/LegendMarketplaceAppEvent.js';
-import { getDataProductFromDetails } from '../LakehouseUtils.js';
+import { getDataProductFromDetails } from '../../../utils/LakehouseUtils.js';
 import {
   V1_deserializeDataSpace,
   type V1_DataSpace,

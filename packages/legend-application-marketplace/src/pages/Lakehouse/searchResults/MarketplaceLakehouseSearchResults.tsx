@@ -47,27 +47,20 @@ import {
   UnmodeledDataProductDeployType,
 } from '../../../stores/lakehouse/LegendMarketplaceSearchResultsStore.js';
 import {
-  generateLakehouseDataProductPath,
   generateLakehouseSearchResultsRoute,
-  generateLegacyDataProductPath,
   LEGEND_MARKETPLACE_LAKEHOUSE_SEARCH_RESULTS_QUERY_PARAM_TOKEN,
 } from '../../../__lib__/LegendMarketplaceNavigation.js';
 import { LegendMarketplaceSearchBar } from '../../../components/SearchBar/LegendMarketplaceSearchBar.js';
 import { LegendMarketplacePage } from '../../LegendMarketplacePage.js';
 import { useAuth } from 'react-oidc-context';
-import {
-  V1_IngestEnvironmentClassification,
-  V1_SdlcDeploymentDataProductOrigin,
-} from '@finos/legend-graph';
-import { DataProductCardState } from '../../../stores/lakehouse/dataProducts/DataProductCardState.js';
-import { LegacyDataProductCardState } from '../../../stores/lakehouse/dataProducts/LegacyDataProductCardState.js';
-import { generateGAVCoordinates } from '@finos/legend-storage';
+import { V1_IngestEnvironmentClassification } from '@finos/legend-graph';
 import { LakehouseProductCard } from '../../../components/LakehouseProductCard/LakehouseProductCard.js';
 import {
-  DATAPRODUCT_TYPE,
   LEGEND_MARKETPLACE_PAGE,
   LegendMarketplaceTelemetryHelper,
 } from '../../../__lib__/LegendMarketplaceTelemetryHelper.js';
+import { generatePathForDataProductSearchResult } from '../../../utils/SearchUtils.js';
+import { logClickingDataProductCard } from '../../../utils/LogUtils.js';
 
 const SearchResultsSortFilterPanel = observer(
   (props: { searchResultsStore: LegendMarketplaceSearchResultsStore }) => {
@@ -291,10 +284,16 @@ export const MarketplaceLakehouseSearchResults =
       searchResultsStore.handleSearch(searchQuery);
 
       useEffect(() => {
-        if (searchResultsStore.executingSearchState.isInInitialState) {
-          searchResultsStore.executeSearch(searchQuery);
+        if (
+          searchResultsStore.executingSearchState.isInInitialState &&
+          searchQuery
+        ) {
+          searchResultsStore.executeSearch(
+            searchQuery,
+            auth.user?.access_token,
+          );
         }
-      }, [searchQuery, searchResultsStore]);
+      }, [auth.user?.access_token, searchQuery, searchResultsStore]);
 
       const isLoadingDataProducts =
         searchResultsStore.executingSearchState.isInProgress;
@@ -393,60 +392,19 @@ export const MarketplaceLakehouseSearchResults =
                     <LakehouseProductCard
                       productCardState={productCardState}
                       onClick={() => {
-                        const path =
-                          productCardState instanceof DataProductCardState
-                            ? generateLakehouseDataProductPath(
-                                productCardState.dataProductDetails.id,
-                                productCardState.dataProductDetails
-                                  .deploymentId,
-                              )
-                            : productCardState instanceof
-                                LegacyDataProductCardState
-                              ? generateLegacyDataProductPath(
-                                  generateGAVCoordinates(
-                                    productCardState.groupId,
-                                    productCardState.artifactId,
-                                    productCardState._versionId,
-                                  ),
-                                  productCardState.dataSpace.path,
-                                )
-                              : '';
-                        applicationStore.navigationService.navigator.goToLocation(
-                          path,
+                        const path = generatePathForDataProductSearchResult(
+                          productCardState.searchResult,
                         );
-                        if (productCardState instanceof DataProductCardState) {
-                          const details = productCardState.dataProductDetails;
-                          const origin =
-                            details.origin instanceof
-                            V1_SdlcDeploymentDataProductOrigin
-                              ? {
-                                  type: DATAPRODUCT_TYPE.SDLC,
-                                  groupId: details.origin.group,
-                                  artifactId: details.origin.artifact,
-                                  versionId: details.origin.version,
-                                }
-                              : {
-                                  type: DATAPRODUCT_TYPE.ADHOC,
-                                };
-                          LegendMarketplaceTelemetryHelper.logEvent_ClickingDataProductCard(
-                            applicationStore.telemetryService,
-                            {
-                              origin: origin,
-                              dataProductId: details.id,
-                              deploymentId: details.deploymentId,
-                              name: details.dataProduct.name,
-                            },
-                            LEGEND_MARKETPLACE_PAGE.SEARCH_RESULTS_PAGE,
-                          );
-                        } else if (
-                          productCardState instanceof LegacyDataProductCardState
-                        ) {
-                          LegendMarketplaceTelemetryHelper.logEvent_ClickingLegacyDataProductCard(
-                            applicationStore.telemetryService,
-                            productCardState,
-                            LEGEND_MARKETPLACE_PAGE.SEARCH_RESULTS_PAGE,
+                        if (path) {
+                          applicationStore.navigationService.navigator.goToLocation(
+                            path,
                           );
                         }
+                        logClickingDataProductCard(
+                          productCardState,
+                          applicationStore,
+                          LEGEND_MARKETPLACE_PAGE.SEARCH_RESULTS_PAGE,
+                        );
                       }}
                     />
                   </Grid>

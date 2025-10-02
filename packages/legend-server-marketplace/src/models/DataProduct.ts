@@ -116,7 +116,7 @@ export abstract class DataProductSearchResultDetails {}
 export class LakehouseDataProductSearchResultDetails extends DataProductSearchResultDetails {
   dataProductId!: string;
   did!: number;
-  producerEnviornmentName!: string;
+  producerEnvironmentName!: string;
   producerEnvironmentType!: string;
   origin!: LakehouseDataProductSearchResultOrigin;
 

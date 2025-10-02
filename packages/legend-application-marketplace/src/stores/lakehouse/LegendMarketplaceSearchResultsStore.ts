@@ -270,7 +270,7 @@ export class LegendMarketplaceSearchResultsStore {
         const lakehouseDetails = new LakehouseDataProductSearchResultDetails();
         lakehouseDetails.dataProductId = '';
         lakehouseDetails.did = 0;
-        lakehouseDetails.producerEnviornmentName = '';
+        lakehouseDetails.producerEnvironmentName = '';
         lakehouseDetails.producerEnvironmentType = '';
         const origin = new LakehouseSDLCDataProductSearchResultOrigin();
         origin.groupId = '';

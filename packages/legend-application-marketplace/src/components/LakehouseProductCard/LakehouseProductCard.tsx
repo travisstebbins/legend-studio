@@ -80,7 +80,7 @@ const LakehouseDataProductCardInfoPopover = observer(
       dataProductCardState.searchResult.dataProductDetails instanceof
       LakehouseDataProductSearchResultDetails
         ? dataProductCardState.searchResult.dataProductDetails
-            .producerEnviornmentName
+            .producerEnvironmentName
         : undefined;
     const producerEnvironmentType =
       dataProductCardState.searchResult.dataProductDetails instanceof

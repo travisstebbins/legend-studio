@@ -26,32 +26,24 @@ import {
   OpenNewTabIcon,
   SimpleCalendarIcon,
 } from '@finos/legend-art';
-import {
-  generateLakehouseDataProductPath,
-  generateLakehouseSearchResultsRoute,
-  generateLegacyDataProductPath,
-} from '../../__lib__/LegendMarketplaceNavigation.js';
+import { generateLakehouseSearchResultsRoute } from '../../__lib__/LegendMarketplaceNavigation.js';
 import {
   assertErrorThrown,
   isNonEmptyString,
   isNonNullable,
 } from '@finos/legend-shared';
 import { useLegendMarketplaceBaseStore } from '../../application/providers/LegendMarketplaceFrameworkProvider.js';
-import { generateGAVCoordinates } from '@finos/legend-storage';
 import { DemoModal } from './DemoModal.js';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import {
-  DATAPRODUCT_TYPE,
   LEGEND_MARKETPLACE_PAGE,
   LegendMarketplaceTelemetryHelper,
 } from '../../__lib__/LegendMarketplaceTelemetryHelper.js';
-import { V1_SdlcDeploymentDataProductOrigin } from '@finos/legend-graph';
-import type {
-  ProductCardState,
-  ProductCardState,
-} from '../../stores/lakehouse/dataProducts/ProductCardState.js';
+import type { ProductCardState } from '../../stores/lakehouse/dataProducts/ProductCardState.js';
 import { LakehouseHighlightedProductCard } from '../../components/LakehouseProductCard/LakehouseHighlightedProductCard.js';
+import { generatePathForDataProductSearchResult } from '../../utils/SearchUtils.js';
+import { logClickingDataProductCard } from '../../utils/LogUtils.js';
 
 export const MarketplaceLakehouseHome = observer(() => {
   const legendMarketplaceBaseStore = useLegendMarketplaceBaseStore();
@@ -113,41 +105,6 @@ export const MarketplaceLakehouseHome = observer(() => {
       generateLakehouseSearchResultsRoute(query),
     );
   };
-
-  // const logClickingDataProductCard = (
-  //   productCardState: ProductCardState,
-  // ): void => {
-  //   if (productCardState instanceof ProductCardState) {
-  //     const details = productCardState.dataProductDetails;
-  //     const origin =
-  //       details.origin instanceof V1_SdlcDeploymentDataProductOrigin
-  //         ? {
-  //             type: DATAPRODUCT_TYPE.SDLC,
-  //             groupId: details.origin.group,
-  //             artifactId: details.origin.artifact,
-  //             versionId: details.origin.version,
-  //           }
-  //         : {
-  //             type: DATAPRODUCT_TYPE.ADHOC,
-  //           };
-  //     LegendMarketplaceTelemetryHelper.logEvent_ClickingDataProductCard(
-  //       applicationStore.telemetryService,
-  //       {
-  //         origin: origin,
-  //         dataProductId: details.id,
-  //         deploymentId: details.deploymentId,
-  //         name: details.dataProduct.name,
-  //       },
-  //       LEGEND_MARKETPLACE_PAGE.HOME_PAGE,
-  //     );
-  //   } else if (productCardState instanceof LegacyDataProductCardState) {
-  //     LegendMarketplaceTelemetryHelper.logEvent_ClickingLegacyDataProductCard(
-  //       applicationStore.telemetryService,
-  //       productCardState,
-  //       LEGEND_MARKETPLACE_PAGE.HOME_PAGE,
-  //     );
-  //   }
-  // };
 
   const getCarouselTitle = (): string => {
     if (activeIndex === 0) {
@@ -249,33 +206,24 @@ export const MarketplaceLakehouseHome = observer(() => {
               <SwiperSlide key={1}>
                 <div className="marketplace-lakehouse-home__carousel-slide">
                   {highlightedDataProducts.map(
-                    (productCardState: ProductCardState, index: number) => (
+                    (productCardState: ProductCardState) => (
                       <LakehouseHighlightedProductCard
                         key={`slide-1-${productCardState.guid}`}
                         productCardState={productCardState}
                         onClick={() => {
-                          const path =
-                            productCardState instanceof ProductCardState
-                              ? generateLakehouseDataProductPath(
-                                  productCardState.dataProductDetails.id,
-                                  productCardState.dataProductDetails
-                                    .deploymentId,
-                                )
-                              : productCardState instanceof
-                                  LegacyDataProductCardState
-                                ? generateLegacyDataProductPath(
-                                    generateGAVCoordinates(
-                                      productCardState.groupId,
-                                      productCardState.artifactId,
-                                      productCardState._versionId,
-                                    ),
-                                    productCardState.dataSpace.path,
-                                  )
-                                : '';
-                          applicationStore.navigationService.navigator.goToLocation(
-                            path,
+                          const path = generatePathForDataProductSearchResult(
+                            productCardState.searchResult,
                           );
-                          logClickingDataProductCard(productCardState);
+                          if (path) {
+                            applicationStore.navigationService.navigator.goToLocation(
+                              path,
+                            );
+                          }
+                          logClickingDataProductCard(
+                            productCardState,
+                            applicationStore,
+                            LEGEND_MARKETPLACE_PAGE.HOME_PAGE,
+                          );
                         }}
                       />
                     ),
@@ -285,33 +233,24 @@ export const MarketplaceLakehouseHome = observer(() => {
               <SwiperSlide key={2}>
                 <div className="marketplace-lakehouse-home__carousel-slide">
                   {highlightedDataProducts.map(
-                    (productCardState: BaseProductCardState, index: number) => (
+                    (productCardState: ProductCardState, index: number) => (
                       <LakehouseHighlightedProductCard
                         key={`slide-2-${productCardState.guid}`}
                         productCardState={productCardState}
                         onClick={() => {
-                          const path =
-                            productCardState instanceof DataProductCardState
-                              ? generateLakehouseDataProductPath(
-                                  productCardState.dataProductDetails.id,
-                                  productCardState.dataProductDetails
-                                    .deploymentId,
-                                )
-                              : productCardState instanceof
-                                  LegacyDataProductCardState
-                                ? generateLegacyDataProductPath(
-                                    generateGAVCoordinates(
-                                      productCardState.groupId,
-                                      productCardState.artifactId,
-                                      productCardState._versionId,
-                                    ),
-                                    productCardState.dataSpace.path,
-                                  )
-                                : '';
-                          applicationStore.navigationService.navigator.goToLocation(
-                            path,
+                          const path = generatePathForDataProductSearchResult(
+                            productCardState.searchResult,
                           );
-                          logClickingDataProductCard(productCardState);
+                          if (path) {
+                            applicationStore.navigationService.navigator.goToLocation(
+                              path,
+                            );
+                          }
+                          logClickingDataProductCard(
+                            productCardState,
+                            applicationStore,
+                            LEGEND_MARKETPLACE_PAGE.HOME_PAGE,
+                          );
                         }}
                       />
                     ),
@@ -321,33 +260,24 @@ export const MarketplaceLakehouseHome = observer(() => {
               <SwiperSlide key={3}>
                 <div className="marketplace-lakehouse-home__carousel-slide">
                   {highlightedDataProducts.map(
-                    (productCardState: BaseProductCardState, index: number) => (
+                    (productCardState: ProductCardState, index: number) => (
                       <LakehouseHighlightedProductCard
                         key={`slide-1-${productCardState.guid}`}
                         productCardState={productCardState}
                         onClick={() => {
-                          const path =
-                            productCardState instanceof DataProductCardState
-                              ? generateLakehouseDataProductPath(
-                                  productCardState.dataProductDetails.id,
-                                  productCardState.dataProductDetails
-                                    .deploymentId,
-                                )
-                              : productCardState instanceof
-                                  LegacyDataProductCardState
-                                ? generateLegacyDataProductPath(
-                                    generateGAVCoordinates(
-                                      productCardState.groupId,
-                                      productCardState.artifactId,
-                                      productCardState._versionId,
-                                    ),
-                                    productCardState.dataSpace.path,
-                                  )
-                                : '';
-                          applicationStore.navigationService.navigator.goToLocation(
-                            path,
+                          const path = generatePathForDataProductSearchResult(
+                            productCardState.searchResult,
                           );
-                          logClickingDataProductCard(productCardState);
+                          if (path) {
+                            applicationStore.navigationService.navigator.goToLocation(
+                              path,
+                            );
+                          }
+                          logClickingDataProductCard(
+                            productCardState,
+                            applicationStore,
+                            LEGEND_MARKETPLACE_PAGE.HOME_PAGE,
+                          );
                         }}
                       />
                     ),
