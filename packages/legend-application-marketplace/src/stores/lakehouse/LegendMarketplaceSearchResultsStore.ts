@@ -19,6 +19,7 @@ import { action, computed, flow, makeObservable, observable } from 'mobx';
 import type { LegendMarketplaceBaseStore } from '../LegendMarketplaceBaseStore.js';
 import {
   ActionState,
+  assertErrorThrown,
   type GeneratorFn,
   type PlainObject,
 } from '@finos/legend-shared';
@@ -315,6 +316,11 @@ export class LegendMarketplaceSearchResultsStore {
 
       this.productCardStates.forEach((dataProductCardState) =>
         dataProductCardState.init(token),
+      );
+    } catch (error) {
+      assertErrorThrown(error);
+      this.marketplaceBaseStore.applicationStore.notificationService.notifyError(
+        `Error executing search: ${error.message}`,
       );
     } finally {
       this.executingSearchState.complete();
