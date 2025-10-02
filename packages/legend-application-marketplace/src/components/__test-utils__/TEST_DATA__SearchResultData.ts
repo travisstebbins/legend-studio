@@ -26,4 +26,5 @@ export const mockSearchResult: DataProductSearchResult = {
     version: '1.2.0',
     path: 'test::SDLC_RELEASE_DATAPRODUCT',
   },
+  similarity: 0.95,
 };
