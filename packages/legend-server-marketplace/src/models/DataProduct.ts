@@ -143,4 +143,5 @@ export class DataProductSearchResult {
   dataProductDescription!: string;
   dataProductDetails!: DataProductSearchResultDetails;
   similarity!: number;
+  id!: string;
 }

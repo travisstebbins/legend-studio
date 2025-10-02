@@ -27,4 +27,5 @@ export const mockSearchResult: DataProductSearchResult = {
     path: 'test::SDLC_RELEASE_DATAPRODUCT',
   },
   similarity: 0.95,
+  id: '123e4567-e89b-12d3-a456-426614174000',
 };

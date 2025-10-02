@@ -282,6 +282,7 @@ export class LegendMarketplaceSearchResultsStore {
         newResult.dataProductName = result.data_product_name;
         newResult.dataProductDescription = result.data_product_description;
         newResult.similarity = result.similarity;
+        newResult.id = result.id;
         const legacyMatch = result.data_product_link.match(
           /taxonomy\/dataspace\/(?<gav>.+)\/(?<path>.+)/,
         );
