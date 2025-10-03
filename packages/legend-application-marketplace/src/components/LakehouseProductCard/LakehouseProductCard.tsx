@@ -15,7 +15,12 @@
  */
 
 import { EXTERNAL_APPLICATION_NAVIGATION__generateStudioProjectViewUrl } from '@finos/legend-application';
-import { OpenIcon, clsx, InfoCircleIcon } from '@finos/legend-art';
+import {
+  OpenIcon,
+  clsx,
+  InfoCircleIcon,
+  MarkdownTextViewer,
+} from '@finos/legend-art';
 import { V1_EntitlementsLakehouseEnvironmentType } from '@finos/legend-graph';
 import { isSnapshotVersion } from '@finos/legend-server-depot';
 import {
@@ -152,7 +157,17 @@ const LakehouseDataProductCardInfoPopover = observer(
               Description
             </Box>
             <Box className="marketplace-lakehouse-data-product-card__popover__section-content">
-              {dataProductCardState.description}
+              <MarkdownTextViewer
+                className="data-product__viewer__markdown-text-viewer"
+                value={{
+                  value: dataProductCardState.description,
+                }}
+                components={{
+                  h1: 'h2',
+                  h2: 'h3',
+                  h3: 'h4',
+                }}
+              />
             </Box>
           </Box>
           {dataProductId !== undefined ||
@@ -350,7 +365,17 @@ export const LakehouseProductCard = observer(
           {productCardState.title}
         </Box>
         <Box className="marketplace-lakehouse-data-product-card__description">
-          {truncatedDescription}
+          <MarkdownTextViewer
+            className="data-product__viewer__markdown-text-viewer"
+            value={{
+              value: truncatedDescription,
+            }}
+            components={{
+              h1: 'h2',
+              h2: 'h3',
+              h3: 'h4',
+            }}
+          />
         </Box>
         <>
           <IconButton
