@@ -155,10 +155,10 @@ const LakehouseDataProductCardInfoPopover = observer(
               {dataProductCardState.description}
             </Box>
           </Box>
-          {dataProductId ||
-          did ||
-          producerEnvironmentName ||
-          producerEnvironmentType ? (
+          {dataProductId !== undefined ||
+          did !== undefined ||
+          producerEnvironmentName !== undefined ||
+          producerEnvironmentType !== undefined ? (
             <Box className="marketplace-lakehouse-data-product-card__popover__section">
               <Box className="marketplace-lakehouse-data-product-card__popover__section-header">
                 Deployment Details
@@ -199,8 +199,10 @@ const LakehouseDataProductCardInfoPopover = observer(
               </TableContainer>
             </Box>
           ) : null}
-
-          {groupId || artifactId || versionId || path ? (
+          {groupId !== undefined ||
+          artifactId !== undefined ||
+          versionId !== undefined ||
+          path !== undefined ? (
             <Box className="marketplace-lakehouse-data-product-card__popover__section">
               <Box className="marketplace-lakehouse-data-product-card__popover__section-header">
                 Data Product Project
