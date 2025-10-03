@@ -400,7 +400,9 @@ export const MarketplaceLakehouseSearchResults =
                         );
                         if (path) {
                           applicationStore.navigationService.navigator.visitAddress(
-                            path,
+                            applicationStore.navigationService.navigator.generateAddress(
+                              path,
+                            ),
                           );
                         }
                         logClickingDataProductCard(
