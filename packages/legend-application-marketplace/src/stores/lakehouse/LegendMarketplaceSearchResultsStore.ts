@@ -284,10 +284,10 @@ export class LegendMarketplaceSearchResultsStore {
         newResult.similarity = result.similarity;
         newResult.id = result.id;
         const legacyMatch = result.data_product_link.match(
-          /taxonomy\/dataspace\/(?<gav>.+)\/(?<path>.+)/,
+          /\/taxonomy\/dataspace\/(?<gav>.+)\/(?<path>.+)/,
         );
         const lakehouseMatch = result.data_product_link.match(
-          /lakehouse\/dataproduct\/deployed\/(?<dataProductId>.+)\/(?<deploymentId>.+)/,
+          /\/lakehouse\/dataProduct\/deployed\/(?<dataProductId>.+)\/(?<deploymentId>\d+)/,
         );
         if (legacyMatch !== null && legacyMatch.groups !== undefined) {
           const { gav, path } = legacyMatch.groups;
