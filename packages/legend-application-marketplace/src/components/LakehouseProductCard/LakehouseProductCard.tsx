@@ -350,7 +350,6 @@ export const LakehouseProductCard = observer(
                 />
               )}
             </Box>
-
             <Box className="marketplace-lakehouse-data-product-card__name">
               {productCardState.title}
             </Box>
