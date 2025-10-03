@@ -158,7 +158,7 @@ const LakehouseDataProductCardInfoPopover = observer(
             </Box>
             <Box className="marketplace-lakehouse-data-product-card__popover__section-content">
               <MarkdownTextViewer
-                className="data-product__viewer__markdown-text-viewer"
+                className="marketplace-lakehouse-data-product-card__popover__section-content__markdown"
                 value={{
                   value: dataProductCardState.description,
                 }}
@@ -366,7 +366,7 @@ export const LakehouseProductCard = observer(
         </Box>
         <Box className="marketplace-lakehouse-data-product-card__description">
           <MarkdownTextViewer
-            className="data-product__viewer__markdown-text-viewer"
+            className="marketplace-lakehouse-data-product-card__description__markdown"
             value={{
               value: truncatedDescription,
             }}
