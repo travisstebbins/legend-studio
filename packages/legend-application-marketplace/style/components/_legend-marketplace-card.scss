@@ -137,11 +137,11 @@
     overflow: hidden;
 
     &--preview--small {
-      transform: translate(65%);
+      transform: translateY(65%);
     }
 
     &--preview--large {
-      transform: translate(50%);
+      transform: translateY(50%);
     }
 
     &--visible {
