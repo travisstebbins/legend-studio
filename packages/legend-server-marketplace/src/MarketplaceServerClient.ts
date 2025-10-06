@@ -18,7 +18,7 @@ import { type PlainObject, AbstractServerClient } from '@finos/legend-shared';
 import type { LightProvider, ProviderResult } from './models/Provider.js';
 import type {
   DataProduct,
-  DataProductSearchResult,
+  TMP__DataProductSearchResult,
 } from './models/DataProduct.js';
 import type { Subscription } from './models/Subscription.js';
 
@@ -86,14 +86,14 @@ export class MarketplaceServerClient extends AbstractServerClient {
 
   semanticSearch = async (
     query: string,
-    vendorName: string,
-    limit: number,
-  ): Promise<PlainObject<DataProductSearchResult>[]> =>
+    vendorName?: string | undefined,
+    limit?: number | undefined,
+  ): Promise<PlainObject<TMP__DataProductSearchResult>[]> =>
     (
       await this.get<
-        MarketplaceServerResponse<PlainObject<DataProductSearchResult>[]>
+        MarketplaceServerResponse<PlainObject<TMP__DataProductSearchResult>[]>
       >(
-        `${this._search()}/semantic/catalog?query=${query}&vendor_name=${vendorName}&limit=${limit}`,
+        `${this._search()}/semantic/catalog?query=${query}${vendorName ? `&vendor_name=${vendorName}` : ''}${limit ? `&limit=${limit}` : ''}`,
       )
     ).results;
 
