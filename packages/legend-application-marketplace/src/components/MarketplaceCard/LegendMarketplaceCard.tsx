@@ -98,7 +98,9 @@ export const LegendMarketplaceCard = (props: {
                 : undefined
             }
           >
-            {moreInfo}
+            <div className="legend-marketplace-card__more-info__content">
+              {moreInfo}
+            </div>
           </CardContent>
         </ClickAwayListener>
       )}
