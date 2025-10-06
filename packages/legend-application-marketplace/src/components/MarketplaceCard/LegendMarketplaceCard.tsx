@@ -94,6 +94,7 @@ export const LegendMarketplaceCard = (props: {
         {
           'legend-marketplace-card--small': size === 'small',
           'legend-marketplace-card--large': size === 'large',
+          'legend-marketplace-card--with-icon': cardIcon !== undefined,
         },
         className,
       )}
