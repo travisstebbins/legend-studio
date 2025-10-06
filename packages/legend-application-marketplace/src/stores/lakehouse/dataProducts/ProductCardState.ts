@@ -102,16 +102,10 @@ export class ProductCardState {
         this.searchResult.dataProductDetails instanceof
         LakehouseDataProductSearchResultDetails
       ) {
-        const dataProduct =
-          this.searchResult.dataProductDetails.origin instanceof
-          LakehouseSDLCDataProductSearchResultOrigin
-            ? yield this.getLakehouseSDLCDataProduct(
-                this.searchResult.dataProductDetails.origin,
-              )
-            : yield this.getLakehouseAdHocDataProduct(
-                this.searchResult.dataProductDetails,
-                token,
-              );
+        const dataProduct = yield this.getLakehouseDataProduct(
+          this.searchResult.dataProductDetails,
+          token,
+        );
         this.setDataProductElement(dataProduct);
       } else if (
         this.searchResult.dataProductDetails instanceof
@@ -183,52 +177,59 @@ export class ProductCardState {
     return selectedImage;
   }
 
-  async getLakehouseSDLCDataProduct(
-    searchResultOrigin: LakehouseSDLCDataProductSearchResultOrigin,
-  ): Promise<V1_DataProduct | undefined> {
-    // Build V1_EntitlementsDataProductDetails
-    const origin = new V1_SdlcDeploymentDataProductOrigin();
-    origin.group = searchResultOrigin.groupId;
-    origin.artifact = searchResultOrigin.artifactId;
-    origin.version = searchResultOrigin.versionId;
-    const entitlementsDataProductDetails =
-      new V1_EntitlementsDataProductDetails();
-    entitlementsDataProductDetails.origin = origin;
-
-    // Fetch data product entity
-    const v1_dataProduct = await getDataProductFromDetails(
-      entitlementsDataProductDetails,
-      this.graphManager,
-      this.marketplaceBaseStore,
-    );
-
-    return v1_dataProduct;
-  }
-
-  async getLakehouseAdHocDataProduct(
+  async getLakehouseDataProduct(
     searchResultDetails: LakehouseDataProductSearchResultDetails,
     token: string | undefined,
   ): Promise<V1_DataProduct | undefined> {
-    const rawResponse =
-      await this.marketplaceBaseStore.lakehouseContractServerClient.getDataProductByIdAndDID(
-        searchResultDetails.dataProductId,
-        searchResultDetails.did,
-        token,
+    if (
+      searchResultDetails.origin instanceof
+      LakehouseSDLCDataProductSearchResultOrigin
+    ) {
+      // Build V1_EntitlementsDataProductDetails
+      const entitlementsDataProductDetails =
+        new V1_EntitlementsDataProductDetails();
+      entitlementsDataProductDetails.id = searchResultDetails.dataProductId;
+      entitlementsDataProductDetails.deploymentId = searchResultDetails.did;
+      const origin = new V1_SdlcDeploymentDataProductOrigin();
+      origin.group = searchResultDetails.origin.groupId;
+      origin.artifact = searchResultDetails.origin.artifactId;
+      origin.version = searchResultDetails.origin.versionId;
+      entitlementsDataProductDetails.origin = origin;
+
+      // Fetch data product entity
+      const v1_dataProduct = await getDataProductFromDetails(
+        entitlementsDataProductDetails,
+        this.graphManager,
+        this.marketplaceBaseStore,
       );
-    const entitlementsDataProductDetails = guaranteeNonNullable(
-      V1_entitlementsDataProductDetailsResponseToDataProductDetails(
-        rawResponse,
-      )[0],
-    );
 
-    // Build data product entity
-    const v1_dataProduct = await getDataProductFromDetails(
-      entitlementsDataProductDetails,
-      this.graphManager,
-      this.marketplaceBaseStore,
-    );
+      return v1_dataProduct;
+    } else if (
+      searchResultDetails.origin instanceof
+      LakehouseAdHocDataProductSearchResultOrigin
+    ) {
+      const rawResponse =
+        await this.marketplaceBaseStore.lakehouseContractServerClient.getDataProductByIdAndDID(
+          searchResultDetails.dataProductId,
+          searchResultDetails.did,
+          token,
+        );
+      const entitlementsDataProductDetails = guaranteeNonNullable(
+        V1_entitlementsDataProductDetailsResponseToDataProductDetails(
+          rawResponse,
+        )[0],
+      );
 
-    return v1_dataProduct;
+      // Build data product entity
+      const v1_dataProduct = await getDataProductFromDetails(
+        entitlementsDataProductDetails,
+        this.graphManager,
+        this.marketplaceBaseStore,
+      );
+
+      return v1_dataProduct;
+    }
+    return undefined;
   }
 
   async getLegacyDataProduct(
