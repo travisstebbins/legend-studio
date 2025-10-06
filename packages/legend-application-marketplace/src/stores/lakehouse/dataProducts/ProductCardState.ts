@@ -24,8 +24,9 @@ import {
   type PlainObject,
 } from '@finos/legend-shared';
 import {
-  type V1_DataProduct,
+  type V1_DataProductIcon,
   type V1_PureGraphManager,
+  V1_DataProduct,
   V1_EntitlementsDataProductDetails,
   V1_entitlementsDataProductDetailsResponseToDataProductDetails,
   V1_SdlcDeploymentDataProductOrigin,
@@ -157,6 +158,12 @@ export class ProductCardState {
             LakehouseSDLCDataProductSearchResultOrigin
         ? this.searchResult.dataProductDetails.origin.versionId
         : undefined;
+  }
+
+  get icon(): V1_DataProductIcon | undefined {
+    return this.dataProductElement instanceof V1_DataProduct
+      ? this.dataProductElement.icon
+      : undefined;
   }
 
   setDataProductElement(value: V1_DataProduct | undefined): void {
