@@ -282,8 +282,9 @@ export const LakehouseProductCard = observer(
   (props: {
     productCardState: ProductCardState;
     onClick: (productCardState: ProductCardState) => void;
+    showInfoPopover?: boolean;
   }): React.ReactNode => {
-    const { productCardState, onClick } = props;
+    const { productCardState, onClick, showInfoPopover } = props;
 
     const [popoverAnchorEl, setPopoverAnchorEl] =
       useState<HTMLButtonElement | null>(null);
@@ -376,33 +377,35 @@ export const LakehouseProductCard = observer(
             }}
           />
         </Box>
-        <>
-          <IconButton
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              event.stopPropagation();
-              setPopoverAnchorEl(event.currentTarget);
-            }}
-            className={clsx(
-              'marketplace-lakehouse-data-product-card__more-info-btn',
-              {
-                'marketplace-lakehouse-data-product-card__more-info-btn--selected':
-                  Boolean(popoverAnchorEl),
-              },
-            )}
-            title="More Info"
-          >
-            <InfoCircleIcon />
-          </IconButton>
-          <LakehouseDataProductCardInfoPopover
-            dataProductCardState={productCardState}
-            popoverAnchorEl={popoverAnchorEl}
-            setPopoverAnchorEl={setPopoverAnchorEl}
-            applicationStore={
-              productCardState.marketplaceBaseStore.applicationStore
-            }
-          />
-        </>
+        {showInfoPopover && (
+          <>
+            <IconButton
+              onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                event.preventDefault();
+                event.stopPropagation();
+                setPopoverAnchorEl(event.currentTarget);
+              }}
+              className={clsx(
+                'marketplace-lakehouse-data-product-card__more-info-btn',
+                {
+                  'marketplace-lakehouse-data-product-card__more-info-btn--selected':
+                    Boolean(popoverAnchorEl),
+                },
+              )}
+              title="More Info"
+            >
+              <InfoCircleIcon />
+            </IconButton>
+            <LakehouseDataProductCardInfoPopover
+              dataProductCardState={productCardState}
+              popoverAnchorEl={popoverAnchorEl}
+              setPopoverAnchorEl={setPopoverAnchorEl}
+              applicationStore={
+                productCardState.marketplaceBaseStore.applicationStore
+              }
+            />
+          </>
+        )}
       </>
     );
 
