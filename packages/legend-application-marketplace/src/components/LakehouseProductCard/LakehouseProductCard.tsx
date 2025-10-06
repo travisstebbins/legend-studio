@@ -282,12 +282,14 @@ export const LakehouseProductCard = observer(
   (props: {
     productCardState: ProductCardState;
     onClick: (productCardState: ProductCardState) => void;
+    moreInfoPreview?: 'small' | 'large' | undefined;
     hideInfoPopover?: boolean;
     hideVersionEnvironmentChips?: boolean;
   }): React.ReactNode => {
     const {
       productCardState,
       onClick,
+      moreInfoPreview,
       hideInfoPopover,
       hideVersionEnvironmentChips,
     } = props;
@@ -360,9 +362,6 @@ export const LakehouseProductCard = observer(
                   />
                 )}
             </Box>
-            <Box className="marketplace-lakehouse-data-product-card__name">
-              {productCardState.title}
-            </Box>
           </Box>
         </Box>
       </>
@@ -425,6 +424,7 @@ export const LakehouseProductCard = observer(
         onClick={() => onClick(productCardState)}
         className="marketplace-lakehouse-data-product-card"
         moreInfo={moreInfoContent}
+        moreInfoPreview={moreInfoPreview}
         cardMedia={productCardState.icon ?? productCardState.displayImage}
       />
     );

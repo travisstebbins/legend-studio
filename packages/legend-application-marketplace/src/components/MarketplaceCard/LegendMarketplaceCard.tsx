@@ -21,7 +21,6 @@ import {
   CardActions,
   CardContent,
   ClickAwayListener,
-  Slide,
 } from '@mui/material';
 import { clsx, deserializeIcon } from '@finos/legend-art';
 import {
@@ -36,11 +35,20 @@ export const LegendMarketplaceCard = (props: {
   actions?: JSX.Element;
   onClick?: () => void;
   moreInfo?: JSX.Element | undefined;
+  moreInfoPreview?: 'small' | 'large' | undefined;
   className?: string;
   cardMedia?: V1_DataProductIcon | string | undefined;
 }): JSX.Element => {
-  const { content, size, actions, onClick, moreInfo, className, cardMedia } =
-    props;
+  const {
+    content,
+    size,
+    actions,
+    onClick,
+    moreInfo,
+    moreInfoPreview,
+    className,
+    cardMedia,
+  } = props;
 
   const cardImage =
     cardMedia instanceof V1_DataProductEmbeddedImageIcon
@@ -71,16 +79,27 @@ export const LegendMarketplaceCard = (props: {
       )}
       {moreInfo && (
         <ClickAwayListener onClickAway={() => setIsMouseOver(false)}>
-          <Slide
-            direction="up"
-            in={isMouseOver}
-            appear={isMouseOver}
-            container={containerRef.current}
+          <CardContent
+            className={clsx('legend-marketplace-card__more-info', {
+              'legend-marketplace-card__more-info--preview--small':
+                moreInfoPreview === 'small',
+              'legend-marketplace-card__more-info--preview--large':
+                moreInfoPreview === 'large',
+              'legend-marketplace-card__more-info--visible': isMouseOver,
+            })}
+            onMouseEnter={
+              moreInfoPreview !== undefined
+                ? () => setIsMouseOver(true)
+                : undefined
+            }
+            onMouseLeave={
+              moreInfoPreview !== undefined
+                ? () => setIsMouseOver(false)
+                : undefined
+            }
           >
-            <CardContent className="legend-marketplace-card__more-info">
-              {moreInfo}
-            </CardContent>
-          </Slide>
+            {moreInfo}
+          </CardContent>
         </ClickAwayListener>
       )}
     </>
@@ -95,6 +114,10 @@ export const LegendMarketplaceCard = (props: {
           'legend-marketplace-card--small': size === 'small',
           'legend-marketplace-card--large': size === 'large',
           'legend-marketplace-card--with-icon': cardIcon !== undefined,
+          'legend-marketplace-card--with-preview--small':
+            moreInfoPreview === 'small',
+          'legend-marketplace-card--with-preview--large':
+            moreInfoPreview === 'large',
         },
         className,
       )}
@@ -115,8 +138,16 @@ export const LegendMarketplaceCard = (props: {
       {onClick ? (
         <CardActionArea
           onClick={onClick}
-          onMouseEnter={() => setIsMouseOver(true)}
-          onMouseLeave={() => setIsMouseOver(false)}
+          onMouseEnter={
+            moreInfoPreview === undefined
+              ? () => setIsMouseOver(true)
+              : undefined
+          }
+          onMouseLeave={
+            moreInfoPreview === undefined
+              ? () => setIsMouseOver(false)
+              : undefined
+          }
           className="legend-marketplace-card__content-container"
           component="div"
         >
@@ -124,8 +155,16 @@ export const LegendMarketplaceCard = (props: {
         </CardActionArea>
       ) : (
         <div
-          onMouseEnter={() => setIsMouseOver(true)}
-          onMouseLeave={() => setIsMouseOver(false)}
+          onMouseEnter={
+            moreInfoPreview === undefined
+              ? () => setIsMouseOver(true)
+              : undefined
+          }
+          onMouseLeave={
+            moreInfoPreview === undefined
+              ? () => setIsMouseOver(false)
+              : undefined
+          }
           className="legend-marketplace-card__content-container"
         >
           {CardContentComponent}
