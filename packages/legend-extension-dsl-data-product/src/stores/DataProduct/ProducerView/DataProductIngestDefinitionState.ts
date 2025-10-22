@@ -95,14 +95,14 @@ export class DataProductIngestDefinitionState {
     try {
       yield Promise.all([
         this.fetchIngestDefinitionGrammar(token),
-        async () => {
+        (async () => {
           await this.fetchIngestRequests(token);
           await Promise.all(
             this.ingestRequests.map(async (request) =>
               this.fetchIngestRequestStatus(request, token),
             ),
           );
-        },
+        })(),
       ]);
     } catch (error) {
       assertErrorThrown(error);
