@@ -22,7 +22,7 @@ import {
 import {
   createModelSchema,
   custom,
-  object,
+  list,
   optional,
   primitive,
 } from 'serializr';
@@ -142,8 +142,8 @@ export class DataProductSearchResult {
       data_product_link: primitive(),
       embedding_type: primitive(),
       vendor_name: primitive(),
-      tags1: object(Array),
-      tags2: object(Array),
+      tags1: list(primitive()),
+      tags2: list(primitive()),
       tag_score: primitive(),
       similarity: primitive(),
       dataProductDetails: custom(
