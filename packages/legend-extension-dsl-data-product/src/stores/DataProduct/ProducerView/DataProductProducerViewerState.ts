@@ -23,7 +23,7 @@ import {
   type V1_EntitlementsDataProductDetails,
   V1_AppDirLevel,
 } from '@finos/legend-graph';
-import { flow, makeObservable, observable } from 'mobx';
+import { computed, flow, makeObservable, observable } from 'mobx';
 import { BaseViewerState } from '../../BaseViewerState.js';
 import { DataProductLayoutState } from '../../BaseLayoutState.js';
 import { DATA_PRODUCT_VIEWER_SECTION } from '../../ProductViewerNavigation.js';
@@ -70,7 +70,7 @@ export class DataProductProducerViewerState extends BaseViewerState<
 
     makeObservable(this, {
       ingestServerConfig: observable,
-      nonNullIngestServerUrl: observable,
+      nonNullIngestServerUrl: computed,
       init: flow,
     });
 
