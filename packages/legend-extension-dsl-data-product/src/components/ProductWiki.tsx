@@ -36,6 +36,8 @@ import {
   TerminalAccessAndTable,
   TerminalProductPrice,
 } from './TerminalProductAccess.js';
+import { DataProductProducerViewerState } from '../stores/DataProduct/ProducerView/DataProductProducerViewerState.js';
+import { DataProductProducerInfo } from './DataProduct/ProducerView/DataProductProducerInfo.js';
 
 export const ProductWikiPlaceholder: React.FC<{ message: string }> = (
   props,
@@ -112,6 +114,8 @@ export const ProductWiki = observer(
     const { productViewerState, dataProductDataAccessState } = props;
     const isDataProductViewerState =
       productViewerState instanceof DataProductViewerState;
+    const isDataProductProducerViewerState =
+      productViewerState instanceof DataProductProducerViewerState;
     const isTerminalProductViewerState =
       productViewerState instanceof TerminalProductViewerState;
 
@@ -157,6 +161,11 @@ export const ProductWiki = observer(
               dataProductViewerState={productViewerState}
             />
           </>
+        )}
+        {isDataProductProducerViewerState && (
+          <DataProductProducerInfo
+            dataProductProducerViewerState={productViewerState}
+          />
         )}
         {isTerminalProductViewerState && (
           <TerminalAccessAndTable
