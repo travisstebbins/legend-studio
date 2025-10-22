@@ -20,6 +20,7 @@ import type { LegendMarketplaceBaseStore } from '../LegendMarketplaceBaseStore.j
 import {
   ActionState,
   assertErrorThrown,
+  guaranteeNonNullable,
   type GeneratorFn,
   type PlainObject,
 } from '@finos/legend-shared';
@@ -82,6 +83,7 @@ export class LegendMarketplaceSearchResultsStore {
   productCardStates: ProductCardState[] = [];
   filterState: DataProductFilterState;
   sort: DataProductSort = DataProductSort.DEFAULT;
+  graphManager: V1_PureGraphManager | undefined;
 
   executingSearchState = ActionState.create();
 
@@ -167,12 +169,27 @@ export class LegendMarketplaceSearchResultsStore {
         DataProductSearchResult.serialization.fromJson(result),
       );
 
-      // Crete graph manager for parsing ad-hoc deployed data products
-      const graphManager = new V1_PureGraphManager(
-        this.marketplaceBaseStore.applicationStore.pluginManager,
-        this.marketplaceBaseStore.applicationStore.logService,
-        this.marketplaceBaseStore.remoteEngine,
-      );
+      if (this.graphManager === undefined) {
+        // Crete graph manager for parsing ad-hoc deployed data products
+        const graphManager = new V1_PureGraphManager(
+          this.marketplaceBaseStore.applicationStore.pluginManager,
+          this.marketplaceBaseStore.applicationStore.logService,
+          this.marketplaceBaseStore.remoteEngine,
+        );
+        yield graphManager.initialize(
+          {
+            env: this.marketplaceBaseStore.applicationStore.config.env,
+            tabSize: DEFAULT_TAB_SIZE,
+            clientConfig: {
+              baseUrl:
+                this.marketplaceBaseStore.applicationStore.config
+                  .engineServerUrl,
+            },
+          },
+          { engine: this.marketplaceBaseStore.remoteEngine },
+        );
+        this.graphManager = graphManager;
+      }
 
       // Create data product card states
       const dataProductCardStates: ProductCardState[] = results.map(
@@ -180,23 +197,14 @@ export class LegendMarketplaceSearchResultsStore {
           new ProductCardState(
             this.marketplaceBaseStore,
             result,
-            graphManager,
+            guaranteeNonNullable(
+              this.graphManager,
+              'Graph manager is not initialized',
+            ),
             this.displayImageMap,
           ),
       );
       this.setProductCardStates(dataProductCardStates);
-
-      yield graphManager.initialize(
-        {
-          env: this.marketplaceBaseStore.applicationStore.config.env,
-          tabSize: DEFAULT_TAB_SIZE,
-          clientConfig: {
-            baseUrl:
-              this.marketplaceBaseStore.applicationStore.config.engineServerUrl,
-          },
-        },
-        { engine: this.marketplaceBaseStore.remoteEngine },
-      );
 
       this.productCardStates.forEach((dataProductCardState) =>
         dataProductCardState.init(token),
