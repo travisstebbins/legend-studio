@@ -30,6 +30,12 @@ export abstract class LegendMarketplaceEnvState {
   abstract key: LegendMarketplaceEnv;
 
   abstract supportsLegacyDataProducts(): boolean;
+
+  abstract supportedClassifications(): (
+    | V1_EntitlementsLakehouseEnvironmentType
+    | undefined
+  )[];
+
   filterDataProduct(
     productCardState: ProductCardState,
     includeLegacyDataProducts: boolean,
@@ -43,6 +49,14 @@ export abstract class LegendMarketplaceEnvState {
       } else {
         return false;
       }
+    } else if (
+      productCardState.searchResult.dataProductDetails instanceof
+      LakehouseDataProductSearchResultDetails
+    ) {
+      const classification =
+        productCardState.searchResult.dataProductDetails
+          .producerEnvironmentType;
+      return this.supportedClassifications().includes(classification);
     } else {
       return true;
     }
@@ -56,23 +70,8 @@ export class ProdLegendMarketplaceEnvState extends LegendMarketplaceEnvState {
     return true;
   }
 
-  override filterDataProduct(
-    productCardState: ProductCardState,
-    includeLegacyDataProducts: boolean,
-  ): boolean {
-    const dataProductTypeFilter = super.filterDataProduct(
-      productCardState,
-      includeLegacyDataProducts,
-    );
-    const classification =
-      productCardState.searchResult.dataProductDetails instanceof
-      LakehouseDataProductSearchResultDetails
-        ? productCardState.searchResult.dataProductDetails
-            .producerEnvironmentType
-        : undefined;
-    const classificationFilter =
-      classification === V1_EntitlementsLakehouseEnvironmentType.PRODUCTION;
-    return dataProductTypeFilter && classificationFilter;
+  supportedClassifications() {
+    return [V1_EntitlementsLakehouseEnvironmentType.PRODUCTION];
   }
 }
 
@@ -83,25 +82,11 @@ export class ProdParallelLegendMarketplaceEnvState extends LegendMarketplaceEnvS
     return false;
   }
 
-  override filterDataProduct(
-    productCardState: ProductCardState,
-    includeLegacyDataProducts: boolean,
-  ): boolean {
-    const dataProductTypeFilter = super.filterDataProduct(
-      productCardState,
-      includeLegacyDataProducts,
-    );
-    const classification =
-      productCardState.searchResult.dataProductDetails instanceof
-      LakehouseDataProductSearchResultDetails
-        ? productCardState.searchResult.dataProductDetails
-            .producerEnvironmentType
-        : undefined;
-    const classificationFilter =
-      classification ===
-        V1_EntitlementsLakehouseEnvironmentType.PRODUCTION_PARALLEL ||
-      classification === V1_EntitlementsLakehouseEnvironmentType.DEVELOPMENT ||
-      classification === undefined;
-    return dataProductTypeFilter && classificationFilter;
+  supportedClassifications() {
+    return [
+      V1_EntitlementsLakehouseEnvironmentType.PRODUCTION_PARALLEL,
+      V1_EntitlementsLakehouseEnvironmentType.DEVELOPMENT,
+      undefined,
+    ];
   }
 }
