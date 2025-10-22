@@ -15,9 +15,9 @@
  */
 
 import { observer } from 'mobx-react-lite';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { CaretUpIcon, clsx, OpenIcon } from '@finos/legend-art';
-import { Button } from '@mui/material';
+import { Button, FormControlLabel, Switch } from '@mui/material';
 import { isSnapshotVersion } from '@finos/legend-server-depot';
 import {
   type V1_Terminal,
@@ -140,8 +140,16 @@ const ProductHeader = observer(
     >;
     dataAccessState: DataProductDataAccessState | undefined;
     showFullHeader: boolean;
+    showProducerView?: boolean | undefined;
+    setShowProducerView?: ((val: boolean) => void) | undefined;
   }) => {
-    const { productViewerState, dataAccessState, showFullHeader } = props;
+    const {
+      productViewerState,
+      dataAccessState,
+      showFullHeader,
+      showProducerView,
+      setShowProducerView,
+    } = props;
     const headerRef = useRef<HTMLDivElement>(null);
     const isDataProductViewerState =
       productViewerState instanceof DataProductViewerState;
@@ -173,6 +181,20 @@ const ProductHeader = observer(
           {isDataProductViewerState && dataAccessState && (
             <DataProductEnvironmentLabel dataAccessState={dataAccessState} />
           )}
+          {showProducerView !== undefined &&
+            setShowProducerView !== undefined && (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={showProducerView}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                      setShowProducerView(event?.target.checked)
+                    }
+                  />
+                }
+                label="Show Producer View"
+              />
+            )}
           <div
             className="data-product__viewer__header__title"
             title={`${productTitle} - ${productPath}`}
@@ -198,8 +220,15 @@ export const ProductViewer = observer(
       SupportedLayoutStates
     >;
     dataProductDataAccessState?: DataProductDataAccessState | undefined;
+    showProducerView?: boolean;
+    setShowProducerView?: (val: boolean) => void;
   }) => {
-    const { productViewerState, dataProductDataAccessState } = props;
+    const {
+      productViewerState,
+      dataProductDataAccessState,
+      showProducerView,
+      setShowProducerView,
+    } = props;
     const frame = useRef<HTMLDivElement>(null);
     const [showFullHeader, setShowFullHeader] = useState(false);
     const [scrollPercentage, setScrollPercentage] = useState(0);
@@ -246,6 +275,8 @@ export const ProductViewer = observer(
             productViewerState={productViewerState}
             dataAccessState={dataProductDataAccessState}
             showFullHeader={showFullHeader}
+            showProducerView={showProducerView}
+            setShowProducerView={setShowProducerView}
           />
           {productViewerState.layoutState.isTopScrollerVisible && (
             <div className="data-product__viewer__scroller">

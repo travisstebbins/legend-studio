@@ -19,7 +19,7 @@ import {
   useLegendMarketplaceProductViewerStore,
   withLegendMarketplaceProductViewerStore,
 } from '../../../application/providers/LegendMarketplaceProductViewerStoreProvider.js';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   CubesLoadingIndicator,
   CubesLoadingIndicatorIcon,
@@ -48,6 +48,8 @@ export const LakehouseDataProduct = withLegendMarketplaceProductViewerStore(
       ),
     );
 
+    const [showProducerView, setShowProducerView] = useState(false);
+
     useEffect(() => {
       if (!productViewerStore.loadingProductState.hasCompleted) {
         productViewerStore.initWithProduct(dataProductId, deploymentId, auth);
@@ -61,12 +63,21 @@ export const LakehouseDataProduct = withLegendMarketplaceProductViewerStore(
         >
           <CubesLoadingIndicatorIcon />
         </CubesLoadingIndicator>
-        {productViewerStore.dataProductViewer && (
+        {productViewerStore.dataProductViewer && !showProducerView && (
           <ProductViewer
             productViewerState={productViewerStore.dataProductViewer}
             dataProductDataAccessState={
               productViewerStore.dataProductDataAccess
             }
+            showProducerView={showProducerView}
+            setShowProducerView={setShowProducerView}
+          />
+        )}
+        {productViewerStore.dataProductProducerViewer && showProducerView && (
+          <ProductViewer
+            productViewerState={productViewerStore.dataProductProducerViewer}
+            showProducerView={showProducerView}
+            setShowProducerView={setShowProducerView}
           />
         )}
       </LegendMarketplacePage>
