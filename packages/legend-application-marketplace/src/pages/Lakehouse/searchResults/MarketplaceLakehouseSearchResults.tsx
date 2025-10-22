@@ -213,7 +213,7 @@ export const MarketplaceLakehouseSearchResults =
             <Grid
               container={true}
               spacing={{ xs: 2, sm: 3, xxl: 4 }}
-              columns={{ xs: 1, sm: 2, xxl: 4 }}
+              columns={{ sm: 1, md: 2, xxl: 4 }}
               className="marketplace-lakehouse-search-results__data-product-cards"
             >
               {searchResultsStore.filterSortProducts?.map(
