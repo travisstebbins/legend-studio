@@ -21,7 +21,7 @@ import {
 } from '@finos/legend-art';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef } from 'react';
-import { DataProductIngestDefinitionView } from './DataProductIngesetDefinitionView.js';
+import { DataProductIngestDefinitionView } from './DataProductIngestDefinitionView.js';
 import type { DataProductProducerViewerState } from '../../../stores/DataProduct/ProducerView/DataProductProducerViewerState.js';
 import {
   DATA_PRODUCT_PRODUCER_VIEWER_SECTION,
