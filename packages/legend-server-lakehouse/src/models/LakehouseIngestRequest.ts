@@ -62,7 +62,9 @@ class LakehouseIngestRequestReference {
 
   static readonly serialization = new SerializationFactory(
     createModelSchema(LakehouseIngestRequestReference, {
-      ingestDefinitionReference: primitive(),
+      ingestDefinitionReference: usingModelSchema(
+        LakehouseIngestDefinitionReference.serialization.schema,
+      ),
       ingestRequestId: primitive(),
     }),
   );

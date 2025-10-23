@@ -95,7 +95,7 @@ export const DataProductIngestDefinitionView = observer(
             <Box className="data-product__viewer__more-info__grammar">
               <CodeEditor
                 inputValue={
-                  Object.values(ingestDefinition.ingestRequestStatuses)
+                  Array.from(ingestDefinition.ingestRequestStatuses.values())
                     .map((status) => JSON.stringify(status))
                     .join('\n') ?? 'Unable to fetch grammar'
                 }

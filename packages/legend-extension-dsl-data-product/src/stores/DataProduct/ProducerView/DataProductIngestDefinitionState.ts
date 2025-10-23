@@ -15,7 +15,7 @@
  */
 
 import type { GenericLegendApplicationStore } from '@finos/legend-application';
-import { flow, makeObservable } from 'mobx';
+import { flow, makeObservable, observable } from 'mobx';
 import {
   ActionState,
   assertErrorThrown,
@@ -42,6 +42,9 @@ export class DataProductIngestDefinitionState {
     ingestDefinitionUrn: string,
   ) {
     makeObservable(this, {
+      ingestDefinitionGrammar: observable,
+      ingestRequests: observable,
+      ingestRequestStatuses: observable,
       init: flow,
     });
 
@@ -66,9 +69,9 @@ export class DataProductIngestDefinitionState {
         this.producerViewerState.nonNullIngestServerUrl,
         token,
       );
-    this.ingestRequests = rawIngestDefinitionRequests.map((request) =>
-      LakehouseIngestRequest.serialization.fromJson(request),
-    );
+    this.ingestRequests = rawIngestDefinitionRequests
+      .slice(0, 10)
+      .map((request) => LakehouseIngestRequest.serialization.fromJson(request));
   }
 
   async fetchIngestRequestStatus(
