@@ -17,13 +17,20 @@
 import { observer } from 'mobx-react-lite';
 import type { DataProductIngestDefinitionState } from '../../../stores/DataProduct/ProducerView/DataProductIngestDefinitionState.js';
 import { Box, Tab, Tabs } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { clsx } from '@finos/legend-art';
 import { CodeEditor } from '@finos/legend-lego/code-editor';
 import {
   CODE_EDITOR_LANGUAGE,
   CODE_EDITOR_THEME,
 } from '@finos/legend-code-editor';
+import {
+  DataGrid,
+  type DataGridColumnDefinition,
+} from '@finos/legend-lego/data-grid';
+import type { LakehouseIngestRequestStatus } from '@finos/legend-server-lakehouse';
+
+const MAX_GRID_AUTO_HEIGHT_ROWS = 10;
 
 export const DataProductIngestDefinitionView = observer(
   (props: { ingestDefinition: DataProductIngestDefinitionState }) => {
@@ -42,6 +49,43 @@ export const DataProductIngestDefinitionView = observer(
     ) => {
       setSelectedTab(newValue);
     };
+
+    const ingestRequestStatuses = useMemo(
+      () => Array.from(ingestDefinition.ingestRequestStatuses.values()),
+      [ingestDefinition.ingestRequestStatuses],
+    );
+
+    const defaultStatusColDefs: DataGridColumnDefinition<LakehouseIngestRequestStatus> =
+      useMemo(
+        () => ({
+          sortable: true,
+          flex: 1,
+        }),
+        [],
+      );
+
+    const statusColDefs: DataGridColumnDefinition<LakehouseIngestRequestStatus>[] =
+      useMemo(
+        () => [
+          {
+            headerName: 'Ingest Request ID',
+            field: 'ingestRequestReference.ingestRequestId',
+          },
+          {
+            headerName: 'Status',
+            field: 'state',
+          },
+          {
+            headerName: 'Effective From',
+            field: 'effectiveFrom',
+          },
+          {
+            headerName: 'Effective To',
+            field: 'effectiveTo',
+          },
+        ],
+        [],
+      );
 
     return (
       <Box>
@@ -92,23 +136,32 @@ export const DataProductIngestDefinitionView = observer(
             </Box>
           )}
           {selectedTab === IngestDefinitionTabs.INGEST_REQUESTS && (
-            <Box className="data-product__viewer__more-info__grammar">
-              <CodeEditor
-                inputValue={
-                  Array.from(ingestDefinition.ingestRequestStatuses.values())
-                    .map((status) => JSON.stringify(status))
-                    .join('\n') ?? 'Unable to fetch grammar'
+            <Box
+              className={clsx(
+                'data-product__viewer__more-info__grammar ag-theme-balham',
+                {
+                  'data-product__viewer__more-info__grammar--auto-height':
+                    (ingestRequestStatuses.length ?? 0) <=
+                    MAX_GRID_AUTO_HEIGHT_ROWS,
+                  'data-product__viewer__more-info__grammar--auto-height--empty':
+                    (ingestRequestStatuses.length ?? 0) === 0,
+                  'data-product__viewer__more-info__grammar--auto-height--non-empty':
+                    (ingestRequestStatuses.length ?? 0) > 0 &&
+                    (ingestRequestStatuses.length ?? 0) <=
+                      MAX_GRID_AUTO_HEIGHT_ROWS,
+                },
+              )}
+            >
+              <DataGrid
+                rowData={ingestRequestStatuses ?? []}
+                columnDefs={statusColDefs}
+                defaultColDef={defaultStatusColDefs}
+                domLayout={
+                  (ingestRequestStatuses.length ?? 0) >
+                  MAX_GRID_AUTO_HEIGHT_ROWS
+                    ? 'normal'
+                    : 'autoHeight'
                 }
-                isReadOnly={true}
-                language={CODE_EDITOR_LANGUAGE.JSON}
-                hideMinimap={true}
-                hideGutter={true}
-                hideActionBar={true}
-                lightTheme={CODE_EDITOR_THEME.GITHUB_LIGHT}
-                extraEditorOptions={{
-                  scrollBeyondLastLine: false,
-                  wordWrap: 'on',
-                }}
               />
             </Box>
           )}
