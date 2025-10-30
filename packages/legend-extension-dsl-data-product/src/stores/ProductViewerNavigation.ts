@@ -20,6 +20,10 @@ export enum DATA_PRODUCT_VIEWER_SECTION {
   SUPPORT_INFO = 'support-info',
 }
 
+export enum DATA_PRODUCT_PRODUCER_VIEWER_SECTION {
+  INGEST_DETAILS = 'ingest-details',
+}
+
 export enum TERMINAL_PRODUCT_VIEWER_SECTION {
   DESCRIPTION = 'description',
   PRICE = 'price',

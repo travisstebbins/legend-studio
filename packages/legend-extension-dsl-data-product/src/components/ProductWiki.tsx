@@ -22,6 +22,7 @@ import {
   type SupportedLayoutStates,
   isTerminalProductViewerState,
   isDataProductViewerState,
+  isDataProductProducerViewerState,
 } from './ProductViewer.js';
 import type { BaseViewerState } from '../stores/BaseViewerState.js';
 import {
@@ -37,6 +38,7 @@ import {
   TerminalAccessAndTable,
   TerminalProductPrice,
 } from './TerminalProductAccess.js';
+import { DataProductProducerInfo } from './DataProduct/ProducerView/DataProductProducerInfo.js';
 
 export const ProductWikiPlaceholder: React.FC<{ message: string }> = (
   props,
@@ -163,6 +165,11 @@ export const ProductWiki = observer(
               terminalProductDataAccessState={productDataAccessState}
             />
           )}
+        {isDataProductProducerViewerState(productViewerState) && (
+          <DataProductProducerInfo
+            dataProductProducerViewerState={productViewerState}
+          />
+        )}
       </div>
     );
   },

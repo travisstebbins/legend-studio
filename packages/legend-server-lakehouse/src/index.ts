@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+export * from './models/AdhocDataProductDeployResponse.js';
 export * from './models/IngestDeploymentServerConfig.js';
 export * from './models/LakehouseIngestionDeploymentResponse.js';
-export * from './models/AdhocDataProductDeployResponse.js';
+export * from './models/LakehouseIngestRequest.js';
 export * from './LakehouseIngestServerClient.js';
 export * from './LakehousePlatformServerClient.js';
 export * from './LakehouseIngestionManager.js';

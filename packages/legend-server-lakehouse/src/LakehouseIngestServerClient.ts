@@ -34,6 +34,10 @@ import type {
   V1_IngestDefinition,
   V1_ProducerEnvironment,
 } from '@finos/legend-graph';
+import type {
+  LakehouseIngestRequest,
+  LakehouseIngestRequestStatus,
+} from './models/LakehouseIngestRequest.js';
 
 export class LakehouseIngestServerClient extends AbstractServerClient {
   environmentClassification: string | undefined;
@@ -186,5 +190,28 @@ export class LakehouseIngestServerClient extends AbstractServerClient {
       `${this._ingest(ingestServerUrl)}/catalog-state/definitions/${ingestDefinitionUrn}`,
       {},
       this._tokenWithAcceptTextPlain(token),
+    );
+
+  getIngestRequests = (
+    ingestDefinitionUrn: string,
+    ingestServerUrl: string,
+    token: string | undefined,
+  ): Promise<PlainObject<LakehouseIngestRequest>[]> =>
+    this.get(
+      `${this._ingest(ingestServerUrl)}/${ingestDefinitionUrn}/requests`,
+      {},
+      this._token(token),
+    );
+
+  getIngestRequestStatus = (
+    ingestDefinitionUrn: string,
+    ingestRequestId: string,
+    ingestServerUrl: string,
+    token: string | undefined,
+  ): Promise<PlainObject<LakehouseIngestRequestStatus>> =>
+    this.get(
+      `${this._ingest(ingestServerUrl)}/${ingestDefinitionUrn}/${ingestRequestId}/status`,
+      {},
+      this._token(token),
     );
 }

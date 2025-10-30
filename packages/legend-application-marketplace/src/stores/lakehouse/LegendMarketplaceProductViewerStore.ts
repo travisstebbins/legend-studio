@@ -83,6 +83,7 @@ import {
 } from '@finos/legend-extension-dsl-data-space/graph';
 import {
   DataProductDataAccessState,
+  DataProductProducerViewerState,
   DataProductViewerState,
   TerminalProductDataAccessState,
   TerminalProductLayoutState,
@@ -100,6 +101,7 @@ export class LegendMarketplaceProductViewerStore {
   readonly marketplaceBaseStore: LegendMarketplaceBaseStore;
   dataProductViewer: DataProductViewerState | undefined;
   dataProductDataAccess: DataProductDataAccessState | undefined;
+  dataProductProducerViewer: DataProductProducerViewerState | undefined;
   terminalProductViewer: TerminalProductViewerState | undefined;
   terminalProductDataAccess: TerminalProductDataAccessState | undefined;
   legacyDataProductViewer: DataSpaceViewerState | undefined;
@@ -117,6 +119,7 @@ export class LegendMarketplaceProductViewerStore {
       setDataProductViewer: action,
       setDataProductDataAccess: action,
       setTerminalProductDataAccess: action,
+      setDataProductProducerViewer: action,
       setTerminalProductViewer: action,
       setLegacyDataProductViewer: action,
       initWithProduct: flow,
@@ -132,6 +135,12 @@ export class LegendMarketplaceProductViewerStore {
 
   setDataProductDataAccess(val: DataProductDataAccessState | undefined): void {
     this.dataProductDataAccess = val;
+  }
+
+  setDataProductProducerViewer(
+    val: DataProductProducerViewerState | undefined,
+  ): void {
+    this.dataProductProducerViewer = val;
   }
 
   setTerminalProductViewer(val: TerminalProductViewerState | undefined): void {
@@ -427,10 +436,20 @@ export class LegendMarketplaceProductViewerStore {
             ),
         },
       );
+      const dataProductProducerViewerState = new DataProductProducerViewerState(
+        v1DataProduct,
+        entitlementsDataProductDetails,
+        this.marketplaceBaseStore.applicationStore,
+        this.marketplaceBaseStore.lakehousePlatformServerClient,
+        this.marketplaceBaseStore.lakehouseIngestServerClient,
+        {},
+      );
       this.setDataProductViewer(dataProductViewerState);
       this.setDataProductDataAccess(dataProductDataAccessState);
+      this.setDataProductProducerViewer(dataProductProducerViewerState);
       dataProductViewerState.init(entitlementsDataProductDetails);
       dataProductDataAccessState.init(auth.user?.access_token);
+      dataProductProducerViewerState.init(auth.user?.access_token);
       this.loadingProductState.complete();
       const origin =
         entitlementsDataProductDetails.origin instanceof

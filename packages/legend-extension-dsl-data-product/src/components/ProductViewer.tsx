@@ -15,9 +15,9 @@
  */
 
 import { observer } from 'mobx-react-lite';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { CaretUpIcon, clsx, OpenIcon } from '@finos/legend-art';
-import { Button } from '@mui/material';
+import { Button, FormControlLabel, Switch } from '@mui/material';
 import { isSnapshotVersion } from '@finos/legend-server-depot';
 import {
   type V1_Terminal,
@@ -36,6 +36,7 @@ import { ProductWiki } from './ProductWiki.js';
 import { DataProductDataAccessState } from '../stores/DataProduct/DataProductDataAccessState.js';
 import { TerminalProductViewerState } from '../stores/TerminalProduct/TerminalProductViewerState.js';
 import type { TerminalProductDataAccessState } from '../stores/TerminalProduct/TerminalProductDataAccessState.js';
+import { DataProductProducerViewerState } from '../stores/DataProduct/ProducerView/DataProductProducerViewerState.js';
 
 export const isDataProductViewerState = (
   state: BaseViewerState<SupportedProducts, SupportedLayoutStates>,
@@ -47,6 +48,12 @@ export const isTerminalProductViewerState = (
   state: BaseViewerState<SupportedProducts, SupportedLayoutStates>,
 ): state is TerminalProductViewerState => {
   return state instanceof TerminalProductViewerState;
+};
+
+export const isDataProductProducerViewerState = (
+  state: BaseViewerState<SupportedProducts, SupportedLayoutStates>,
+): state is DataProductProducerViewerState => {
+  return state instanceof DataProductProducerViewerState;
 };
 
 export type SupportedProducts = V1_Terminal | V1_DataProduct;
@@ -156,8 +163,16 @@ const ProductHeader = observer(
       | TerminalProductDataAccessState
       | undefined;
     showFullHeader: boolean;
+    showProducerView?: boolean | undefined;
+    setShowProducerView?: ((val: boolean) => void) | undefined;
   }) => {
-    const { productViewerState, dataAccessState, showFullHeader } = props;
+    const {
+      productViewerState,
+      dataAccessState,
+      showFullHeader,
+      showProducerView,
+      setShowProducerView,
+    } = props;
     const headerRef = useRef<HTMLDivElement>(null);
 
     const productTitle =
@@ -208,13 +223,33 @@ const ProductHeader = observer(
           {dataAccessState instanceof DataProductDataAccessState && (
             <DataProductEnvironmentLabel dataAccessState={dataAccessState} />
           )}
-          {isTerminalProductViewerState(productViewerState) && (
-            <div className="data-product__viewer__header__navigation">
-              <TerminalNavigationSections
-                productViewerState={productViewerState}
+          {showProducerView !== undefined &&
+            setShowProducerView !== undefined && (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={showProducerView}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                      setShowProducerView(event?.target.checked)
+                    }
+                  />
+                }
+                label="Show Producer View"
               />
-            </div>
-          )}
+            )}
+          <div
+            className="data-product__viewer__header__title"
+            title={`${productTitle} - ${productPath}`}
+          >
+            {productTitle ? productTitle : productName}
+            {isTerminalProductViewerState(productViewerState) && (
+              <div className="data-product__viewer__header__navigation">
+                <TerminalNavigationSections
+                  productViewerState={productViewerState}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -231,8 +266,15 @@ export const ProductViewer = observer(
       | DataProductDataAccessState
       | TerminalProductDataAccessState
       | undefined;
+    showProducerView?: boolean;
+    setShowProducerView?: (val: boolean) => void;
   }) => {
-    const { productViewerState, productDataAccessState } = props;
+    const {
+      productViewerState,
+      productDataAccessState,
+      showProducerView,
+      setShowProducerView,
+    } = props;
     const frame = useRef<HTMLDivElement>(null);
     const [showFullHeader, setShowFullHeader] = useState(false);
     const [scrollPercentage, setScrollPercentage] = useState(0);
@@ -279,6 +321,8 @@ export const ProductViewer = observer(
             productViewerState={productViewerState}
             dataAccessState={productDataAccessState}
             showFullHeader={showFullHeader}
+            showProducerView={showProducerView}
+            setShowProducerView={setShowProducerView}
           />
           {productViewerState.layoutState.isTopScrollerVisible && (
             <div className="data-product__viewer__scroller">

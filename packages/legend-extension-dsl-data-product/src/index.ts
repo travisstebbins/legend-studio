@@ -28,6 +28,7 @@ export * from './stores/DataProduct/DataProductConfig.js';
 export * from './stores/DataProduct/DataProductDataAccessState.js';
 export * from './stores/DataProduct/DataProductViewerState.js';
 export * from './stores/DataProduct/EntitlementsDataContractViewerState.js';
+export * from './stores/DataProduct/ProducerView/DataProductProducerViewerState.js';
 export * from './stores/DataProductDataAccess_LegendApplicationPlugin_Extension.js';
 export * from './stores/TerminalProduct/TerminalProductViewerState.js';
 export * from './stores/TerminalProduct/TerminalProductDataAccessState.js';
