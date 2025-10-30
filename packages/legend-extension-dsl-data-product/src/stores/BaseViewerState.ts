@@ -54,6 +54,10 @@ export abstract class BaseViewerState<
 
   protected abstract getValidSections(): string[];
 
+  abstract get title(): string;
+  abstract get description(): string | undefined;
+  abstract get path(): string | undefined;
+
   changeZone(zone: NavigationZone, force = false): void {
     if (force) {
       this.layoutState.setCurrentNavigationZone('');

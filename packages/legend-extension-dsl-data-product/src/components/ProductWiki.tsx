@@ -76,13 +76,13 @@ export const ProductDescription = observer(
     return (
       <div ref={sectionRef} className="data-product__viewer__wiki__section">
         <div className="data-product__viewer__wiki__section__content">
-          {productViewerState.product.description !== undefined ? (
+          {productViewerState.description !== undefined ? (
             <div className="data-product__viewer__description">
               <div className="data-product__viewer__description__content">
                 <MarkdownTextViewer
                   className="data-product__viewer__markdown-text-viewer"
                   value={{
-                    value: productViewerState.product.description,
+                    value: productViewerState.description,
                   }}
                   components={{
                     h1: 'h2',

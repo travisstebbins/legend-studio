@@ -95,6 +95,18 @@ export class DataProductProducerViewerState extends BaseViewerState<
     );
   }
 
+  get title(): string {
+    return this.product.title ?? this.product.name;
+  }
+
+  get description(): string | undefined {
+    return this.product.description;
+  }
+
+  get path(): string | undefined {
+    return this.product.path;
+  }
+
   async fetchIngestServerConfig(token: string | undefined): Promise<void> {
     const rawIngestServerConfig =
       await this.platformServerClient.findProducerServer(

@@ -175,23 +175,6 @@ const ProductHeader = observer(
     } = props;
     const headerRef = useRef<HTMLDivElement>(null);
 
-    const productTitle =
-      productViewerState instanceof DataProductViewerState
-        ? productViewerState.product.title
-        : productViewerState instanceof TerminalProductViewerState
-          ? productViewerState.product.productName
-          : undefined;
-
-    const productPath =
-      productViewerState instanceof DataProductViewerState
-        ? productViewerState.product.path
-        : undefined;
-
-    const productName =
-      productViewerState instanceof DataProductViewerState
-        ? productViewerState.product.name
-        : undefined;
-
     useEffect(() => {
       if (headerRef.current) {
         productViewerState.layoutState.header = headerRef.current;
@@ -214,9 +197,9 @@ const ProductHeader = observer(
           <div className="data-product__viewer__header__main">
             <div
               className="data-product__viewer__header__title"
-              title={`${productTitle} - ${productPath}`}
+              title={`${productViewerState.title}${productViewerState.path ? ` - ${productViewerState.path}` : ''}`}
             >
-              {productTitle ? productTitle : productName}
+              {productViewerState.title}
               {isTerminalProductViewerState(productViewerState) && (
                 <div className="data-product__viewer__header__navigation">
                   <TerminalNavigationSections

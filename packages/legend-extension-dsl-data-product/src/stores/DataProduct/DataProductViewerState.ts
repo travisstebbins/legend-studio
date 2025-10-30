@@ -114,6 +114,18 @@ export class DataProductViewerState extends BaseViewerState<
     );
   }
 
+  get title(): string {
+    return this.product.title ?? this.product.name;
+  }
+
+  get description(): string | undefined {
+    return this.product.description;
+  }
+
+  get path(): string | undefined {
+    return this.product.path;
+  }
+
   async fetchDataProductArtifact(): Promise<
     V1_DataProductArtifact | undefined
   > {

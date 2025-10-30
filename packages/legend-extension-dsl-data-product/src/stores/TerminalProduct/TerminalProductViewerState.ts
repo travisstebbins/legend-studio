@@ -37,4 +37,16 @@ export class TerminalProductViewerState extends BaseViewerState<
       section.toString(),
     );
   }
+
+  get title(): string {
+    return this.product.productName;
+  }
+
+  get description(): string | undefined {
+    return this.product.description;
+  }
+
+  get path(): string | undefined {
+    return undefined;
+  }
 }
