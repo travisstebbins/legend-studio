@@ -217,9 +217,15 @@ const ProductHeader = observer(
               title={`${productTitle} - ${productPath}`}
             >
               {productTitle ? productTitle : productName}
+              {isTerminalProductViewerState(productViewerState) && (
+                <div className="data-product__viewer__header__navigation">
+                  <TerminalNavigationSections
+                    productViewerState={productViewerState}
+                  />
+                </div>
+              )}
             </div>
           </div>
-
           {dataAccessState instanceof DataProductDataAccessState && (
             <DataProductEnvironmentLabel dataAccessState={dataAccessState} />
           )}
@@ -237,19 +243,6 @@ const ProductHeader = observer(
                 label="Show Producer View"
               />
             )}
-          <div
-            className="data-product__viewer__header__title"
-            title={`${productTitle} - ${productPath}`}
-          >
-            {productTitle ? productTitle : productName}
-            {isTerminalProductViewerState(productViewerState) && (
-              <div className="data-product__viewer__header__navigation">
-                <TerminalNavigationSections
-                  productViewerState={productViewerState}
-                />
-              </div>
-            )}
-          </div>
         </div>
       </div>
     );
