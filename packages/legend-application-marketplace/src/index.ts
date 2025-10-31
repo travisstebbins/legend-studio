@@ -22,6 +22,7 @@ export {
   useLegendMarketplaceApplicationStore,
   useLegendMarketplaceBaseStore,
 } from './application/providers/LegendMarketplaceFrameworkProvider.js';
+export { LegendMarketplacePage } from './pages/LegendMarketplacePage.js';
 export {
   type LegendMarketplaceApplicationStore,
   type LegendMarketplaceBaseStore,
