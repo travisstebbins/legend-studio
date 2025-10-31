@@ -47,27 +47,27 @@ export class LakehouseIngestServerClient extends AbstractServerClient {
     }
   }
 
-  private _token = (token?: string) => ({
+  protected _token = (token?: string) => ({
     Authorization: `Bearer ${token}`,
   });
 
-  private _tokenWithTextPlain = (token?: string) => ({
+  protected _tokenWithTextPlain = (token?: string) => ({
     [HttpHeader.CONTENT_TYPE]: ContentType.TEXT_PLAIN,
     Authorization: `Bearer ${token}`,
   });
 
-  private _tokenWithAcceptTextPlain = (token?: string) => ({
+  protected _tokenWithAcceptTextPlain = (token?: string) => ({
     [HttpHeader.ACCEPT]: ContentType.TEXT_PLAIN,
     Authorization: `Bearer ${token}`,
   });
 
-  private _dataProduct = (serverUrl?: string | undefined): string =>
+  protected _dataProduct = (serverUrl?: string | undefined): string =>
     `${serverUrl ?? this.baseUrl}/${this.DATA_PRODUCT_URL}/api/entitlements/sdlc/deploy/definitions`;
 
-  private _ingestDefinitions = (): string =>
+  protected _ingestDefinitions = (): string =>
     `${this.baseUrl}/api/ingest/sdlc/deploy/definitions`;
 
-  private _ingest = (serverUrl?: string | undefined): string =>
+  protected _ingest = (serverUrl?: string | undefined): string =>
     `${serverUrl ?? this.baseUrl}/api/ingest`;
 
   changeServer(serverConfig: IngestDeploymentServerConfig): void {
