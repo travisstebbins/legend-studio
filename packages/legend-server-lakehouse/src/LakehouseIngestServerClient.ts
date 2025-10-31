@@ -141,7 +141,17 @@ export class LakehouseIngestServerClient extends AbstractServerClient {
       this._token(token),
     );
 
-  getIngestDefinitions = (
+  getAllIngestDefinitions = (
+    ingestServerUrl: string | undefined,
+    token: string | undefined,
+  ): Promise<string[]> =>
+    this.get(
+      `${this._ingest(ingestServerUrl)}/catalog-state/definitions`,
+      {},
+      this._token(token),
+    );
+
+  getIngestDefinitionsForProducer = (
     producerEnvironmentUrn: string,
     ingestServerUrl: string | undefined,
     token: string | undefined,
