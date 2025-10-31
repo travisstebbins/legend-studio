@@ -173,7 +173,7 @@ export class LakehouseProducerDataCubeSourceBuilderState extends LegendDataCubeS
       );
 
       const ingestDefinitions =
-        await this._ingestServerClient.getIngestDefinitions(
+        await this._ingestServerClient.getIngestDefinitionsForProducer(
           producer.producerEnvironmentUrn,
           ingestServerUrl,
           access_token,
