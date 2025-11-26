@@ -28,7 +28,7 @@ import type { SetURLSearchParams } from 'react-router';
  * @param initializedCallback function to check if the underlying state is initialized and ready to sync with URL (should be memoized with useCallback)
  */
 export const useSyncStateAndSearchParam = (
-  stateVar: string | boolean | number | undefined,
+  stateVar: string | boolean | number | null | undefined,
   updateStateVar: (val: string | undefined) => void,
   searchParamKey: string,
   searchParams: URLSearchParams,
