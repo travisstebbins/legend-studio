@@ -54,17 +54,13 @@ export const useSyncStateAndSearchParam = (
       // When state changes, update URL param
       const paramsToUpdate = stateVars.keys().reduce((acc, key) => {
         if (stateVars.get(key) !== searchParams.get(key)) {
-          return {
-            ...acc,
-            [key]: stateVars.get(key),
-          };
-        } else {
-          return acc;
+          acc.set(key, stateVars.get(key));
         }
+        return acc;
       }, new Map<string, string | boolean | number | Date | null | undefined>());
       setSearchParams((params) => {
         const newParams = new URLSearchParams(params);
-        paramsToUpdate.forEach((value, key) => {
+        paramsToUpdate.entries().forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
             newParams.set(key, String(value));
           } else {
