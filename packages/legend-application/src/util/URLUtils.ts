@@ -28,10 +28,14 @@ import type { SetURLSearchParams } from 'react-router';
  * @param initializedCallback function to check if the underlying state is initialized and ready to sync with URL (should be memoized with useCallback)
  */
 export const useSyncStateAndSearchParam = (
-  stateVar: string | boolean | number | null | undefined,
-  updateStateVar: (val: string | null) => void,
-  searchParamKey: string,
-  searchParamValue: string | null,
+  stateVars: Map<string, string | boolean | number | Date | null | undefined>,
+  updateStateVar: (
+    updatedValues: Map<
+      string,
+      string | boolean | number | Date | null | undefined
+    >,
+  ) => void,
+  searchParams: URLSearchParams,
   setSearchParams: SetURLSearchParams,
   initializedCallback: () => boolean,
 ): void => {
@@ -39,28 +43,45 @@ export const useSyncStateAndSearchParam = (
   useEffect(() => {
     if (initializedCallback()) {
       // On mount or when search param value changes, update state from URL
-      const urlParamValue = searchParamValue;
-      updateStateVar(urlParamValue);
+      const updatedValues = searchParams.keys().reduce((acc, key) => {
+        if (searchParams.get(key) !== stateVars.get(key)) {
+          return {
+            ...acc,
+            [key]: searchParams.get(key),
+          };
+        } else {
+          return acc;
+        }
+      }, new Map<string, string | boolean | number | Date | null | undefined>());
+      updateStateVar(updatedValues);
     }
-  }, [initializedCallback, searchParamKey, searchParamValue, updateStateVar]);
+  }, [initializedCallback, searchParams, stateVars, updateStateVar]);
 
   // Sync URL search param with state
   useEffect(() => {
     if (initializedCallback()) {
       // When state changes, update URL param
-      if (stateVar) {
-        setSearchParams((params) => {
-          const newParams = new URLSearchParams(params);
-          newParams.set(searchParamKey, String(stateVar));
-          return newParams;
+      const paramsToUpdate = stateVars.keys().reduce((acc, key) => {
+        if (stateVars.get(key) !== searchParams.get(key)) {
+          return {
+            ...acc,
+            [key]: stateVars.get(key),
+          };
+        } else {
+          return acc;
+        }
+      }, new Map<string, string | boolean | number | Date | null | undefined>());
+      setSearchParams((params) => {
+        const newParams = new URLSearchParams(params);
+        paramsToUpdate.forEach((value, key) => {
+          if (value !== undefined && value !== null) {
+            newParams.set(key, String(value));
+          } else {
+            newParams.delete(key);
+          }
         });
-      } else {
-        setSearchParams((params) => {
-          const newParams = new URLSearchParams(params);
-          newParams.delete(searchParamKey);
-          return newParams;
-        });
-      }
+        return newParams;
+      });
     }
-  }, [initializedCallback, searchParamKey, stateVar, setSearchParams]);
+  }, [initializedCallback, searchParams, setSearchParams, stateVars]);
 };

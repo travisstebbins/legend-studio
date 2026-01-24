@@ -19,7 +19,7 @@ import {
   useLegendMarketplaceSearchResultsStore,
   withLegendMarketplaceSearchResultsStore,
 } from '../../../application/providers/LegendMarketplaceSearchResultsStoreProvider.js';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   CheckIcon,
   CubesLoadingIndicator,
@@ -93,18 +93,34 @@ export const LegendMarketplaceSearchResults =
         searchResultsStore,
       ]);
 
+      const varsToSync = useMemo(
+        () =>
+          new Map(
+            Object.entries({
+              [LEGEND_MARKETPLACE_LAKEHOUSE_SEARCH_RESULTS_QUERY_PARAM_TOKEN.USE_PRODUCER_SEARCH]:
+                marketplaceBaseStore.useProducerSearch,
+            }),
+          ),
+        [marketplaceBaseStore.useProducerSearch],
+      );
+
       useSyncStateAndSearchParam(
-        marketplaceBaseStore.useProducerSearch,
+        varsToSync,
         useCallback(
-          (val: string | null) => {
+          (
+            updatedValues: Map<
+              string,
+              string | boolean | number | Date | null | undefined
+            >,
+          ) => {
+            const val = updatedValues.get(
+              LEGEND_MARKETPLACE_LAKEHOUSE_SEARCH_RESULTS_QUERY_PARAM_TOKEN.USE_PRODUCER_SEARCH,
+            );
             marketplaceBaseStore.setUseProducerSearch(val === 'true');
           },
           [marketplaceBaseStore],
         ),
-        LEGEND_MARKETPLACE_LAKEHOUSE_SEARCH_RESULTS_QUERY_PARAM_TOKEN.USE_PRODUCER_SEARCH,
-        searchParams.get(
-          LEGEND_MARKETPLACE_LAKEHOUSE_SEARCH_RESULTS_QUERY_PARAM_TOKEN.USE_PRODUCER_SEARCH,
-        ),
+        searchParams,
         setSearchParams,
         useCallback(
           () => marketplaceBaseStore.initState.hasCompleted,
