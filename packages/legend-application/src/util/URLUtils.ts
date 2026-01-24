@@ -29,12 +29,7 @@ import type { SetURLSearchParams } from 'react-router';
  */
 export const useSyncStateAndSearchParam = (
   stateVars: Map<string, string | boolean | number | Date | null | undefined>,
-  updateStateVar: (
-    updatedValues: Map<
-      string,
-      string | boolean | number | Date | null | undefined
-    >,
-  ) => void,
+  updateStateVar: (updatedValues: Map<string, string | null>) => void,
   searchParams: URLSearchParams,
   setSearchParams: SetURLSearchParams,
   initializedCallback: () => boolean,
@@ -45,14 +40,10 @@ export const useSyncStateAndSearchParam = (
       // On mount or when search param value changes, update state from URL
       const updatedValues = searchParams.keys().reduce((acc, key) => {
         if (searchParams.get(key) !== stateVars.get(key)) {
-          return {
-            ...acc,
-            [key]: searchParams.get(key),
-          };
-        } else {
-          return acc;
+          acc.set(key, searchParams.get(key));
         }
-      }, new Map<string, string | boolean | number | Date | null | undefined>());
+        return acc;
+      }, new Map<string, string | null>());
       updateStateVar(updatedValues);
     }
   }, [initializedCallback, searchParams, stateVars, updateStateVar]);
