@@ -19,7 +19,7 @@ import {
   useLegendMarketplaceSearchResultsStore,
   withLegendMarketplaceSearchResultsStore,
 } from '../../../application/providers/LegendMarketplaceSearchResultsStoreProvider.js';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   CheckIcon,
   CubesLoadingIndicator,
@@ -49,7 +49,6 @@ import {
 import { generatePathForDataProductSearchResult } from '../../../utils/SearchUtils.js';
 import { logClickingDataProductCard } from '../../../utils/LogUtils.js';
 import { useSyncStateAndSearchParam } from '@finos/legend-application';
-import { useSearchParams } from '@finos/legend-application/browser';
 import { isNonEmptyString } from '@finos/legend-shared';
 
 export const LegendMarketplaceSearchResults =
@@ -57,7 +56,6 @@ export const LegendMarketplaceSearchResults =
     observer(() => {
       const searchResultsStore = useLegendMarketplaceSearchResultsStore();
       const auth = useAuth();
-      const [searchParams, setSearchParams] = useSearchParams();
 
       const marketplaceBaseStore = searchResultsStore.marketplaceBaseStore;
       const applicationStore = marketplaceBaseStore.applicationStore;
@@ -93,35 +91,15 @@ export const LegendMarketplaceSearchResults =
         searchResultsStore,
       ]);
 
-      const varsToSync = useMemo(
-        () =>
-          new Map(
-            Object.entries({
-              [LEGEND_MARKETPLACE_LAKEHOUSE_SEARCH_RESULTS_QUERY_PARAM_TOKEN.USE_PRODUCER_SEARCH]:
-                marketplaceBaseStore.useProducerSearch,
-            }),
-          ),
-        [marketplaceBaseStore.useProducerSearch],
-      );
-
       useSyncStateAndSearchParam(
-        varsToSync,
+        marketplaceBaseStore.useProducerSearch,
         useCallback(
-          (
-            updatedValues: Map<
-              string,
-              string | boolean | number | Date | null | undefined
-            >,
-          ) => {
-            const val = updatedValues.get(
-              LEGEND_MARKETPLACE_LAKEHOUSE_SEARCH_RESULTS_QUERY_PARAM_TOKEN.USE_PRODUCER_SEARCH,
-            );
-            marketplaceBaseStore.setUseProducerSearch(val === 'true');
+          (updatedValue: string | null | undefined) => {
+            marketplaceBaseStore.setUseProducerSearch(updatedValue === 'true');
           },
           [marketplaceBaseStore],
         ),
-        searchParams,
-        setSearchParams,
+        LEGEND_MARKETPLACE_LAKEHOUSE_SEARCH_RESULTS_QUERY_PARAM_TOKEN.USE_PRODUCER_SEARCH,
         useCallback(
           () => marketplaceBaseStore.initState.hasCompleted,
           [marketplaceBaseStore],

@@ -15,7 +15,7 @@
  */
 
 import { useEffect } from 'react';
-import type { SetURLSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 import { useGlobalSyncSearchParams } from '../components/GlobalSyncSearchParamsProvider.js';
 
 /**
@@ -24,73 +24,98 @@ import { useGlobalSyncSearchParams } from '../components/GlobalSyncSearchParamsP
  * @param stateVar the state variable to sync
  * @param updateStateVar setter function to update the state variable (should be memoized with useCallback)
  * @param searchParamKey the key of the URL search parameter to sync with
- * @param searchParamValue the current URL search parameter value (i.e., from useSearchParams)
- * @param setSearchParams function to update the URL search parameters (i.e., from useSearchParams)
  * @param initializedCallback function to check if the underlying state is initialized and ready to sync with URL (should be memoized with useCallback)
  */
 export const useSyncStateAndSearchParam = (
-  stateVars: Map<string, string | boolean | number | Date | null | undefined>,
-  updateStateVar: (updatedValues: Map<string, string | null>) => void,
-  searchParams: URLSearchParams,
-  setSearchParams: SetURLSearchParams,
+  stateVar: string | boolean | number | Date | null | undefined,
+  updateStateVar: (updatedValue: string | null | undefined) => void,
+  searchParamKey: string,
   initializedCallback: () => boolean,
 ): void => {
-  const { searchParamsMap, setSearchParamsMap } = useGlobalSyncSearchParams();
+  const {
+    searchParams: contextSearchParams,
+    setSearchParam: setContextSearchParam,
+    deleteSearchParam: deleteContextSearchParam,
+  } = useGlobalSyncSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Sync context with URL search param
+  // Sync URL search param to context
   useEffect(() => {
     if (initializedCallback()) {
       // On mount or when search param value changes, update context from URL
-      const updatedValues = searchParams.keys().reduce((acc, key) => {
-        if (searchParams.get(key) !== stateVars.get(key)) {
-          acc.set(key, searchParams.get(key));
-        }
-        return acc;
-      }, new Map<string, string | null>());
-      updateStateVar(updatedValues);
-    }
-  }, [initializedCallback, searchParams, stateVars, updateStateVar]);
-
-  // Sync URL search param with map from context
-  useEffect(() => {
-    if (initializedCallback()) {
-      // When state changes, update URL param and context map
-      const paramsToUpdate = stateVars.keys().reduce((acc, key) => {
-        if (stateVars.get(key) !== searchParams.get(key)) {
-          acc.set(key, stateVars.get(key));
-        }
-        return acc;
-      }, new Map<string, string | boolean | number | Date | null | undefined>());
-
-      setSearchParams((params) => {
-        const newParams = new URLSearchParams(params);
-        paramsToUpdate.entries().forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
-            newParams.set(key, String(value));
-          } else {
-            newParams.delete(key);
-          }
-        });
-        return newParams;
-      });
-
-      // Update the global context map
-      const newMap = new Map(searchParamsMap);
-      paramsToUpdate.entries().forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          newMap.set(key, String(value));
+      if (searchParams.get(searchParamKey) !== stateVar) {
+        if (searchParams.get(searchParamKey) !== null) {
+          setContextSearchParam(
+            searchParamKey,
+            String(searchParams.get(searchParamKey)),
+          );
         } else {
-          newMap.delete(key);
+          deleteContextSearchParam(searchParamKey);
         }
-      });
-      setSearchParamsMap(newMap);
+      }
     }
   }, [
+    deleteContextSearchParam,
     initializedCallback,
+    searchParamKey,
     searchParams,
+    setContextSearchParam,
+    stateVar,
+  ]);
+
+  // Sync context to URL search param
+  useEffect(() => {
+    if (initializedCallback()) {
+      // When context value changes, update search URL search params
+      setSearchParams((params) => {
+        const newParams = new URLSearchParams(params);
+        const contextValue = contextSearchParams.get(searchParamKey);
+        if (contextValue !== undefined) {
+          newParams.set(searchParamKey, String(contextValue));
+        } else {
+          newParams.delete(searchParamKey);
+        }
+        return newParams;
+      });
+    }
+  }, [
+    contextSearchParams,
+    initializedCallback,
+    searchParamKey,
     setSearchParams,
-    stateVars,
-    searchParamsMap,
-    setSearchParamsMap,
+  ]);
+
+  // Sync context to state variable
+  useEffect(() => {
+    if (initializedCallback()) {
+      const contextValue = contextSearchParams.get(searchParamKey);
+      updateStateVar(contextValue);
+    }
+  }, [
+    contextSearchParams,
+    initializedCallback,
+    searchParamKey,
+    updateStateVar,
+  ]);
+
+  // Sync state variable to context
+  useEffect(() => {
+    if (initializedCallback()) {
+      const contextValue = contextSearchParams.get(searchParamKey);
+      if (contextValue !== String(stateVar)) {
+        if (stateVar !== undefined && stateVar !== null) {
+          setContextSearchParam(searchParamKey, String(stateVar));
+        } else {
+          deleteContextSearchParam(searchParamKey);
+        }
+      }
+    }
+  }, [
+    contextSearchParams,
+    deleteContextSearchParam,
+    initializedCallback,
+    searchParamKey,
+    setContextSearchParam,
+    stateVar,
   ]);
 };

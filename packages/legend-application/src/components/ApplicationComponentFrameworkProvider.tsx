@@ -30,6 +30,7 @@ import {
 import { VirtualAssistant } from './VirtualAssistant.js';
 import { LegendApplicationTelemetryHelper } from '../__lib__/LegendApplicationTelemetry.js';
 import type { GenericLegendApplicationStore } from '../stores/ApplicationStore.js';
+import { GlobalSyncSearchParamsProvider } from './GlobalSyncSearchParamsProvider.js';
 
 enum APPLICATION_COMPONENT_ELEMENT_ID {
   TOP_LEVEL_CONTAINER = 'application.top-level-container',
@@ -210,21 +211,23 @@ export const ApplicationComponentFrameworkProvider = observer(
           </Portal>
         )}
         <DndProvider backend={HTML5Backend}>
-          <div
-            style={{ height: '100%', width: '100%' }}
-            // NOTE: this `id` is used to quickly identify this DOM node so we could manually
-            // dispatch keyboard event here in order to be captured by our global hotkeys matchers
-            data-elementid={
-              APPLICATION_COMPONENT_ELEMENT_ID.TOP_LEVEL_CONTAINER
-            }
-            // Disable global context menu so that only places in the app that supports context-menu will be effective
-            onContextMenu={disableContextMenu}
-          >
-            <BackdropContainer
-              elementId={APPLICATION_COMPONENT_ELEMENT_ID.BACKDROP_CONTAINER}
-            />
-            {children}
-          </div>
+          <GlobalSyncSearchParamsProvider>
+            <div
+              style={{ height: '100%', width: '100%' }}
+              // NOTE: this `id` is used to quickly identify this DOM node so we could manually
+              // dispatch keyboard event here in order to be captured by our global hotkeys matchers
+              data-elementid={
+                APPLICATION_COMPONENT_ELEMENT_ID.TOP_LEVEL_CONTAINER
+              }
+              // Disable global context menu so that only places in the app that supports context-menu will be effective
+              onContextMenu={disableContextMenu}
+            >
+              <BackdropContainer
+                elementId={APPLICATION_COMPONENT_ELEMENT_ID.BACKDROP_CONTAINER}
+              />
+              {children}
+            </div>
+          </GlobalSyncSearchParamsProvider>
         </DndProvider>
       </LegendStyleProvider>
     );
@@ -273,21 +276,23 @@ export const SimpleApplicationComponentFrameworkProvider = observer(
         customFonts={customFonts}
       >
         <DndProvider backend={HTML5Backend}>
-          <div
-            style={{ height: '100%', width: '100%' }}
-            // NOTE: this `id` is used to quickly identify this DOM node so we could manually
-            // dispatch keyboard event here in order to be captured by our global hotkeys matchers
-            data-elementid={
-              APPLICATION_COMPONENT_ELEMENT_ID.TOP_LEVEL_CONTAINER
-            }
-            // Disable global context menu so that only places in the app that supports context-menu will be effective
-            onContextMenu={disableContextMenu}
-          >
-            <BackdropContainer
-              elementId={APPLICATION_COMPONENT_ELEMENT_ID.BACKDROP_CONTAINER}
-            />
-            {children}
-          </div>
+          <GlobalSyncSearchParamsProvider>
+            <div
+              style={{ height: '100%', width: '100%' }}
+              // NOTE: this `id` is used to quickly identify this DOM node so we could manually
+              // dispatch keyboard event here in order to be captured by our global hotkeys matchers
+              data-elementid={
+                APPLICATION_COMPONENT_ELEMENT_ID.TOP_LEVEL_CONTAINER
+              }
+              // Disable global context menu so that only places in the app that supports context-menu will be effective
+              onContextMenu={disableContextMenu}
+            >
+              <BackdropContainer
+                elementId={APPLICATION_COMPONENT_ELEMENT_ID.BACKDROP_CONTAINER}
+              />
+              {children}
+            </div>
+          </GlobalSyncSearchParamsProvider>
         </DndProvider>
       </LegendStyleProvider>
     );

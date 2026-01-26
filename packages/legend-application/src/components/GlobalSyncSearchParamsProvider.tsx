@@ -16,16 +16,17 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
-  useMemo,
   useState,
   type JSX,
   type ReactNode,
 } from 'react';
 
 interface GlobalSyncSearchParamsContextValue {
-  searchParamsMap: Map<string, string>;
-  setSearchParamsMap: (map: Map<string, string>) => void;
+  searchParams: Map<string, string>;
+  setSearchParam: (key: string, value: string) => void;
+  deleteSearchParam: (key: string) => void;
 }
 
 const GlobalSyncSearchParamsContext = createContext<
@@ -41,16 +42,30 @@ export const GlobalSyncSearchParamsProvider = ({
     new Map(),
   );
 
-  const value = useMemo(
-    () => ({
-      searchParamsMap,
-      setSearchParamsMap,
-    }),
-    [searchParamsMap],
-  );
+  const setSearchParam = useCallback((key: string, value: string) => {
+    setSearchParamsMap((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(key, value);
+      return newMap;
+    });
+  }, []);
+
+  const deleteSearchParam = useCallback((key: string) => {
+    setSearchParamsMap((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(key);
+      return newMap;
+    });
+  }, []);
 
   return (
-    <GlobalSyncSearchParamsContext.Provider value={value}>
+    <GlobalSyncSearchParamsContext.Provider
+      value={{
+        searchParams: searchParamsMap,
+        setSearchParam,
+        deleteSearchParam,
+      }}
+    >
       {children}
     </GlobalSyncSearchParamsContext.Provider>
   );
