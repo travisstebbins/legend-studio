@@ -16,6 +16,7 @@
 
 import { useEffect } from 'react';
 import type { SetURLSearchParams } from 'react-router';
+import { useGlobalSyncSearchParams } from '../components/GlobalSyncSearchParamsProvider.js';
 
 /**
  * Util hook to keep a state variable in sync with a URL search parameter.
@@ -34,10 +35,12 @@ export const useSyncStateAndSearchParam = (
   setSearchParams: SetURLSearchParams,
   initializedCallback: () => boolean,
 ): void => {
-  // Sync state with URL search param
+  const { searchParamsMap, setSearchParamsMap } = useGlobalSyncSearchParams();
+
+  // Sync context with URL search param
   useEffect(() => {
     if (initializedCallback()) {
-      // On mount or when search param value changes, update state from URL
+      // On mount or when search param value changes, update context from URL
       const updatedValues = searchParams.keys().reduce((acc, key) => {
         if (searchParams.get(key) !== stateVars.get(key)) {
           acc.set(key, searchParams.get(key));
@@ -48,16 +51,17 @@ export const useSyncStateAndSearchParam = (
     }
   }, [initializedCallback, searchParams, stateVars, updateStateVar]);
 
-  // Sync URL search param with state
+  // Sync URL search param with map from context
   useEffect(() => {
     if (initializedCallback()) {
-      // When state changes, update URL param
+      // When state changes, update URL param and context map
       const paramsToUpdate = stateVars.keys().reduce((acc, key) => {
         if (stateVars.get(key) !== searchParams.get(key)) {
           acc.set(key, stateVars.get(key));
         }
         return acc;
       }, new Map<string, string | boolean | number | Date | null | undefined>());
+
       setSearchParams((params) => {
         const newParams = new URLSearchParams(params);
         paramsToUpdate.entries().forEach(([key, value]) => {
@@ -69,6 +73,24 @@ export const useSyncStateAndSearchParam = (
         });
         return newParams;
       });
+
+      // Update the global context map
+      const newMap = new Map(searchParamsMap);
+      paramsToUpdate.entries().forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          newMap.set(key, String(value));
+        } else {
+          newMap.delete(key);
+        }
+      });
+      setSearchParamsMap(newMap);
     }
-  }, [initializedCallback, searchParams, setSearchParams, stateVars]);
+  }, [
+    initializedCallback,
+    searchParams,
+    setSearchParams,
+    stateVars,
+    searchParamsMap,
+    setSearchParamsMap,
+  ]);
 };
