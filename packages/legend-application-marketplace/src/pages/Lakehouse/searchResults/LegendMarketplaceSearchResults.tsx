@@ -49,7 +49,6 @@ import {
 import { generatePathForDataProductSearchResult } from '../../../utils/SearchUtils.js';
 import { logClickingDataProductCard } from '../../../utils/LogUtils.js';
 import { useSyncStateAndSearchParam } from '@finos/legend-application';
-import { useSearchParams } from '@finos/legend-application/browser';
 import { isNonEmptyString } from '@finos/legend-shared';
 
 export const LegendMarketplaceSearchResults =
@@ -57,7 +56,6 @@ export const LegendMarketplaceSearchResults =
     observer(() => {
       const searchResultsStore = useLegendMarketplaceSearchResultsStore();
       const auth = useAuth();
-      const [searchParams, setSearchParams] = useSearchParams();
 
       const marketplaceBaseStore = searchResultsStore.marketplaceBaseStore;
       const applicationStore = marketplaceBaseStore.applicationStore;
@@ -102,10 +100,6 @@ export const LegendMarketplaceSearchResults =
           [marketplaceBaseStore],
         ),
         LEGEND_MARKETPLACE_LAKEHOUSE_SEARCH_RESULTS_QUERY_PARAM_TOKEN.USE_PRODUCER_SEARCH,
-        searchParams.get(
-          LEGEND_MARKETPLACE_LAKEHOUSE_SEARCH_RESULTS_QUERY_PARAM_TOKEN.USE_PRODUCER_SEARCH,
-        ),
-        setSearchParams,
         useCallback(
           () => marketplaceBaseStore.initState.hasCompleted,
           [marketplaceBaseStore],

@@ -15,7 +15,7 @@
  */
 
 import { useEffect } from 'react';
-import type { SetURLSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 
 /**
  * Util hook to keep a state variable in sync with a URL search parameter.
@@ -31,18 +31,18 @@ export const useSyncStateAndSearchParam = (
   stateVar: string | boolean | number | null | undefined,
   updateStateVar: (val: string | null) => void,
   searchParamKey: string,
-  searchParamValue: string | null,
-  setSearchParams: SetURLSearchParams,
   initializedCallback: () => boolean,
 ): void => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // Sync state with URL search param
   useEffect(() => {
     if (initializedCallback()) {
       // On mount or when search param value changes, update state from URL
-      const urlParamValue = searchParamValue;
+      const urlParamValue = searchParams.get(searchParamKey);
       updateStateVar(urlParamValue);
     }
-  }, [initializedCallback, searchParamKey, searchParamValue, updateStateVar]);
+  }, [initializedCallback, searchParamKey, searchParams, updateStateVar]);
 
   // Sync URL search param with state
   useEffect(() => {
