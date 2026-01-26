@@ -17,6 +17,7 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { useGlobalSyncSearchParams } from '../components/GlobalSyncSearchParamsProvider.js';
+import { guaranteeNonNullable } from '@finos/legend-shared';
 
 /**
  * Util hook to keep a state variable in sync with a URL search parameter.
@@ -43,11 +44,14 @@ export const useSyncStateAndSearchParam = (
   useEffect(() => {
     if (initializedCallback()) {
       // On mount or when search param value changes, update context from URL
-      if (searchParams.get(searchParamKey) !== stateVar) {
+      if (
+        searchParams.get(searchParamKey) !==
+        contextSearchParams.get(searchParamKey)
+      ) {
         if (searchParams.get(searchParamKey) !== null) {
           setContextSearchParam(
             searchParamKey,
-            String(searchParams.get(searchParamKey)),
+            guaranteeNonNullable(searchParams.get(searchParamKey)),
           );
         } else {
           deleteContextSearchParam(searchParamKey);
@@ -55,12 +59,12 @@ export const useSyncStateAndSearchParam = (
       }
     }
   }, [
+    contextSearchParams,
     deleteContextSearchParam,
     initializedCallback,
     searchParamKey,
     searchParams,
     setContextSearchParam,
-    stateVar,
   ]);
 
   // Sync context to URL search param
@@ -68,6 +72,7 @@ export const useSyncStateAndSearchParam = (
     if (initializedCallback()) {
       // When context value changes, update search URL search params
       setSearchParams((params) => {
+        // TODO: set all params from context at once into URL params?
         const newParams = new URLSearchParams(params);
         const contextValue = contextSearchParams.get(searchParamKey);
         if (contextValue !== undefined) {
