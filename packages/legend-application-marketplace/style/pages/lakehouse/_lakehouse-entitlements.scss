@@ -22,6 +22,36 @@
   flex: 1;
   flex-direction: column;
   padding: 1rem 2rem 2rem;
+  background: var(--marketplace-bg-primary);
+
+  .theme__hc-dark & {
+    background: var(--marketplace-bg-secondary);
+    color: var(--marketplace-text-primary);
+  }
+
+  .MuiTabs-root {
+    .theme__hc-dark & {
+      border-bottom: 1px solid var(--marketplace-border-color);
+
+      .MuiTabs-indicator {
+        background-color: var(--marketplace-link-color);
+      }
+    }
+  }
+
+  .MuiTab-root {
+    .theme__hc-dark & {
+      color: var(--marketplace-text-muted);
+
+      &.Mui-selected {
+        color: var(--marketplace-link-color);
+      }
+
+      .MuiTypography-root {
+        color: inherit;
+      }
+    }
+  }
 }
 
 .marketplace-lakehouse-entitlements {
@@ -34,6 +64,11 @@
     background: var(--color-hclight-white);
     color: var(--color-hclight-grey-90);
     font-family: Roboto, sans-serif;
+
+    .theme__hc-dark & {
+      background: var(--marketplace-bg-primary);
+      color: var(--marketplace-text-primary);
+    }
 
     &__action-btn {
       margin-left: 0;
@@ -113,6 +148,14 @@
       color: blue;
       text-decoration: underline;
       cursor: pointer;
+
+      .theme__hc-dark & {
+        color: var(--marketplace-link-color);
+
+        &:hover {
+          color: var(--marketplace-link-hover-color);
+        }
+      }
     }
 
     &__user-display {
@@ -138,6 +181,11 @@
   color: var(--color-hclight-grey-90);
   font-family: Roboto, sans-serif;
 
+  .theme__hc-dark & {
+    background: var(--marketplace-bg-primary);
+    color: var(--marketplace-text-primary);
+  }
+
   &__action-header {
     padding-bottom: 1rem;
   }
@@ -158,16 +206,32 @@
     &:hover {
       color: darkblue;
     }
+
+    .theme__hc-dark & {
+      color: var(--marketplace-link-color);
+
+      &:hover {
+        color: var(--marketplace-link-hover-color);
+      }
+    }
   }
 
   &__status--success {
     color: green;
     font-weight: bold;
+
+    .theme__hc-dark & {
+      color: var(--color-dark-green-50);
+    }
   }
 
   &__status--in-progress {
     color: blue;
     font-weight: bold;
+
+    .theme__hc-dark & {
+      color: var(--marketplace-link-color);
+    }
   }
 
   &__status--error {
