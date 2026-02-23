@@ -14,68 +14,9 @@
  * limitations under the License.
  */
 
-:root {
-  // Default (Light) Theme Semantic Variables
-  --marketplace-bg-primary: var(--color-white);
-  --marketplace-bg-secondary: var(--color-hclight-grey-10);
-  --marketplace-bg-tertiary: var(
-    --color-hclight-grey-20
-  ); // Guessing tertiary for light mode based on usage, verifying later
-
-  --marketplace-bg-elevated: var(--color-hclight-grey-30);
-  --marketplace-text-primary: var(--color-hclight-black);
-  --marketplace-text-secondary: var(--color-legacylight-dark-grey-200);
-  --marketplace-text-muted: var(--color-legacylight-dark-grey-400);
-  --marketplace-link-color: var(--color-blue-50);
-  --marketplace-link-hover-color: var(
-    --color-blue-60
-  ); // Assuming a hover state
-
-  --marketplace-border-color: var(--color-hclight-grey-20);
-  --marketplace-border-light-color: var(--color-hclight-grey-10);
-
-  // Brand/Accents
-  --marketplace-brand-color: var(--color-blue-50);
-  --marketplace-brand-secondary-color: var(
-    --color-blue-40
-  ); // Placeholder for light mode accent
-
-  // Components
-  --marketplace-info-bg: var(--color-legacylight-light-grey-300);
-  --marketplace-info-text: var(--color-legacylight-dark-grey-200);
-
-  // Page specific
-  --marketplace-page-bg: var(--marketplace-bg-secondary);
-  --marketplace-header-bg: var(--marketplace-bg-primary);
-  --marketplace-card-bg: var(--marketplace-bg-primary);
-  --marketplace-banner-bg: var(--marketplace-brand-color);
-  --marketplace-card-hover-bg: var(--marketplace-bg-primary);
-  --marketplace-card-icon-bg: var(
-    --color-hclight-blue-10
-  ); // Assuming this is available globally or needs import
-
-  --marketplace-card-shadow: 0 2px 8px rgb(0 0 0 / 6%);
-  --marketplace-chip-bg: var(--marketplace-bg-elevated);
-  --marketplace-chip-text: var(--marketplace-text-primary);
-  --marketplace-modal-bg: linear-gradient(
-    145deg,
-    rgb(255 255 255 / 95%) 0%,
-    rgb(248 250 252 / 98%) 100%
-  );
-  --marketplace-modal-header-bg: linear-gradient(
-    135deg,
-    #7297c5 0%,
-    #5d80a8 100%
-  );
-  --marketplace-cart-header-bg: linear-gradient(
-    135deg,
-    var(--color-cart-blue-primary) 0%,
-    var(--color-cart-blue-secondary) 100%
-  );
-}
-
+:root,
 .theme__hc-light {
-  // Explicit Light Theme Overrides (if needed for forcing light mode in a subtree)
+  // Default (Light) Theme Semantic Variables
   --marketplace-bg-primary: var(--color-white);
   --marketplace-bg-secondary: var(--color-hclight-grey-10);
   --marketplace-bg-tertiary: var(--color-hclight-grey-20);
@@ -87,13 +28,16 @@
   --marketplace-link-hover-color: var(--color-blue-60);
   --marketplace-border-color: var(--color-hclight-grey-20);
   --marketplace-border-light-color: var(--color-hclight-grey-10);
+
+  // Brand/Accents
   --marketplace-brand-color: var(--color-blue-50);
   --marketplace-brand-secondary-color: var(--color-blue-40);
+
+  // Components
   --marketplace-info-bg: var(--color-legacylight-light-grey-300);
   --marketplace-info-text: var(--color-legacylight-dark-grey-200);
 
   // Page specific
-  --marketplace-page-bg: var(--marketplace-bg-secondary);
   --marketplace-header-bg: var(--marketplace-bg-primary);
   --marketplace-card-bg: var(--marketplace-bg-primary);
   --marketplace-banner-bg: var(--marketplace-brand-color);
@@ -121,24 +65,24 @@
 
 .theme__hc-dark {
   // Dark Theme Semantic Variables
-  --marketplace-bg-primary: var(--color-dark-theme-bg-primary);
-  --marketplace-bg-secondary: var(--color-dark-theme-bg-secondary);
-  --marketplace-bg-tertiary: var(--color-dark-theme-bg-tertiary);
-  --marketplace-bg-elevated: var(--color-dark-theme-bg-elevated);
-  --marketplace-text-primary: var(--color-dark-theme-text-primary);
-  --marketplace-text-secondary: var(--color-dark-theme-text-secondary);
-  --marketplace-text-muted: var(--color-dark-theme-text-muted);
-  --marketplace-link-color: var(--color-dark-theme-blue-primary);
+  --marketplace-bg-primary: var(--color-dark-grey-50);
+  --marketplace-bg-secondary: var(--color-dark-grey-80);
+  --marketplace-bg-tertiary: var(--color-dark-grey-85);
+  --marketplace-bg-elevated: var(--color-dark-grey-100);
+  --marketplace-text-primary: var(--color-white);
+  --marketplace-text-secondary: var(--color-light-grey-200);
+  --marketplace-text-muted: var(--color-dark-grey-500);
+  --marketplace-link-color: var(--color-light-blue-50);
   --marketplace-link-hover-color: var(
-    --color-dark-theme-blue-accent
+    --color-light-blue-10
   ); // Assuming accent is hover
 
-  --marketplace-border-color: var(--color-dark-theme-border);
-  --marketplace-border-light-color: var(--color-dark-theme-border-light);
-  --marketplace-brand-color: var(--color-dark-theme-blue-primary);
-  --marketplace-brand-secondary-color: var(--color-dark-theme-blue-secondary);
-  --marketplace-info-bg: var(--color-dark-theme-bg-elevated);
-  --marketplace-info-text: var(--color-dark-theme-text-primary);
+  --marketplace-border-color: var(--color-dark-grey-200);
+  --marketplace-border-light-color: var(--color-dark-grey-280);
+  --marketplace-brand-color: var(--color-light-blue-50);
+  --marketplace-brand-secondary-color: var(--color-light-blue-200);
+  --marketplace-info-bg: var(--color-dark-grey-100);
+  --marketplace-info-text: var(--color-white);
 
   // Page specific
   --marketplace-page-bg: var(--marketplace-bg-primary);
