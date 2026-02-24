@@ -23,7 +23,7 @@ import {
   getByText,
   getByTitle,
   waitFor,
-} from '@testing-library/dom';
+} from '@testing-library/react';
 import { act } from 'react';
 import { TEST_DATA__ModelCoverageAnalysisResult_Calendar } from '../../stores/__tests__/TEST_DATA__QueryBuilder_Calendar.js';
 import { QUERY_BUILDER_TEST_ID } from '../../__lib__/QueryBuilderTesting.js';

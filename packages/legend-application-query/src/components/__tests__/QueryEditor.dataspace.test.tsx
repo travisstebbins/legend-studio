@@ -28,7 +28,7 @@ import {
 import { DSL_DataSpace_GraphManagerPreset } from '@finos/legend-extension-dsl-data-space/graph';
 import { act } from 'react';
 import { QUERY_BUILDER_TEST_ID } from '@finos/legend-query-builder';
-import { fireEvent, getByText, waitFor } from '@testing-library/dom';
+import { fireEvent, getByText, waitFor } from '@testing-library/react';
 import { DSL_DataSpace_LegendApplicationPlugin } from '@finos/legend-extension-dsl-data-space/application';
 
 test(
