@@ -23,10 +23,6 @@
   margin-bottom: 0.5em;
   background: var(--marketplace-bg-primary); // Light default
 
-  .theme__hc-dark & {
-    // No specific override in dark mode file, usually inherited or transparent
-  }
-
   .legend-marketplace-radio-button {
     color: var(--marketplace-text-primary);
     background-color: var(--marketplace-bg-secondary);
@@ -44,7 +40,7 @@
 
     &:hover {
       cursor: pointer;
-      border-color: var(--color-hclight-blue-50); // Light hover
+      border-color: var(--marketplace-link-color); // Light hover
 
       .theme__hc-dark & {
         background-color: var(--marketplace-bg-tertiary);
@@ -52,14 +48,9 @@
     }
 
     &__selected {
-      border-color: var(--color-hclight-blue-60);
-      background: var(--color-hclight-blue-10);
-      color: var(--color-hclight-blue-70);
-
-      .theme__hc-dark & {
-        background-color: var(--marketplace-link-color);
-        color: var(--marketplace-text-primary);
-      }
+      border-color: var(--marketplace-link-color);
+      background: var(--marketplace-link-color);
+      color: var(--marketplace-text-primary);
     }
   }
 }

@@ -20,7 +20,7 @@
 
   &__header {
     &__title {
-      color: var(--color-hclight-blue-60);
+      color: var(--marketplace-text-header);
 
       .theme__hc-dark & {
         color: var(--marketplace-link-color);

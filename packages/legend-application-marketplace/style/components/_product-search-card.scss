@@ -17,13 +17,12 @@
 @use 'mixins' as *;
 
 .legend-marketplace-product-search-result-card {
-  background: var(--marketplace-card-bg);
+  background: var(--marketplace-bg-primary);
   border: 1px solid var(--marketplace-border-color);
   transition: all 0.2s ease;
   width: 100%; // Ensure it takes full width if needed or check original usage
 
   &:hover {
-    background: var(--marketplace-card-hover-bg);
     border-color: var(--marketplace-link-color);
   }
 

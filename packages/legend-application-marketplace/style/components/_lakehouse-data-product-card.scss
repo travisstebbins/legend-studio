@@ -17,12 +17,11 @@
 @use 'mixins' as *;
 
 .marketplace-lakehouse-data-product-card {
-  background: var(--marketplace-card-bg);
+  background: var(--marketplace-bg-primary);
   border: 1px solid var(--marketplace-border-color);
   transition: all 0.2s ease;
 
   &:hover {
-    background: var(--marketplace-card-hover-bg);
     transform: unset;
   }
 
@@ -89,13 +88,13 @@
     text-transform: none;
 
     &--snapshot {
-      color: var(--marketplace-link-color);
-      background: var(--marketplace-chip-bg);
+      color: var(--marketplace-chip-snapshot-text);
+      background: var(--marketplace-chip-snapshot-bg);
     }
 
     &--release {
-      color: var(--color-dark-green-50);
-      background: rgb(106 153 85 / 20%); // Needs generic success bg?
+      color: var(--marketplace-chip-release-text);
+      background: var(--marketplace-chip-release-bg);
     }
   }
 
@@ -105,23 +104,23 @@
     text-transform: none;
 
     &--unknown {
-      color: var(--marketplace-text-muted);
-      background: var(--marketplace-bg-elevated);
+      color: var(--marketplace-chip-unknown-text);
+      background: var(--marketplace-chip-unknown-bg);
     }
 
     &--dev {
-      color: var(--color-dark-yellow-40);
-      background: rgb(251 188 5 / 20%);
+      color: var(--marketplace-chip-dev-text);
+      background: var(--marketplace-chip-dev-bg);
     }
 
     &--prod-parallel {
-      color: var(--marketplace-link-color);
-      background: var(--marketplace-chip-bg);
+      color: var(--marketplace-chip-prod-parallel-text);
+      background: var(--marketplace-chip-prod-parallel-bg);
     }
 
     &--prod {
-      color: var(--color-dark-green-50);
-      background: rgb(106 153 85 / 20%);
+      color: var(--marketplace-chip-prod-text);
+      background: var(--marketplace-chip-prod-bg);
     }
   }
 
@@ -129,16 +128,16 @@
     align-self: end;
     font-size: 1.3rem;
     text-transform: none;
-    background-color: var(--marketplace-chip-bg);
-    color: var(--marketplace-chip-text);
+    background-color: var(--marketplace-chip-source-bg);
+    color: var(--marketplace-chip-source-text);
   }
 
   &__license-to {
     align-self: end;
     font-size: 1.3rem;
     text-transform: none;
-    background-color: var(--marketplace-chip-bg);
-    color: var(--marketplace-chip-text);
+    background-color: var(--marketplace-chip-source-bg);
+    color: var(--marketplace-chip-source-text);
   }
 
   &__description {

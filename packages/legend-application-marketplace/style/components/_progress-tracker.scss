@@ -16,7 +16,7 @@
 
 .legend-marketplace-progress-tracker {
   background: var(--marketplace-bg-primary);
-  border: 1px solid var(--color-hclight-grey-20);
+  border: 1px solid var(--marketplace-border-color);
 
   .theme__hc-dark & {
     background: var(--marketplace-bg-secondary);

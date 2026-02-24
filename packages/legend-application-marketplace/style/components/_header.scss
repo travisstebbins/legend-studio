@@ -219,7 +219,10 @@
   }
 
   @mixin task__badge__base {
-    background: var(--color-red-180) !important; // Leaving as alert color
+    background: var(
+      --marketplace-error-color
+    ) !important; // Leaving as alert color
+
     color: var(--color-white) !important;
     min-width: 1.5rem;
     height: 1.5rem;
