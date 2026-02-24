@@ -18,7 +18,11 @@
 @forward 'app';
 @use 'theme';
 
-@forward 'components/button';
+@forward 'components/overrides/button';
+@forward 'components/overrides/data-access-overview';
+@forward 'components/overrides/data-space-viewer';
+@forward 'components/overrides/fuzzy-search';
+@forward 'components/overrides/release-notes';
 @forward 'components/cart-drawer';
 @forward 'components/coming-soon-display';
 @forward 'components/dataContract-creator';
@@ -33,12 +37,8 @@
 @forward 'components/product-search-card';
 @forward 'components/radio-selector';
 @forward 'components/recommended-addons-modal';
-@forward 'components/release-notes';
 @forward 'components/search-bar';
-@forward 'components/data-access-overview';
 @forward 'components/data-product-viewer';
-@forward 'components/data-space-viewer';
-@forward 'components/fuzzy-search';
 @forward 'components/vendor-card';
 @forward 'components/progress-tracker';
 @forward 'components/data-contract-viewer';
@@ -57,9 +57,6 @@
 @forward 'pages/lakehouse/lakehouse-oauth-callback';
 @forward 'pages/lakehouse/lakehouse-search-results';
 @forward 'pages/lakehouse/lakehouse-subscriptions';
-
-@forward 'light-mode';
-@forward 'dark-mode';
 
 /* stylelint-disable-next-line no-invalid-position-at-import-rule */
 @import url('~swiper/css');

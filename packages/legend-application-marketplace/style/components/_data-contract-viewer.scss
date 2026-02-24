@@ -37,7 +37,7 @@
 
   &__metadata {
     width: 100%;
-    background: var(--color-light-grey-300);
+    background: var(--marketplace-bg-secondary);
     padding: 1rem;
     margin: 1rem 0;
 
@@ -138,7 +138,7 @@
   &__user-list {
     max-height: 20rem;
     overflow: auto;
-    background: var(--color-light-grey-300);
+    background: var(--marketplace-bg-tertiary);
 
     .theme__hc-dark & {
       background: var(--marketplace-bg-elevated);
@@ -146,7 +146,7 @@
 
     &__container {
       margin-top: -12px !important;
-      background: var(--color-light-grey-150);
+      background: var(--marketplace-bg-secondary);
 
       .theme__hc-dark & {
         background: var(--marketplace-bg-secondary);
@@ -157,7 +157,7 @@
   &__task-approval-view {
     margin-bottom: 1rem;
     padding: 1rem;
-    background: var(--color-light-grey-150);
+    background: var(--marketplace-bg-secondary);
 
     .theme__hc-dark & {
       background: var(--marketplace-bg-secondary);
@@ -169,7 +169,7 @@
     }
 
     &__timestamp {
-      color: var(--color-dark-grey-300);
+      color: var(--marketplace-text-primary);
       font-style: italic;
 
       .theme__hc-dark & {
@@ -185,7 +185,7 @@
     align-self: start;
     margin-top: auto;
     width: 100%;
-    color: var(--color-light-grey-300);
+    color: var(--marketplace-text-primary);
 
     .theme__hc-dark & {
       color: var(--marketplace-text-muted);
@@ -217,7 +217,7 @@
       justify-content: space-between;
 
       &__close-contract-btn {
-        color: var(--color-red-200);
+        color: var(--marketplace-error-color);
       }
     }
   }

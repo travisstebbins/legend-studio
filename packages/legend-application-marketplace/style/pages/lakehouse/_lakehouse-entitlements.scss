@@ -61,14 +61,9 @@
     height: 100%;
     width: 100%;
     position: relative;
-    background: var(--color-hclight-white);
-    color: var(--color-hclight-grey-90);
+    background: var(--marketplace-bg-primary);
+    color: var(--marketplace-text-primary);
     font-family: Roboto, sans-serif;
-
-    .theme__hc-dark & {
-      background: var(--marketplace-bg-primary);
-      color: var(--marketplace-text-primary);
-    }
 
     &__action-btn {
       margin-left: 0;
@@ -177,14 +172,9 @@
   height: 100%;
   width: 100%;
   position: relative;
-  background: var(--color-hclight-white);
-  color: var(--color-hclight-grey-90);
+  background: var(--marketplace-bg-primary);
+  color: var(--marketplace-text-primary);
   font-family: Roboto, sans-serif;
-
-  .theme__hc-dark & {
-    background: var(--marketplace-bg-primary);
-    color: var(--marketplace-text-primary);
-  }
 
   &__action-header {
     padding-bottom: 1rem;
@@ -217,30 +207,18 @@
   }
 
   &__status--success {
-    color: green;
+    color: var(--marketplace-success-color);
     font-weight: bold;
-
-    .theme__hc-dark & {
-      color: var(--color-dark-green-50);
-    }
   }
 
   &__status--in-progress {
-    color: blue;
+    color: var(--marketplace-link-color);
     font-weight: bold;
-
-    .theme__hc-dark & {
-      color: var(--marketplace-link-color);
-    }
   }
 
   &__status--error {
-    color: red;
+    color: var(--marketplace-error-color);
     font-weight: bold;
-
-    .theme__hc-dark & {
-      color: var(--color-dark-red-50);
-    }
   }
 }
 

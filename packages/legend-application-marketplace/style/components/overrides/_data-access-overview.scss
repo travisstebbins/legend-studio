@@ -23,12 +23,12 @@
   --ag-balham-active-color: transparent;
   --ag-odd-row-background-color: var(--marketplace-bg-primary);
   --ag-even-row-background-color: var(--marketplace-bg-primary);
-  --ag-row-hover-color: var(--color-hclight-grey-5);
+  --ag-row-hover-color: var(--marketplace-bg-secondary);
   --ag-row-border-color: var(--marketplace-bg-elevated);
 
   &--empty {
     background: var(--marketplace-bg-primary);
-    color: var(--color-hclight-grey-60);
+    color: var(--marketplace-text-muted);
   }
 
   &__empty-cell {
@@ -40,13 +40,13 @@
       135deg,
       var(--marketplace-bg-primary),
       var(--marketplace-bg-primary) 0.5rem,
-      var(--color-hclight-grey-5) 0.5rem,
-      var(--color-hclight-grey-5) 1rem
+      var(--marketplace-bg-secondary) 0.5rem,
+      var(--marketplace-bg-secondary) 1rem
     );
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--color-hclight-grey-15);
+    background: var(--marketplace-bg-elevated);
     border: 0.1rem solid transparent;
     background-clip: content-box;
     border-radius: 0.4rem;

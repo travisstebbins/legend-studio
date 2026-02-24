@@ -20,7 +20,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: var(--marketplace-card-bg);
+  background: var(--marketplace-bg-primary);
   border: 1px solid var(--marketplace-border-color);
   color: var(--marketplace-text-primary);
   box-shadow: var(--marketplace-card-shadow);
@@ -174,7 +174,6 @@
   }
 
   &:hover {
-    background: var(--marketplace-card-hover-bg);
     border-color: var(--marketplace-link-color);
     transform: scale(1.02);
     // Shadow scaling handled by card-shadow variable update or manual override.
@@ -187,7 +186,7 @@
   cursor: pointer;
   margin: 1rem;
   box-shadow: var(--marketplace-card-shadow);
-  background-color: var(--marketplace-card-bg);
+  background-color: var(--marketplace-bg-primary);
   width: 35rem;
   display: flex;
   flex-direction: column;
@@ -264,7 +263,6 @@
   }
 
   &__price {
-    // Green styling usually specific
     background-color: var(--color-green-20);
     color: var(--color-green-200);
     font-size: 1.5rem;
@@ -279,8 +277,8 @@
   }
 
   &__add-to-cart-button {
-    background-color: var(--marketplace-brand-color);
-    color: var(--color-white);
+    background-color: var(--marketplace-btn-primary-bg);
+    color: var(--marketplace-btn-primary-text);
     border: 1px solid var(--marketplace-border-light-color);
     font-size: 1.4rem;
     cursor: pointer;

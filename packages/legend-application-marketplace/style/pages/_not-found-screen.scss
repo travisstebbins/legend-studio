@@ -85,11 +85,7 @@
   align-items: center;
   width: 100%;
   font-family: 'Roboto Mono', monospace;
-  color: var(--color-dark-yellow-40); // Was --color-yellow-100
-
-  .theme__hc-dark & {
-    color: var(--marketplace-text-muted);
-  }
+  color: var(--marketplace-warning-color);
 }
 
 .not-found-screen__text-content__detail__url {

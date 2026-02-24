@@ -35,7 +35,7 @@
     }
 
     &__owned {
-      color: var(--color-green-100); // Or semantic success color
+      color: var(--marketplace-success-color);
       display: flex;
     }
   }
@@ -61,12 +61,11 @@
 }
 
 .legend-marketplace-vendor-card {
-  background: var(--marketplace-card-bg);
+  background: var(--marketplace-bg-primary);
   border: 1px solid var(--marketplace-border-color);
   transition: all 0.2s ease;
 
   &:hover {
-    background: var(--marketplace-card-hover-bg);
     border-color: var(--marketplace-link-color);
   }
 

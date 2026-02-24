@@ -23,7 +23,7 @@
       0 32px 64px -12px rgb(0 0 0 / 25%),
       0 0 0 1px rgb(255 255 255 / 5%);
     backdrop-filter: blur(16px);
-    background: var(--marketplace-modal-bg);
+    background: var(--marketplace-addons-modal-bg);
     border: 1px solid var(--marketplace-border-color);
     overflow: hidden;
     color: var(--marketplace-text-primary);
@@ -34,7 +34,7 @@
     align-items: center;
     gap: 1.5rem;
     padding: 2.5rem 3rem 2rem;
-    background: var(--marketplace-modal-header-bg);
+    background: var(--marketplace-addons-modal-header-bg);
     border-bottom: 1px solid var(--marketplace-border-color);
     position: relative;
 
@@ -107,7 +107,7 @@
 
   &__subtitle {
     font-size: 1.4rem;
-    color: rgb(255 255 255 / 90%); // Keep for light mode blue header
+    color: var(--marketplace-text-primary);
     margin: 0;
     font-weight: 500;
   }
@@ -138,14 +138,14 @@
     gap: 1rem;
     padding: 1rem 1.2rem;
     background-color: var(--marketplace-bg-secondary); // Was hex
-    border-left: 4px solid var(--marketplace-brand-color); // Was hex
+    border-left: 4px solid var(--marketplace-border-color); // Was hex
     border-radius: 4px;
     margin-bottom: 2rem;
     margin-top: 1rem;
     color: var(--marketplace-text-primary);
 
     svg {
-      color: var(--marketplace-brand-color);
+      color: var(--marketplace-btn-primary-bg);
       font-size: 2.4rem;
       flex-shrink: 0;
     }
@@ -299,6 +299,11 @@
     padding: 0 0.5rem;
     margin-bottom: 1rem;
     color: var(--marketplace-text-secondary);
+
+    &__item-count {
+      font-size: 1.4rem;
+      color: var(--marketplace-text-secondary);
+    }
   }
 
   &__list {
@@ -393,8 +398,8 @@
     font-size: 1.4rem;
     font-weight: 600;
     color: var(
-      --color-dark-green-50
-    ); // Use semantic success color if available
+      --marketplace-link-color
+    ); // Avoid passing arbitrary single-theme green
   }
 
   &__item-action {
@@ -417,13 +422,13 @@
     }
 
     &--added {
-      background: var(--color-hclight-green-50);
-      color: var(--color-white);
-      border-color: var(--color-hclight-green-50);
+      background: var(--marketplace-btn-primary-bg);
+      color: var(--marketplace-text-primary);
+      border-color: var(--marketplace-btn-primary-bg);
 
       &:hover {
-        background: var(--color-hclight-green-60);
-        border-color: var(--color-hclight-green-60);
+        background: var(--marketplace-btn-primary-hover-bg);
+        border-color: var(--marketplace-btn-primary-hover-bg);
       }
     }
   }

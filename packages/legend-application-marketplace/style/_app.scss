@@ -43,8 +43,8 @@ html * {
   &__info {
     &__group {
       margin-top: 1rem;
-      color: var(--marketplace-info-text);
-      background: var(--marketplace-info-bg);
+      color: var(--marketplace-text-primary);
+      background: var(--marketplace-bg-secondary);
       padding: 1.5rem;
       border-radius: 0.2rem;
     }
@@ -89,7 +89,7 @@ html * {
 
 .marketplace-lakehouse-text__emphasis {
   font-weight: 600;
-  color: var(--color-hclight-blue-60);
+  color: var(--marketplace-link-hover-color);
 }
 
 .marketplace-dialog-close-btn {
