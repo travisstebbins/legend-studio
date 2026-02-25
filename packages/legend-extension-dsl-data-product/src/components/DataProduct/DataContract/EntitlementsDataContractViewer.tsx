@@ -67,6 +67,7 @@ import {
   ArrowUpFromBracketIcon,
   CheckIcon,
   CloseIcon,
+  clsx,
   CopyFilledIcon,
   CopyIcon,
   CubesLoadingIndicator,
@@ -541,6 +542,7 @@ export const EntitlementsDataContractContent = observer(
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'flex-end',
+                gap: '1rem',
               }}
             >
               <Link
@@ -637,6 +639,7 @@ export const EntitlementsDataContractContent = observer(
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'flex-end',
+                gap: '1rem',
               }}
             >
               <Link
@@ -718,7 +721,15 @@ export const EntitlementsDataContractContent = observer(
           <Timeline>
             {contractTimelineSteps.map((step, index) => (
               <TimelineItem key={step.key}>
-                <TimelineOppositeContent className="marketplace-lakehouse-entitlements__data-contract-viewer__timeline__content">
+                <TimelineOppositeContent
+                  className={clsx(
+                    'marketplace-lakehouse-entitlements__data-contract-viewer__timeline__content',
+                    {
+                      'marketplace-lakehouse-entitlements__data-contract-viewer__timeline__content--with-button':
+                        step.status === 'active',
+                    },
+                  )}
+                >
                   {step.label}
                 </TimelineOppositeContent>
                 <TimelineSeparator>
