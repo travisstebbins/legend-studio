@@ -65,7 +65,9 @@ import { flowResult } from 'mobx';
 import { useAuth } from 'react-oidc-context';
 import {
   ArrowUpFromBracketIcon,
+  CheckIcon,
   CloseIcon,
+  clsx,
   CopyFilledIcon,
   CopyIcon,
   CubesLoadingIndicator,
@@ -73,6 +75,7 @@ import {
   ExpandMoreIcon,
   InfoCircleIcon,
   RefreshIcon,
+  TimesIcon,
   TrashIcon,
 } from '@finos/legend-art';
 import type { EntitlementsDataContractViewerState } from '../../../stores/DataProduct/EntitlementsDataContractViewerState.js';
@@ -358,10 +361,10 @@ export const EntitlementsDataContractContent = observer(
     ]);
 
     useEffect(() => {
-      if (selectedTargetUser === undefined && targetUsers?.[0]) {
-        setSelectedTargetUser(targetUsers[0]);
+      if (selectedTargetUser === undefined) {
+        setSelectedTargetUser(initialSelectedUser ?? targetUsers?.[0]);
       }
-    }, [selectedTargetUser, targetUsers]);
+    }, [selectedTargetUser, initialSelectedUser, targetUsers]);
 
     const refresh = async (): Promise<void> => {
       setIsLoading(true);
@@ -525,11 +528,10 @@ export const EntitlementsDataContractContent = observer(
     const contractTimelineSteps: {
       key: string;
       label: React.ReactNode;
-      isCompleteOrActive: boolean;
+      status: 'active' | 'complete' | 'denied' | 'skipped' | 'upcoming';
       description?: React.ReactNode;
-      isDeniedStep?: boolean;
     }[] = [
-      { key: 'submitted', isCompleteOrActive: true, label: <>Submitted</> },
+      { key: 'submitted', status: 'complete', label: <>Submitted</> },
       {
         key: 'privilege-manager-approval',
         label:
@@ -540,6 +542,7 @@ export const EntitlementsDataContractContent = observer(
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'flex-end',
+                gap: '1rem',
               }}
             >
               <Link
@@ -595,7 +598,21 @@ export const EntitlementsDataContractContent = observer(
           ) : (
             <>Privilege Manager Approval</>
           ),
-        isCompleteOrActive: true,
+        status:
+          privilegeManagerApprovalTask?.rec.status ===
+          V1_UserApprovalStatus.PENDING
+            ? 'active'
+            : privilegeManagerApprovalTask?.rec.status ===
+                V1_UserApprovalStatus.APPROVED
+              ? 'complete'
+              : privilegeManagerApprovalTask?.rec.status ===
+                    V1_UserApprovalStatus.DENIED ||
+                  privilegeManagerApprovalTask?.rec.status ===
+                    V1_UserApprovalStatus.REVOKED
+                ? 'denied'
+                : privilegeManagerApprovalTask === undefined
+                  ? 'skipped'
+                  : 'upcoming',
         description:
           privilegeManagerApprovalTask?.rec.status ===
           V1_UserApprovalStatus.PENDING ? (
@@ -611,11 +628,6 @@ export const EntitlementsDataContractContent = observer(
               userSearchService={currentViewer.userSearchService}
             />
           ),
-        isDeniedStep:
-          privilegeManagerApprovalTask?.rec.status ===
-            V1_UserApprovalStatus.DENIED ||
-          privilegeManagerApprovalTask?.rec.status ===
-            V1_UserApprovalStatus.REVOKED,
       },
       {
         key: 'data-producer-approval',
@@ -627,6 +639,7 @@ export const EntitlementsDataContractContent = observer(
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'flex-end',
+                gap: '1rem',
               }}
             >
               <Link
@@ -660,7 +673,18 @@ export const EntitlementsDataContractContent = observer(
           ) : (
             <>Data Producer Approval</>
           ),
-        isCompleteOrActive: dataOwnerApprovalTask !== undefined,
+        status:
+          dataOwnerApprovalTask?.rec.status === V1_UserApprovalStatus.PENDING
+            ? 'active'
+            : dataOwnerApprovalTask?.rec.status ===
+                V1_UserApprovalStatus.APPROVED
+              ? 'complete'
+              : dataOwnerApprovalTask?.rec.status ===
+                    V1_UserApprovalStatus.DENIED ||
+                  dataOwnerApprovalTask?.rec.status ===
+                    V1_UserApprovalStatus.REVOKED
+                ? 'denied'
+                : 'upcoming',
         description:
           dataOwnerApprovalTask?.rec.status ===
           V1_UserApprovalStatus.PENDING ? (
@@ -676,16 +700,14 @@ export const EntitlementsDataContractContent = observer(
               userSearchService={currentViewer.userSearchService}
             />
           ) : undefined,
-        isDeniedStep:
-          dataOwnerApprovalTask?.rec.status === V1_UserApprovalStatus.DENIED ||
-          dataOwnerApprovalTask?.rec.status === V1_UserApprovalStatus.REVOKED,
       },
       {
         key: 'complete',
-        isCompleteOrActive:
-          privilegeManagerApprovalTask?.rec.status ===
-            V1_UserApprovalStatus.APPROVED &&
-          dataOwnerApprovalTask?.rec.status === V1_UserApprovalStatus.APPROVED,
+        // Some contracts don't require privilege manager approval, so we only need to check if the data owner approval has completed to determine if the contract is complete
+        status:
+          dataOwnerApprovalTask?.rec.status === V1_UserApprovalStatus.APPROVED
+            ? 'complete'
+            : 'upcoming',
         label: <>Complete</>,
       },
     ];
@@ -697,14 +719,36 @@ export const EntitlementsDataContractContent = observer(
           <Timeline>
             {contractTimelineSteps.map((step, index) => (
               <TimelineItem key={step.key}>
-                <TimelineOppositeContent className="marketplace-lakehouse-entitlements__data-contract-viewer__timeline__content">
+                <TimelineOppositeContent
+                  className={clsx(
+                    'marketplace-lakehouse-entitlements__data-contract-viewer__timeline__content',
+                    {
+                      'marketplace-lakehouse-entitlements__data-contract-viewer__timeline__content--with-button':
+                        step.status === 'active',
+                    },
+                  )}
+                >
                   {step.label}
                 </TimelineOppositeContent>
                 <TimelineSeparator>
                   <TimelineDot
-                    color={step.isDeniedStep ? 'error' : 'primary'}
-                    variant={step.isCompleteOrActive ? 'filled' : 'outlined'}
-                  />
+                    color={
+                      step.status === 'denied'
+                        ? 'error'
+                        : step.status === 'skipped'
+                          ? 'grey'
+                          : 'primary'
+                    }
+                    variant={step.status === 'upcoming' ? 'outlined' : 'filled'}
+                    title={
+                      step.status === 'skipped'
+                        ? 'This step was skipped because it is not required for this contract'
+                        : undefined
+                    }
+                  >
+                    {step.status === 'complete' && <CheckIcon />}
+                    {step.status === 'denied' && <TimesIcon />}
+                  </TimelineDot>
                   {index < contractTimelineSteps.length - 1 && (
                     <TimelineConnector />
                   )}
