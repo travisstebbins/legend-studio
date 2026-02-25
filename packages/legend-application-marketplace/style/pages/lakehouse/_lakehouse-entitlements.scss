@@ -274,6 +274,20 @@
     &__content {
       font-size: 1.4rem;
     }
+
+    .MuiTimelineDot-root {
+      width: 2.4rem;
+      height: 2.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 0;
+
+      svg {
+        font-size: 1.4rem;
+      }
+    }
   }
 
   &__user-list {

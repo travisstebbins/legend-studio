@@ -65,18 +65,16 @@ import { flowResult } from 'mobx';
 import { useAuth } from 'react-oidc-context';
 import {
   ArrowUpFromBracketIcon,
-  CheckCircleIcon,
-  CircleIcon,
+  CheckIcon,
   CloseIcon,
   CopyFilledIcon,
   CopyIcon,
   CubesLoadingIndicator,
   CubesLoadingIndicatorIcon,
-  EmptyCircleIcon,
   ExpandMoreIcon,
   InfoCircleIcon,
   RefreshIcon,
-  TimesCircleIcon,
+  TimesIcon,
   TrashIcon,
 } from '@finos/legend-art';
 import type { EntitlementsDataContractViewerState } from '../../../stores/DataProduct/EntitlementsDataContractViewerState.js';
@@ -732,16 +730,15 @@ export const EntitlementsDataContractContent = observer(
                           ? 'grey'
                           : 'primary'
                     }
+                    variant={step.status === 'upcoming' ? 'outlined' : 'filled'}
+                    title={
+                      step.status === 'skipped'
+                        ? 'This step was skipped because it is not required for this contract'
+                        : undefined
+                    }
                   >
-                    {step.status === 'active' && <CircleIcon />}
-                    {step.status === 'complete' && <CheckCircleIcon />}
-                    {step.status === 'denied' && <TimesCircleIcon />}
-                    {step.status === 'skipped' && (
-                      <span title="This step was skipped because it is not required for this contract">
-                        <CircleIcon />
-                      </span>
-                    )}
-                    {step.status === 'upcoming' && <EmptyCircleIcon />}
+                    {step.status === 'complete' && <CheckIcon />}
+                    {step.status === 'denied' && <TimesIcon />}
                   </TimelineDot>
                   {index < contractTimelineSteps.length - 1 && (
                     <TimelineConnector />
