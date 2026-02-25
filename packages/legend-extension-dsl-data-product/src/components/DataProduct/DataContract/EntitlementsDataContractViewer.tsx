@@ -684,7 +684,8 @@ export const EntitlementsDataContractContent = observer(
                   dataOwnerApprovalTask?.rec.status ===
                     V1_UserApprovalStatus.REVOKED
                 ? 'denied'
-                : dataOwnerApprovalTask === undefined
+                : privilegeManagerApprovalTask !== undefined &&
+                    dataOwnerApprovalTask === undefined
                   ? 'skipped'
                   : 'upcoming',
         description:
