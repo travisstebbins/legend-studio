@@ -358,10 +358,10 @@ export const EntitlementsDataContractContent = observer(
     ]);
 
     useEffect(() => {
-      if (selectedTargetUser === undefined && targetUsers?.[0]) {
-        setSelectedTargetUser(targetUsers[0]);
+      if (selectedTargetUser === undefined) {
+        setSelectedTargetUser(initialSelectedUser ?? targetUsers?.[0]);
       }
-    }, [selectedTargetUser, targetUsers]);
+    }, [selectedTargetUser, initialSelectedUser, targetUsers]);
 
     const refresh = async (): Promise<void> => {
       setIsLoading(true);
