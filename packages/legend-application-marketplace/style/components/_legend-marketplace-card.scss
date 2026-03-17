@@ -65,7 +65,9 @@
 
     svg {
       font-size: 13rem;
-      color: var(--color-white); // Icons on colorful backgrounds usually white
+      color: var(
+        --marketplace-btn-primary-text
+      ); // Icons on colorful backgrounds usually white
     }
   }
 
@@ -264,8 +266,8 @@
   }
 
   &__price {
-    background-color: var(--color-green-20);
-    color: var(--color-green-200);
+    background-color: var(--marketplace-chip-prod-bg);
+    color: var(--marketplace-success-color);
     font-size: 1.5rem;
     font-weight: 600;
     padding: 0.6rem 1.2rem;

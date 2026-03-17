@@ -261,8 +261,8 @@
   }
 
   &__cancel-button {
-    border: 1px solid var(--color-red-300); // Keep semantic red if available or use generic
-    color: var(--color-red-300);
+    border: 1px solid var(--marketplace-error-color);
+    color: var(--marketplace-error-color);
     font-weight: 500;
     font-size: 1.5rem;
     padding: 0.5rem 1rem;
@@ -271,11 +271,8 @@
     @include transition-smooth;
 
     &:hover:not(:disabled) {
-      background-color: var(
-        --color-red-0
-      ); // hardcoded for now or define semantic alert bg
-
-      border-color: var(--color-red-300);
+      background-color: var(--marketplace-error-color);
+      border-color: var(--marketplace-error-color);
       transform: translateY(-1px);
     }
 
@@ -445,7 +442,7 @@
   }
 
   &__summary-value--status {
-    color: var(--color-red-300);
+    color: var(--marketplace-error-color);
     font-weight: 600;
   }
 
@@ -512,7 +509,7 @@
     }
 
     &--rejected {
-      color: var(--color-red-100);
+      color: var(--marketplace-error-color);
       font-size: 2.3rem;
     }
   }
@@ -539,7 +536,7 @@
   }
 
   &__warning-icon {
-    color: var(--color-yellow-400); // hardcode or semantic warning
+    color: var(--marketplace-warning-color);
     font-size: 2.5rem;
   }
 

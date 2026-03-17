@@ -68,7 +68,7 @@
     font-size: 1.8rem;
     font-weight: 400;
     background: transparent;
-    color: #000;
+    color: var(--marketplace-text-primary);
     transition: all 0.2s ease;
     min-width: 14rem;
     justify-content: center;
@@ -79,7 +79,7 @@
         rgb(75 80 207 / 100%) 0%,
         rgb(102 126 234 / 100%) 100%
       );
-      color: #000;
+      color: var(--marketplace-text-primary);
     }
 
     &__icon {

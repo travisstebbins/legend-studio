@@ -74,13 +74,13 @@
     font-size: 2rem;
 
     &--vendor {
-      background: var(--color-light-blue-0);
-      color: var(--color-blue-500);
+      background: var(--marketplace-chip-snapshot-bg);
+      color: var(--marketplace-link-color);
     }
 
     &--curated {
-      background: var(--color-purple-0);
-      color: var(--color-purple-400);
+      background: var(--marketplace-chip-dev-bg);
+      color: var(--marketplace-chip-dev-text);
     }
   }
 

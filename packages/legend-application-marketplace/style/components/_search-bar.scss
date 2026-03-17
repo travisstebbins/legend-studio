@@ -60,27 +60,16 @@
     color: var(--marketplace-text-secondary);
 
     svg {
+      font-size: 2rem;
       color: var(--marketplace-text-secondary);
     }
 
     &:hover {
       color: var(--marketplace-link-color);
-      background: rgb(115 153 198 / 10%);
 
       svg {
         color: var(--marketplace-link-color);
       }
-    }
-  }
-
-  .MuiIconButton-root {
-    svg {
-      font-size: 2rem;
-      color: var(--marketplace-text-primary);
-    }
-
-    &:hover {
-      background-color: var(--marketplace-bg-secondary);
     }
   }
 
@@ -101,7 +90,7 @@
 
   &__section-divider {
     height: 0.1rem;
-    background-color: var(--color-dark-grey-500);
+    background-color: var(--marketplace-border-color);
     opacity: 0.5;
     margin: 0;
   }
@@ -112,7 +101,7 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05rem;
-    color: var(--color-dark-grey-300);
+    color: var(--marketplace-text-muted);
     border-bottom: none;
     font-family: 'GS Sans', Helvetica, Arial, sans-serif;
   }

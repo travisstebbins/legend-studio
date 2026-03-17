@@ -48,21 +48,21 @@
       background: linear-gradient(
         90deg,
         var(--legend-marketplace-light-blue) 0%,
-        var(--color-legacylight-light-blue-300) 50%,
+        var(--marketplace-link-hover-color) 50%,
         var(--legend-marketplace-light-blue) 100%
       );
     }
   }
 
   &__success-icon {
-    color: var(--color-hclight-green-50);
+    color: var(--marketplace-success-color);
     background: rgb(255 255 255 / 25%);
     border-radius: 50%;
     font-size: 3rem;
   }
 
   &__warning-icon {
-    color: var(--color-white);
+    color: var(--marketplace-btn-primary-text);
     background: rgb(255 255 255 / 15%);
     border-radius: 50%;
     padding: 0.8rem;
@@ -97,7 +97,7 @@
     // Wait, Dark mode had `background-clip: text; fill-color: transparent`. That's fancy.
     // If I want to keep that, I need to put it here or use a variable that holds `transparent` and `background-image`.
     // Simplify: Use `var(--color-white)` (or text-primary which is white in dark).
-    color: var(--color-white); // Safe bet for colored headers
+    color: var(--marketplace-btn-primary-text); // Safe bet for colored headers
     margin: 0 0 0.5rem;
     line-height: 1.2;
     text-shadow: 0 2px 4px rgb(0 0 0 / 10%);
@@ -111,14 +111,14 @@
   }
 
   &__close-btn {
-    color: var(--color-white);
+    color: var(--marketplace-btn-primary-text);
     background: rgb(255 255 255 / 15%);
     border-radius: 12px;
     padding: 0.75rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
-      color: var(--color-white);
+      color: var(--marketplace-btn-primary-text);
       background: rgb(255 255 255 / 25%);
       transform: translateY(-1px);
     }
@@ -327,7 +327,7 @@
 
         &.Mui-selected {
           background-color: var(--marketplace-link-color);
-          color: var(--color-white);
+          color: var(--marketplace-btn-primary-text);
         }
       }
     }
@@ -416,32 +416,32 @@
   &__source-title {
     font-size: 1.8rem;
     font-weight: 700;
-    color: var(--color-modal-text-primary);
+    color: var(--marketplace-text-primary);
     margin-bottom: 0.4rem;
   }
 
   &__source-description {
     font-size: 1.4rem;
     font-weight: 400;
-    color: var(--color-modal-text-secondary);
+    color: var(--marketplace-text-secondary);
   }
 
   &__in-cart-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    color: var(--color-hclight-green-50);
+    color: var(--marketplace-success-color);
     font-weight: 600;
 
     svg {
       font-size: 1.8rem;
-      color: var(--color-hclight-green-50);
+      color: var(--marketplace-success-color);
     }
 
     .MuiTypography-root {
       font-size: 1.3rem;
       font-weight: 600;
-      color: var(--color-hclight-green-50);
+      color: var(--marketplace-success-color);
     }
   }
 
@@ -449,18 +449,18 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    color: var(--color-hclight-grey-60);
+    color: var(--marketplace-text-muted);
     font-weight: 600;
 
     svg {
       font-size: 1.8rem;
-      color: var(--color-hclight-grey-60);
+      color: var(--marketplace-text-muted);
     }
 
     .MuiTypography-root {
       font-size: 1.3rem;
       font-weight: 600;
-      color: var(--color-hclight-grey-60);
+      color: var(--marketplace-text-muted);
     }
   }
 
@@ -477,8 +477,8 @@
 
     &:hover {
       background: rgb(115 153 198 / 8%);
-      border-color: var(--color-legacylight-light-blue-200);
-      color: var(--color-legacylight-light-blue-200);
+      border-color: var(--marketplace-link-hover-color);
+      color: var(--marketplace-link-hover-color);
     }
   }
 
@@ -496,7 +496,7 @@
     &:hover {
       background: var(--marketplace-bg-elevated);
       border-color: var(--marketplace-link-color);
-      color: var(--color-legacylight-light-blue-200);
+      color: var(--marketplace-link-hover-color);
     }
 
     &--added {
@@ -553,7 +553,7 @@
     text-transform: none;
     border-radius: 16px;
     border: none;
-    color: var(--color-white);
+    color: var(--marketplace-btn-primary-text);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;

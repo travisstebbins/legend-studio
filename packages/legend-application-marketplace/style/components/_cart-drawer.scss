@@ -69,7 +69,9 @@
   &__title {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--color-white); // White required for colorful dark/light headers
+    color: var(
+      --marketplace-btn-primary-text
+    ); // White required for colorful dark/light headers
     margin: 0;
     text-shadow: 0 1px 2px rgb(0 0 0 / 10%);
   }
@@ -109,7 +111,7 @@
     }
 
     &__required {
-      color: var(--color-red-100);
+      color: var(--marketplace-error-color);
       margin-left: 4px;
     }
 
@@ -285,7 +287,7 @@
         var(--marketplace-link-hover-color) 0%,
         var(--marketplace-link-color) 100%
       );
-      color: var(--color-white);
+      color: var(--marketplace-btn-primary-text);
       font-size: 1.2rem;
       font-weight: 600;
       border-radius: 20px;
@@ -316,7 +318,7 @@
 
     &__remove-btn {
       background: rgb(239 68 68 / 10%);
-      color: var(--color-dark-red-50);
+      color: var(--marketplace-error-color);
       border-radius: 10px;
       padding: 1rem;
       transition: all 0.2s ease;
@@ -442,7 +444,7 @@
       var(--marketplace-link-color) 0%,
       var(--marketplace-brand-secondary-color) 100%
     );
-    color: var(--color-white);
+    color: var(--marketplace-btn-primary-text);
     border: none;
     box-shadow: 0 4px 16px rgb(102 126 234 / 25%);
 

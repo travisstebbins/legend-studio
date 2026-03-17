@@ -140,7 +140,7 @@
     height: 100%;
 
     &__taskid-cell {
-      color: blue;
+      color: var(--marketplace-link-color);
       text-decoration: underline;
       cursor: pointer;
 
@@ -189,12 +189,12 @@
   }
 
   &__item-clickable-text {
-    color: blue;
+    color: var(--marketplace-link-color);
     text-decoration: underline;
     cursor: pointer;
 
     &:hover {
-      color: darkblue;
+      color: var(--marketplace-link-hover-color);
     }
 
     .theme__hc-dark & {
@@ -235,7 +235,7 @@
   }
 
   &__enterprise-apg-notice {
-    color: var(--color-light-grey-300);
+    color: var(--marketplace-text-muted);
     font-style: italic;
   }
 
@@ -263,7 +263,7 @@
 
   &__metadata {
     width: 100%;
-    background: var(--color-light-grey-300);
+    background: var(--marketplace-bg-secondary);
     padding: 1rem;
     margin: 1rem 0;
 
@@ -346,25 +346,25 @@
   &__user-list {
     max-height: 20rem;
     overflow: auto;
-    background: var(--color-light-grey-300);
+    background: var(--marketplace-bg-secondary);
 
     &__container {
       margin-top: -12px !important;
-      background: var(--color-light-grey-150);
+      background: var(--marketplace-bg-tertiary);
     }
   }
 
   &__task-approval-view {
     margin-bottom: 1rem;
     padding: 1rem;
-    background: var(--color-light-grey-150);
+    background: var(--marketplace-bg-tertiary);
 
     .legend-user-display {
       margin: 0.5rem 0;
     }
 
     &__timestamp {
-      color: var(--color-dark-grey-300);
+      color: var(--marketplace-text-muted);
       font-style: italic;
     }
   }
@@ -376,7 +376,7 @@
     align-self: start;
     margin-top: auto;
     width: 100%;
-    color: var(--color-light-grey-300);
+    color: var(--marketplace-text-muted);
 
     &__subscription-info {
       width: 100%;
@@ -389,7 +389,7 @@
       justify-content: space-between;
 
       &__close-request-btn {
-        color: var(--color-red-200);
+        color: var(--marketplace-error-color);
       }
     }
   }
@@ -403,11 +403,11 @@
   }
 
   &__success {
-    background: var(--tw-color-green-200);
+    background: var(--marketplace-success-color);
   }
 
   &__error {
-    background: var(--tw-color-red-300);
+    background: var(--marketplace-error-color);
 
     &__content {
       line-height: 3rem;
